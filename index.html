@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>รายชื่อเจ้าหน้าที่รักษาการณ์</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --olive:#4a5240; --olive-dark:#2e3328; --olive-light:#6b7560;
+  --gold:#c9a84c; --gold-light:#e8c97a;
+  --cream:#f5f0e8; --cream-dark:#ede4d3; --paper:#faf7f2;
+  --ink:#1e1e1e; --ink-soft:#3a3a3a; --line:#c8bca8;
+  --accent:#8b2020; --danger:#c0392b; --success:#2e7d32;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sarabun',sans-serif;background:var(--olive-dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+/* HEADER */
+.page-header{width:100%;background:linear-gradient(135deg,var(--olive-dark) 0%,#3a4235 50%,var(--olive-dark) 100%);border-bottom:3px solid var(--gold);padding:20px 80px 14px 80px;text-align:center;position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 40px);}
+.star-row{display:flex;justify-content:center;gap:8px;margin-bottom:6px;}
+.star-row span{color:var(--gold);font-size:14px;opacity:0.7;}
+.page-header h1{font-family:'Noto Serif Thai',serif;font-size:20px;font-weight:700;color:var(--gold-light);letter-spacing:2px;position:relative;}
+.page-header .subtitle{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:1px;}
+.admin-btn-wrap{position:absolute;top:50%;right:14px;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;align-items:flex-end;}
+.btn-admin-login{background:transparent;border:1px solid rgba(201,168,76,0.4);color:rgba(201,168,76,0.7);padding:5px 10px;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-admin-login:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+.btn-admin-logout{background:rgba(139,32,32,0.15);border:1px solid rgba(139,32,32,0.5);color:#e07070;padding:5px 10px;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-admin-logout:hover{background:rgba(139,32,32,0.25);}
+.admin-badge{display:inline-block;background:var(--accent);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:1px;margin-left:6px;vertical-align:middle;letter-spacing:0.5px;}
+
+/* CONTAINER */
+.container{width:100%;max-width:700px;padding:24px 16px 60px;}
+
+/* CARDS */
+.card{background:var(--paper);border-radius:2px;border:1px solid var(--gold);box-shadow:0 4px 24px rgba(0,0,0,0.4);margin-bottom:20px;overflow:hidden;}
+.card-header{background:linear-gradient(90deg,var(--olive-dark),var(--olive));padding:10px 18px;display:flex;align-items:center;gap:10px;}
+.card-header .icon{color:var(--gold);font-size:15px;}
+.card-header h2{font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:600;color:var(--cream);letter-spacing:1px;flex:1;}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:14px;}
+
+/* FORM */
+.field-group{display:flex;flex-direction:column;gap:5px;}
+.field-label{font-size:12px;font-weight:600;color:var(--olive);text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;}
+.field-label .num{background:var(--olive);color:var(--cream);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+select,input[type=text],input[type=password]{padding:9px 12px;border:1px solid var(--line);border-radius:2px;background:white;font-family:'Sarabun',sans-serif;font-size:13.5px;color:var(--ink);transition:border-color 0.2s,box-shadow 0.2s;outline:none;width:100%;}
+select{cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a5240' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+select:focus,input:focus{border-color:var(--olive);box-shadow:0 0 0 2px rgba(74,82,64,0.15);}
+input::placeholder{color:#bbb;}
+
+/* BUTTONS */
+.btn{padding:9px 16px;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid transparent;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:linear-gradient(135deg,var(--olive),var(--olive-dark));color:var(--gold-light);border-color:var(--gold);width:100%;justify-content:center;font-size:14px;letter-spacing:1px;}
+.btn-primary:hover{background:linear-gradient(135deg,var(--olive-light),var(--olive));box-shadow:0 2px 12px rgba(201,168,76,0.3);}
+.btn-copy{background:transparent;color:var(--olive);border:1px solid var(--olive-light);width:100%;justify-content:center;}
+.btn-copy:hover{background:var(--cream-dark);}
+.btn-sm{padding:4px 8px;font-size:11px;font-weight:600;border-radius:2px;cursor:pointer;border:1px solid transparent;transition:all 0.15s;font-family:'Sarabun',sans-serif;white-space:nowrap;}
+.btn-edit{background:#e8f0e4;color:var(--olive-dark);border-color:#b0c0a4;}
+.btn-edit:hover{background:#d4e4cc;}
+.btn-delete{background:#fdecea;color:var(--danger);border-color:#f5bcbc;}
+.btn-delete:hover{background:#fad4d0;}
+.btn-save{background:#e4f0e8;color:var(--success);border-color:#a4c8a8;}
+.btn-save:hover{background:#ccead2;}
+.btn-cancel-sm{background:#f0f0ee;color:#666;border-color:#ccc;}
+.btn-cancel-sm:hover{background:#e4e4e0;}
+.btn-up,.btn-down{background:#e8ecdf;color:var(--olive);border-color:#b8c8a4;padding:4px 7px;}
+.btn-up:hover,.btn-down:hover{background:#d8e4cc;}
+.td-actions .btn-sep{width:1px;height:18px;background:var(--line);margin:0 2px;display:inline-block;vertical-align:middle;}
+.btn-up:disabled,.btn-down:disabled{opacity:0.35;cursor:not-allowed;}
+.btn-add-item{background:linear-gradient(135deg,var(--olive),var(--olive-light));color:var(--cream);border-color:var(--olive-dark);padding:7px 14px;font-size:12px;}
+.btn-add-item:hover{opacity:0.9;}
+
+/* RESULT */
+.result-card{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:2px;box-shadow:0 4px 24px rgba(0,0,0,0.35);overflow:hidden;animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-inner{padding:24px 26px 28px;position:relative;}
+.result-inner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 31px,rgba(180,165,140,0.15) 31px,rgba(180,165,140,0.15) 32px);pointer-events:none;}
+.doc-title{font-family:'Noto Serif Thai',serif;font-size:17px;font-weight:700;color:var(--olive-dark);text-align:center;margin-bottom:2px;position:relative;}
+.doc-date-line{font-size:14px;color:var(--ink-soft);text-align:center;margin-bottom:16px;position:relative;}
+.divider{border:none;border-top:1px solid var(--line);margin:12px 0;}
+.divider.gold{border-top-color:var(--gold);}
+.personnel-row{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:14px;color:var(--ink);line-height:1.6;position:relative;}
+.p-num{font-weight:600;color:var(--olive);min-width:18px;}
+.p-role{font-weight:600;min-width:90px;}
+.section-header{font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:700;color:var(--olive-dark);margin:14px 0 6px;display:flex;align-items:center;gap:8px;position:relative;}
+.section-header::after{content:'';flex:1;height:1px;background:var(--line);}
+.day-label{font-size:13px;font-weight:600;color:var(--olive);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.day-label::before{content:'★';font-size:9px;color:var(--gold);}
+.schedule-list{list-style:none;padding-left:14px;}
+.schedule-list li{font-size:13.5px;color:var(--ink-soft);padding:2px 0;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.schedule-list li::before{content:'–';color:var(--olive-light);flex-shrink:0;margin-top:1px;}
+.schedule-list li .time{font-weight:700;color:var(--accent);min-width:52px;flex-shrink:0;}
+.footer-note{margin-top:20px;text-align:center;font-size:13px;font-weight:600;color:var(--olive-dark);letter-spacing:1px;font-family:'Noto Serif Thai',serif;position:relative;padding-top:14px;border-top:1px dashed var(--line);}
+.day-badge{display:inline-block;background:var(--olive);color:var(--cream);font-size:11px;font-weight:600;padding:2px 8px;border-radius:1px;margin-left:8px;vertical-align:middle;letter-spacing:0.5px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:1000;justify-content:center;align-items:center;padding:16px;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--paper);border-radius:2px;border:1px solid var(--gold);box-shadow:0 8px 48px rgba(0,0,0,0.6);width:100%;max-width:400px;overflow:hidden;animation:fadeIn 0.25s ease;}
+.modal-header{background:linear-gradient(90deg,var(--olive-dark),var(--olive));padding:14px 18px;display:flex;align-items:center;gap:10px;}
+.modal-header h3{font-family:'Noto Serif Thai',serif;font-size:15px;color:var(--gold-light);font-weight:700;flex:1;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;}
+.modal-close:hover{color:white;}
+.modal-body{padding:20px 18px 16px;display:flex;flex-direction:column;gap:12px;}
+.modal-body label{font-size:12px;font-weight:600;color:var(--olive);display:block;margin-bottom:4px;}
+.modal-footer{padding:0 18px 18px;display:flex;gap:8px;justify-content:flex-end;}
+#loginErr{color:var(--danger);font-size:12px;display:none;}
+
+/* ADMIN PANEL */
+.admin-panel{border-color:var(--accent);}
+.admin-panel .card-header{background:linear-gradient(90deg,#5a1010,#8b2020);}
+.tabs{display:flex;border-bottom:2px solid var(--line);background:var(--cream-dark);}
+.tab-btn{padding:10px 16px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;color:var(--olive-light);background:none;border:none;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;margin-bottom:-2px;}
+.tab-btn.active{color:var(--olive-dark);border-bottom-color:var(--accent);background:var(--paper);}
+.tab-btn:hover:not(.active){background:var(--cream);}
+.tab-content{display:none;padding:16px;}
+.tab-content.active{display:block;}
+
+/* TABLE */
+.p-table{width:100%;border-collapse:collapse;font-size:13px;}
+.p-table th{background:var(--olive-dark);color:var(--cream);padding:7px 8px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;}
+.p-table td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink-soft);white-space:nowrap;}
+.p-table tr:hover td{background:rgba(74,82,64,0.04);}
+.p-table tbody tr{height:40px;}
+.td-actions{display:flex;flex-direction:row;gap:4px;flex-wrap:nowrap;align-items:center;padding:4px 8px;}
+
+.edit-row td{background:#f0f5ee!important;}
+.edit-row input[type=text]{padding:5px 7px;font-size:12px;border:1px solid var(--olive-light);border-radius:2px;background:white;font-family:'Sarabun',sans-serif;width:100%;}
+
+/* SCHEDULE EDITOR */
+.sch-day-block{margin-bottom:14px;border:1px solid var(--line);border-radius:2px;overflow:hidden;}
+.sch-day-title{background:var(--olive-dark);color:var(--cream);padding:8px 12px;font-size:13px;font-weight:600;}
+.sch-period-title{padding:6px 12px 3px;font-size:11px;font-weight:700;color:var(--olive-light);background:#f5f2ec;border-top:1px solid #ddd;text-transform:uppercase;letter-spacing:0.5px;}
+.sch-items{padding:8px 12px;display:flex;flex-direction:column;gap:5px;}
+.sch-item{display:flex;align-items:center;gap:5px;}
+.sch-item input.t-time{width:65px;flex-shrink:0;font-size:12px;padding:5px 6px;}
+.sch-item input.t-text{flex:1;font-size:12px;padding:5px 8px;}
+.sch-actions{display:flex;gap:3px;flex-shrink:0;}
+.sch-add-row{padding:6px 12px 8px;border-top:1px dashed var(--line);display:flex;gap:5px;align-items:center;background:#faf8f4;}
+.sch-add-row input.t-time{width:65px;flex-shrink:0;font-size:12px;padding:5px 6px;}
+.sch-add-row input.t-text{flex:1;font-size:12px;padding:5px 8px;}
+.sch-note{font-size:11px;color:#7a6630;background:#fffbe8;border:1px solid #e8d898;padding:7px 10px;border-radius:2px;margin-bottom:12px;}
+.tag-prayer{display:inline-block;font-size:10px;font-weight:700;padding:1px 5px;border-radius:1px;background:#e8f0e4;color:var(--olive);white-space:nowrap;flex-shrink:0;}
+
+.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="star-row"><span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span></div>
+  <h1>รายชื่อเจ้าหน้าที่รักษาการณ์ <span id="adminBadge" class="admin-badge hidden">ADMIN</span></h1>
+  <div class="subtitle" id="headerDayInfo">กำลังโหลด...</div>
+  <div class="admin-btn-wrap">
+    <button class="btn-admin-login" id="adminLoginBtn" onclick="showLoginModal()">🔒 แอดมิน</button>
+    <button class="btn-admin-logout hidden" id="adminLogoutBtn" onclick="adminLogout()">↩ ออกจากระบบ</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ADMIN PANEL -->
+  <div class="card admin-panel hidden" id="adminPanel">
+    <div class="card-header">
+      <span class="icon">⚙</span>
+      <h2>แผงควบคุมแอดมิน</h2>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">นายทหารเวร</button>
+      <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">เสมียนเวร</button>
+      <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">การปฏิบัติ</button>
+    </div>
+
+    <div class="tab-content active" id="tab0">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+        <button class="btn btn-add-item" onclick="openAddModal('officer')">+ เพิ่มนายทหารเวร</button>
+      </div>
+      <div style="overflow-x:auto;"><table class="p-table" style="min-width:520px;">
+        <thead><tr><th width="32">#</th><th>ยศ ชื่อ นามสกุล</th><th width="110">เบอร์โทร</th><th style="padding:0;"><div style="display:flex;flex-direction:row;align-items:center;"><span style="padding:7px 0 7px 8px;font-size:12px;font-weight:600;min-width:70px;">ลำดับ</span><span style="padding:7px 8px;font-size:12px;font-weight:600;">จัดการ</span></div></th></tr></thead>
+        <tbody id="officerTbody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="tab-content" id="tab1">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+        <button class="btn btn-add-item" onclick="openAddModal('clerk')">+ เพิ่มเสมียนเวร</button>
+      </div>
+      <div style="overflow-x:auto;"><table class="p-table" style="min-width:520px;">
+        <thead><tr><th width="32">#</th><th>ยศ ชื่อ นามสกุล</th><th width="110">เบอร์โทร</th><th style="padding:0;"><div style="display:flex;flex-direction:row;align-items:center;"><span style="padding:7px 0 7px 8px;font-size:12px;font-weight:600;min-width:70px;">ลำดับ</span><span style="padding:7px 8px;font-size:12px;font-weight:600;">จัดการ</span></div></th></tr></thead>
+        <tbody id="clerkTbody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="tab-content" id="tab2">
+      <div class="sch-note">⚠ แก้ไขได้เฉพาะ <strong>เวลา</strong> และ <strong>รายละเอียดการปฏิบัติ</strong> กด 💾 เพื่อบันทึกแต่ละรายการ</div>
+      <div id="scheduleEditor"></div>
+    </div>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="card">
+    <div class="card-header"><span class="icon">✎</span><h2>กรอกข้อมูลเจ้าหน้าที่</h2></div>
+    <div class="card-body">
+      <div class="field-group">
+        <div class="field-label"><span class="num">1</span>นายทหารเวร</div>
+        <select id="officer_select" onchange="onOfficerChange()"><option value="">— เลือกนายทหารเวร —</option></select>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><span class="num">2</span>เสมียนเวร</div>
+        <select id="clerk_select" onchange="onClerkChange()"><option value="">— เลือกเสมียนเวร —</option></select>
+      </div>
+      <button class="btn btn-primary" onclick="generateDoc()">⊞ แสดงผลเอกสาร</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card hidden" id="resultCard">
+    <div class="result-inner" id="resultContent"></div>
+    <div style="padding:0 26px 20px;">
+      <button class="btn btn-copy" onclick="copyText()">⎘ คัดลอกข้อความ</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <div class="modal-header"><h3>🔒 เข้าสู่ระบบแอดมิน</h3><button class="modal-close" onclick="closeModal('loginModal')">×</button></div>
+    <div class="modal-body">
+      <div><label>รหัสผู้ใช้</label><input type="text" id="loginId" placeholder="Username"></div>
+      <div><label>รหัสผ่าน</label><input type="password" id="loginPw" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div id="loginErr">❌ รหัสผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-cancel-sm" onclick="closeModal('loginModal')">ยกเลิก</button>
+      <button class="btn-sm btn-save" onclick="doLogin()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PERSON MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="addModalTitle">เพิ่มรายชื่อ</h3><button class="modal-close" onclick="closeModal('addModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="addModalType">
+      <div><label>ยศ ชื่อ นามสกุล</label><input type="text" id="addName" placeholder="เช่น จ.ส.อ. สมชาย ใจดี"></div>
+      <div><label>เบอร์โทรศัพท์</label><input type="text" id="addPhone" placeholder="เช่น 081-2345678"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-cancel-sm" onclick="closeModal('addModal')">ยกเลิก</button>
+      <button class="btn-sm btn-save" onclick="confirmAdd()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+let officers = [
+  {name:'จ.ส.อ. วิศาล บุญตา',phone:'097-0428292'},
+  {name:'จ.ส.อ. คำสอน พงษ์พันธ์',phone:'086-7573690'},
+  {name:'จ.ส.อ. อดิศร เรียงเสนาะ',phone:'098-0383623'},
+  {name:'จ.ส.อ. ฐิติพงษ์ กุศล',phone:'087-0833422'},
+  {name:'จ.ส.อ. สุดใจ ภูลายขาว',phone:'095-3468830'},
+  {name:'จ.ส.อ. ทินกร เหลาพรม',phone:'063-4955356'},
+  {name:'จ.ส.อ. พรหมมาศ พรมประสิทธิ์',phone:'063-1059710'},
+  {name:'ร.ท. สรศักดิ์ อยู่ยง',phone:'088-4585732'},
+  {name:'ร.ต. นพฤทธิ์ ฉายอรุณ',phone:'086-6559582'},
+  {name:'ร.ท. อานัติพงษ์ ลันบุตร',phone:'093-6465289'},
+  {name:'ร.ต. ณฤธร สุคนธชาติ',phone:'098-3317952'},
+  {name:'ร.อ. ศิณพ เย็นใจ',phone:'094-5596246'},
+  {name:'จ.ส.อ. เสกสรร ศรีลาลัย',phone:'080-6938090'},
+  {name:'จ.ส.อ. ชัยฤทธิ์ ชูบุตร',phone:'087-0450078'},
+  {name:'จ.ส.อ. ณัฐกร ปะทะวัง',phone:'092-6785463'},
+  {name:'จ.ส.อ. ณัฐกิตติ์ อุตริน',phone:'092-2492662'},
+];
+let clerks = [
+  {name:'จ.ส.อ. สิทธิพงษ์ สิงห์พันธ์',phone:'092-6408687'},
+  {name:'จ.ส.อ. กิตติ พลลม',phone:'096-0960220'},
+  {name:'จ.ส.อ. อัมฤทธิ์ พุมสวัสดิ์',phone:'092-4959539'},
+  {name:'จ.ส.ต. ปรัชญา ขาลพรหม',phone:'092-8403426'},
+  {name:'จ.ส.ต. ธีระ จำปาเทศ',phone:'096-5707193'},
+  {name:'จ.ส.ท. สมควร เดชนุวัฒนชัย',phone:'081-3832629'},
+  {name:'ส.อ. ประชา หนูราช',phone:'061-0822506'},
+  {name:'ส.อ. ปิยะพงษ์ เขียนปัญญา',phone:'094-2418699'},
+  {name:'ส.อ. สมเกียรติ เหลาพรหม',phone:'062-5948879'},
+  {name:'ส.อ. อิสระพงษ์ สืบสุนทร',phone:'096-0702873'},
+  {name:'จ.ส.อ. วันเฉลิม โพธิ์ศรี',phone:'098-0014149'},
+  {name:'ส.อ. เมธี มิตราช',phone:'081-1903465'},
+  {name:'ส.อ. วงกต วันตา',phone:'099-4243443'},
+  {name:'ส.อ. วรัญู แบนขุนทด',phone:'063-6480297'},
+  {name:'ส.อ. ณรงค์กร ฆ้องลา',phone:'087-2382298'},
+  {name:'ส.อ. วิเชียร สวาทพร',phone:'092-5135212'},
+  {name:'ส.อ. จักรกฤษณ์ คุณสมบัติ',phone:'092-9729670'},
+  {name:'ส.อ. มีชัย ศรีนวน',phone:'098-2629175'},
+  {name:'ส.อ. กฤษณัส สุรันนา',phone:'090-8164867'},
+  {name:'ส.อ. ชาติชาย ตรีแสน',phone:'086-3547267'},
+  {name:'ส.อ. อนุชิต ใบขุนทด',phone:'097-9656467'},
+  {name:'ส.อ. ณัฐเอก ลูมา',phone:'092-9729670'},
+  {name:'ส.อ. สรรเสริญ แก้วพรม',phone:'092-5141911'},
+  {name:'ส.อ. ปิยะณัฐ สีทัน',phone:'096-2940714'},
+  {name:'จ.ส.ท. อนุทิน โมตา',phone:'080-1034058'},
+  {name:'ส.อ. ไกรวัลย์ อ่อนศรี',phone:'093-6899296'},
+  {name:'ส.อ. กฤษณะ วิเศษการ',phone:'092-8819972'},
+  {name:'ส.อ. ขจรยศ เทพจันตา',phone:'098-7701637'},
+  {name:'ส.อ. วีระศักดิ์ ยืนสุข',phone:'098-3541595'},
+];
+
+// schedules[group][period] = array of {time, text, prayerOnly?}
+let schedules = {
+  mon_thu:{label:'จันทร์–พฤหัสบดี',
+    today:[
+      {time:'13.00',text:'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+      {time:'16.30',text:'ออกกำลังกาย'},
+      {time:'20.30',text:'สวดมนต์',prayerOnly:true},
+    ],
+    tomorrow:[
+      {time:'06.30',text:'ทำความสะอาดบริเวณรับผิดชอบ'},
+      {time:'07.50',text:'รวมเช็คยอด'},
+      {time:'08.00',text:'เคารพธงชาติ/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+    ]
+  },
+  fri:{label:'วันศุกร์',
+    today:[
+      {time:'13.00',text:'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+      {time:'16.30',text:'ออกกำลังกาย'},
+      {time:'20.30',text:'สวดมนต์',prayerOnly:true},
+    ],
+    tomorrow:[
+      {time:'09.00',text:'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+    ]
+  },
+  sat:{label:'วันเสาร์',
+    today:[
+      {time:'13.00',text:'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+    ],
+    tomorrow:[
+      {time:'09.00',text:'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+    ]
+  },
+  sun:{label:'วันอาทิตย์',
+    today:[
+      {time:'13.00',text:'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+    ],
+    tomorrow:[
+      {time:'06.30',text:'ทำความสะอาดบริเวณรับผิดชอบ'},
+      {time:'07.50',text:'รวมเช็คยอด'},
+      {time:'08.00',text:'เคารพธงชาติ/รับฟังคำชี้แจงฝ่ายอำนวยการ'},
+    ]
+  }
+};
+
+// ===== DATE =====
+const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const thDays=['วันอาทิตย์','วันจันทร์','วันอังคาร','วันพุธ','วันพฤหัสบดี','วันศุกร์','วันเสาร์'];
+const now=new Date(), tomorrow=new Date(now);
+tomorrow.setDate(now.getDate()+1);
+const dow=now.getDay();
+function thDate(d){return `${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear()+543-2500}`;}
+function fullThDate(d){return `${thDays[d.getDay()]}ที่ ${thDate(d)}`;}
+function hasPrayer(d){return [1,3,5].includes(d.getDay());}
+function getDayGroup(){if(dow>=1&&dow<=4)return 'mon_thu';if(dow===5)return 'fri';if(dow===6)return 'sat';return 'sun';}
+function getScheduleToday(){return schedules[getDayGroup()].today.filter(i=>!i.prayerOnly||hasPrayer(now));}
+function getScheduleTomorrow(){return schedules[getDayGroup()].tomorrow;}
+document.getElementById('headerDayInfo').textContent=`${thDays[dow]} · ${thDate(now)}`;
+
+// ===== DROPDOWNS =====
+let selectedOfficer=null, selectedClerk=null;
+function populateSelect(id,data,label){
+  const sel=document.getElementById(id);
+  const prev=sel.value;
+  sel.innerHTML=`<option value="">— เลือก${label} —</option>`;
+  data.forEach((p,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=`${p.name}  |  ${p.phone}`; sel.appendChild(o);
+  });
+  if(prev!==''&&parseInt(prev)<data.length) sel.value=prev; else sel.value='';
+}
+function onOfficerChange(){const v=document.getElementById('officer_select').value;selectedOfficer=v!==''?officers[parseInt(v)]:null;}
+function onClerkChange(){const v=document.getElementById('clerk_select').value;selectedClerk=v!==''?clerks[parseInt(v)]:null;}
+populateSelect('officer_select',officers,'นายทหารเวร');
+populateSelect('clerk_select',clerks,'เสมียนเวร');
+
+// ===== GENERATE DOC =====
+function renderSchItems(items){return items.map(i=>`<li><span class="time">${i.time}</span><span>${i.text}</span></li>`).join('');}
+function generateDoc(){
+  if(!selectedOfficer){alert('กรุณาเลือกนายทหารเวร');return;}
+  if(!selectedClerk){alert('กรุณาเลือกเสมียนเวร');return;}
+  const ti=getScheduleToday(), tm=getScheduleTomorrow();
+  document.getElementById('resultContent').innerHTML=`
+    <div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div>
+    <div class="doc-date-line">ประจำ${fullThDate(now)} ดังนี้ <span class="day-badge">${thDays[dow]}</span></div>
+    <hr class="divider gold">
+    <div>
+      <div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div>
+      <div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div>
+    </div>
+    <hr class="divider">
+    <div class="section-header">การปฏิบัติ</div>
+    <div><div class="day-label">วันที่ ${thDate(now)}</div><ul class="schedule-list">${renderSchItems(ti)}</ul></div>
+    <div class="section-header">การปฏิบัติ</div>
+    <div><div class="day-label">วันที่ ${thDate(tomorrow)}</div><ul class="schedule-list">${renderSchItems(tm)}</ul></div>
+    <div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
+  document.getElementById('resultCard').classList.remove('hidden');
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===== COPY =====
+function copyText(){
+  if(!selectedOfficer||!selectedClerk)return;
+  const ti=getScheduleToday(),tm=getScheduleTomorrow();
+  let t=`รายชื่อเจ้าหน้าที่รักษาการณ์\nประจำ${fullThDate(now)} ดังนี้\n\n`;
+  t+=`1. นายทหารเวร : ${selectedOfficer.name} / ${selectedOfficer.phone}\n`;
+  t+=`2. เสมียนเวร : ${selectedClerk.name} / ${selectedClerk.phone}\n\n`;
+  t+=`การปฏิบัติ\n* วันที่ ${thDate(now)}\n`;
+  ti.forEach(i=>{t+=`- ${i.time} ${i.text}\n`;});
+  t+=`\nการปฏิบัติ\n* วันที่ ${thDate(tomorrow)}\n`;
+  tm.forEach(i=>{t+=`- ${i.time} ${i.text}\n`;});
+  t+=`\nเพื่อทราบ/ปฏิบัติอย่างเคร่งครัด`;
+  const ta=document.createElement('textarea');
+  ta.value=t;ta.style.cssText='position:fixed;left:-9999px;top:-9999px;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  let ok=false;try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  const btn=document.querySelector('.btn-copy');
+  const done=()=>{btn.textContent='✓ คัดลอกแล้ว!';setTimeout(()=>{btn.innerHTML='⎘ คัดลอกข้อความ';},2000);};
+  const fail=()=>{btn.textContent='⚠ ลองใหม่';setTimeout(()=>{btn.innerHTML='⎘ คัดลอกข้อความ';},2000);};
+  if(ok){done();}else if(navigator.clipboard){navigator.clipboard.writeText(t).then(done).catch(fail);}else{fail();}
+}
+
+// ===== AUTH =====
+let isAdmin=false;
+function showLoginModal(){
+  document.getElementById('loginId').value='';document.getElementById('loginPw').value='';
+  document.getElementById('loginErr').style.display='none';openModal('loginModal');
+  setTimeout(()=>document.getElementById('loginId').focus(),100);
+}
+function doLogin(){
+  if(document.getElementById('loginId').value.trim()==='admin'&&document.getElementById('loginPw').value==='admin2'){
+    isAdmin=true;closeModal('loginModal');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.getElementById('adminLoginBtn').classList.add('hidden');
+    document.getElementById('adminLogoutBtn').classList.remove('hidden');
+    document.getElementById('adminBadge').classList.remove('hidden');
+    renderOfficerTable();renderClerkTable();renderScheduleEditor();
+  }else{document.getElementById('loginErr').style.display='block';}
+}
+function adminLogout(){
+  isAdmin=false;
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('adminLoginBtn').classList.remove('hidden');
+  document.getElementById('adminLogoutBtn').classList.add('hidden');
+  document.getElementById('adminBadge').classList.add('hidden');
+}
+
+// ===== MODAL =====
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+
+// ===== TABS =====
+function switchTab(idx){
+  [0,1,2].forEach(i=>{
+    document.getElementById(`tabBtn${i}`).classList.toggle('active',i===idx);
+    document.getElementById(`tab${i}`).classList.toggle('active',i===idx);
+  });
+}
+
+// ===== PERSONNEL TABLE =====
+function renderPersonnelTable(tbodyId,data,type){
+  const tb=document.getElementById(tbodyId);tb.innerHTML='';
+  data.forEach(function(p,i){
+    const tr=document.createElement('tr');
+    tr.id='row_'+type+'_'+i;
+    const tdNum=document.createElement('td');tdNum.textContent=i+1;
+    const tdName=document.createElement('td');tdName.textContent=p.name;
+    const tdPhone=document.createElement('td');tdPhone.textContent=p.phone;
+    const tdAct=document.createElement('td');tdAct.className='td-actions';
+
+    const btnUp=document.createElement('button');
+    btnUp.className='btn-sm btn-up';btnUp.textContent='▲';btnUp.title='เลื่อนขึ้น';
+    btnUp.disabled=(i===0);
+    (function(t,idx){btnUp.addEventListener('click',function(){movePerson(t,idx,-1);});})(type,i);
+
+    const btnDown=document.createElement('button');
+    btnDown.className='btn-sm btn-down';btnDown.textContent='▼';btnDown.title='เลื่อนลง';
+    btnDown.disabled=(i===data.length-1);
+    (function(t,idx){btnDown.addEventListener('click',function(){movePerson(t,idx,1);});})(type,i);
+
+    const btnEdit=document.createElement('button');
+    btnEdit.className='btn-sm btn-edit';btnEdit.textContent='✏ แก้ไข';
+    (function(t,idx){btnEdit.addEventListener('click',function(){editPerson(t,idx);});})(type,i);
+
+    const btnDel=document.createElement('button');
+    btnDel.className='btn-sm btn-delete';btnDel.textContent='✕ ลบ';
+    (function(t,idx){btnDel.addEventListener('click',function(){deletePerson(t,idx);});})(type,i);
+
+    tdAct.appendChild(btnUp);
+    tdAct.appendChild(btnDown);
+    var sep=document.createElement('span');sep.className='btn-sep';
+    tdAct.appendChild(sep);
+    tdAct.appendChild(btnEdit);
+    tdAct.appendChild(btnDel);
+
+    tr.appendChild(tdNum);tr.appendChild(tdName);tr.appendChild(tdPhone);tr.appendChild(tdAct);
+    tb.appendChild(tr);
+  });
+}
+function renderOfficerTable(){renderPersonnelTable('officerTbody',officers,'officer');}
+function renderClerkTable(){renderPersonnelTable('clerkTbody',clerks,'clerk');}
+
+function editPerson(type,idx){
+  const data=type==='officer'?officers:clerks;
+  const tr=document.getElementById(`row_${type}_${idx}`);
+  tr.classList.add('edit-row');
+  const p=data[idx];
+  tr.innerHTML=`<td>${idx+1}</td>
+    <td><input type="text" id="en_${type}_${idx}" value="${p.name}"></td>
+    <td><input type="text" id="ep_${type}_${idx}" value="${p.phone}"></td>
+    <td class="td-actions">
+      <button class="btn-sm btn-save" onclick="savePerson('${type}',${idx})">💾 บันทึก</button>
+      <button class="btn-sm btn-cancel-sm" onclick="${type==='officer'?'renderOfficerTable':'renderClerkTable'}()">ยกเลิก</button>
+    </td>`;
+}
+function savePerson(type,idx){
+  const n=document.getElementById(`en_${type}_${idx}`).value.trim();
+  const p=document.getElementById(`ep_${type}_${idx}`).value.trim();
+  if(!n){alert('กรุณากรอกชื่อ');return;}
+  const data=type==='officer'?officers:clerks;
+  data[idx]={name:n,phone:p};
+  if(type==='officer'){renderOfficerTable();populateSelect('officer_select',officers,'นายทหารเวร');}
+  else{renderClerkTable();populateSelect('clerk_select',clerks,'เสมียนเวร');}
+}
+function deletePerson(type,idx){
+  const data=type==='officer'?officers:clerks;
+  if(!confirm(`ลบ "${data[idx].name}" ออกจากรายชื่อ?`))return;
+  data.splice(idx,1);
+  if(type==='officer'){renderOfficerTable();populateSelect('officer_select',officers,'นายทหารเวร');}
+  else{renderClerkTable();populateSelect('clerk_select',clerks,'เสมียนเวร');}
+}
+function movePerson(type,idx,dir){
+  const data=type==='officer'?officers:clerks;
+  const ni=idx+dir;if(ni<0||ni>=data.length)return;
+  [data[idx],data[ni]]=[data[ni],data[idx]];
+  if(type==='officer'){renderOfficerTable();populateSelect('officer_select',officers,'นายทหารเวร');}
+  else{renderClerkTable();populateSelect('clerk_select',clerks,'เสมียนเวร');}
+}
+
+// ===== ADD PERSON =====
+function openAddModal(type){
+  document.getElementById('addModalType').value=type;
+  document.getElementById('addModalTitle').textContent=type==='officer'?'เพิ่มนายทหารเวร':'เพิ่มเสมียนเวร';
+  document.getElementById('addName').value='';document.getElementById('addPhone').value='';
+  openModal('addModal');setTimeout(()=>document.getElementById('addName').focus(),100);
+}
+function confirmAdd(){
+  const type=document.getElementById('addModalType').value;
+  const n=document.getElementById('addName').value.trim();
+  const p=document.getElementById('addPhone').value.trim();
+  if(!n){alert('กรุณากรอกยศ ชื่อ นามสกุล');return;}
+  if(type==='officer'){officers.push({name:n,phone:p});renderOfficerTable();populateSelect('officer_select',officers,'นายทหารเวร');}
+  else{clerks.push({name:n,phone:p});renderClerkTable();populateSelect('clerk_select',clerks,'เสมียนเวร');}
+  closeModal('addModal');
+}
+
+// ===== SCHEDULE EDITOR =====
+const periodLabels={
+  mon_thu:{today:'วันปัจจุบัน (จันทร์–พฤหัสบดี)',tomorrow:'วันถัดไป'},
+  fri:    {today:'วันปัจจุบัน (วันศุกร์)',tomorrow:'วันถัดไป (วันเสาร์)'},
+  sat:    {today:'วันปัจจุบัน (วันเสาร์)',tomorrow:'วันถัดไป (วันอาทิตย์)'},
+  sun:    {today:'วันปัจจุบัน (วันอาทิตย์)',tomorrow:'วันถัดไป (วันจันทร์)'},
+};
+
+function renderScheduleEditor(){
+  const con=document.getElementById('scheduleEditor');con.innerHTML='';
+  Object.keys(schedules).forEach(grp=>{
+    const blk=document.createElement('div');blk.className='sch-day-block';
+    blk.innerHTML=`<div class="sch-day-title">📅 ${schedules[grp].label}</div>`;
+    ['today','tomorrow'].forEach(period=>{
+      const wrap=document.createElement('div');
+      wrap.innerHTML=`<div class="sch-period-title">▸ ${periodLabels[grp][period]}</div>
+        <div class="sch-items" id="schitems_${grp}_${period}"></div>
+        <div class="sch-add-row">
+          <input type="text" class="t-time" id="nat_${grp}_${period}" placeholder="เวลา">
+          <input type="text" class="t-text" id="nad_${grp}_${period}" placeholder="รายละเอียดการปฏิบัติ">
+          <button class="btn-sm btn-add-item" onclick="addSchItem('${grp}','${period}')">+ เพิ่ม</button>
+        </div>`;
+      blk.appendChild(wrap);
+    });
+    con.appendChild(blk);
+  });
+  // render items after DOM ready
+  Object.keys(schedules).forEach(g=>{renderSchItemsInDOM(g,'today');renderSchItemsInDOM(g,'tomorrow');});
+}
+
+function renderSchItemsInDOM(grp,period){
+  const div=document.getElementById('schitems_'+grp+'_'+period);
+  if(!div)return;
+  div.innerHTML='';
+  const items=schedules[grp][period];
+  items.forEach(function(item,idx){
+    const row=document.createElement('div');
+    row.className='sch-item';
+    row.id='schrow_'+grp+'_'+period+'_'+idx;
+
+    const tTime=document.createElement('input');
+    tTime.type='text';tTime.className='t-time';
+    tTime.id='scht_'+grp+'_'+period+'_'+idx;
+    tTime.value=item.time;tTime.placeholder='เวลา';
+
+    const tText=document.createElement('input');
+    tText.type='text';tText.className='t-text';
+    tText.id='schd_'+grp+'_'+period+'_'+idx;
+    tText.value=item.text;tText.placeholder='รายละเอียด';
+
+    const actions=document.createElement('div');
+    actions.className='sch-actions';
+
+    const btnUp=document.createElement('button');
+    btnUp.className='btn-sm btn-up';btnUp.title='เลื่อนขึ้น';btnUp.textContent='▲';
+    btnUp.disabled=(idx===0);
+    (function(g,p,i){btnUp.addEventListener('click',function(){moveSchItem(g,p,i,-1);});})(grp,period,idx);
+
+    const btnDown=document.createElement('button');
+    btnDown.className='btn-sm btn-down';btnDown.title='เลื่อนลง';btnDown.textContent='▼';
+    btnDown.disabled=(idx===items.length-1);
+    (function(g,p,i){btnDown.addEventListener('click',function(){moveSchItem(g,p,i,1);});})(grp,period,idx);
+
+    const btnSave=document.createElement('button');
+    btnSave.className='btn-sm btn-save';btnSave.title='บันทึก';btnSave.textContent='💾';
+    (function(g,p,i){btnSave.addEventListener('click',function(){saveSchItem(g,p,i);});})(grp,period,idx);
+
+    const btnDel=document.createElement('button');
+    btnDel.className='btn-sm btn-delete';btnDel.title='ลบ';btnDel.textContent='✕ ลบ';
+    (function(g,p,i){btnDel.addEventListener('click',function(){deleteSchItem(g,p,i);});})(grp,period,idx);
+
+    actions.appendChild(btnUp);
+    actions.appendChild(btnDown);
+    actions.appendChild(btnSave);
+    actions.appendChild(btnDel);
+
+    row.appendChild(tTime);
+    row.appendChild(tText);
+    if(item.prayerOnly){
+      const tag=document.createElement('span');
+      tag.className='tag-prayer';tag.textContent='จ/พ/ศ';
+      row.appendChild(tag);
+    }
+    row.appendChild(actions);
+    div.appendChild(row);
+  });
+}
+
+function moveSchItem(grp,period,idx,dir){
+  const arr=schedules[grp][period];
+  const ni=idx+dir;
+  if(ni<0||ni>=arr.length)return;
+  var tmp=arr[idx];arr[idx]=arr[ni];arr[ni]=tmp;
+  renderSchItemsInDOM(grp,period);
+}
+
+
+function saveSchItem(grp,period,idx){
+  const t=document.getElementById(`scht_${grp}_${period}_${idx}`).value.trim();
+  const d=document.getElementById(`schd_${grp}_${period}_${idx}`).value.trim();
+  if(!t||!d){alert('กรุณากรอกเวลาและรายละเอียด');return;}
+  const prev=schedules[grp][period][idx];
+  schedules[grp][period][idx]={time:t,text:d,...(prev.prayerOnly?{prayerOnly:true}:{})};
+  const row=document.getElementById(`schrow_${grp}_${period}_${idx}`);
+  if(row){row.style.background='#d4ead8';setTimeout(()=>{row.style.background='';},900);}
+}
+
+function deleteSchItem(grp,period,idx){
+  if(!confirm('ลบรายการนี้?'))return;
+  schedules[grp][period].splice(idx,1);
+  renderSchItemsInDOM(grp,period);
+}
+
+function addSchItem(grp,period){
+  const t=document.getElementById(`nat_${grp}_${period}`).value.trim();
+  const d=document.getElementById(`nad_${grp}_${period}`).value.trim();
+  if(!t||!d){alert('กรุณากรอกเวลาและรายละเอียด');return;}
+  schedules[grp][period].push({time:t,text:d});
+  document.getElementById(`nat_${grp}_${period}`).value='';
+  document.getElementById(`nad_${grp}_${period}`).value='';
+  renderSchItemsInDOM(grp,period);
+}
+</script>
+</body>
+</html>
