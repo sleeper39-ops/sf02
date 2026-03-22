@@ -144,6 +144,42 @@ input::placeholder{color:#bbb;}
 .tag-prayer{display:inline-block;font-size:10px;font-weight:700;padding:1px 5px;border-radius:1px;background:#e8f0e4;color:var(--olive);white-space:nowrap;flex-shrink:0;}
 
 .hidden{display:none;}
+
+/* ===== REPORT SECTION ===== */
+.page-tabs{display:flex;gap:0;border-bottom:2px solid var(--gold);margin-bottom:20px;background:rgba(0,0,0,0.2);border-radius:2px 2px 0 0;overflow:hidden;}
+.page-tab-btn{padding:11px 20px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;transition:all 0.2s;border-bottom:3px solid transparent;margin-bottom:-2px;letter-spacing:0.5px;}
+.page-tab-btn.active{color:var(--gold-light);border-bottom-color:var(--gold);background:rgba(255,255,255,0.05);}
+.page-tab-btn:hover:not(.active){color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.03);}
+.page-section{display:none;}.page-section.active{display:block;}
+
+.rpt-section-title{font-family:'Noto Serif Thai',serif;font-size:13px;font-weight:700;color:var(--olive-dark);padding:8px 14px;background:linear-gradient(90deg,#e8ecdf,#f0f4ec);border-left:3px solid var(--olive);margin:14px 0 6px;}
+/* Grid-based rows: label col fixed, control col flexible */
+.rpt-row{display:grid;grid-template-columns:200px 1fr;align-items:start;gap:6px;padding:4px 0;font-size:13px;color:var(--ink-soft);}
+.rpt-row label{font-size:13px;padding-top:6px;line-height:1.4;}
+.rpt-row .rpt-ctrl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.rpt-row select{width:160px;}
+.rpt-row input[type=number]{width:70px;}
+.rpt-row input[type=text]{width:100%;}
+.rpt-row textarea{width:100%;min-height:52px;padding:6px 10px;border:1px solid var(--line);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;resize:vertical;}
+/* sub-rows indent label col */
+.rpt-sub{padding-left:0;}
+.rpt-sub .rpt-row{grid-template-columns:240px 1fr;padding-left:20px;}
+.rpt-num-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding-top:4px;}
+.rpt-num-group .ng-label{font-size:12px;color:var(--ink-soft);white-space:nowrap;}
+.rpt-num-group input[type=number]{width:52px;}
+.rpt-multi-person{display:flex;flex-direction:column;gap:4px;padding-top:2px;}
+.rpt-multi-person .mp-ctrl{display:flex;gap:6px;align-items:center;}
+.rpt-multi-person select{flex:1;max-width:260px;}
+.btn-add-person{background:var(--olive-light);color:white;border:none;padding:4px 10px;border-radius:2px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;white-space:nowrap;flex-shrink:0;}
+.btn-add-person:hover{background:var(--olive);}
+.btn-remove-person{background:#fdecea;color:var(--danger);border:1px solid #f5bcbc;padding:2px 7px;border-radius:2px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
+.rpt-computed{font-weight:700;color:var(--olive-dark);background:#e8f0e4;padding:4px 10px;border-radius:2px;min-width:50px;text-align:center;font-size:14px;display:inline-block;}
+.rpt-card{background:var(--paper);border-radius:2px;border:1px solid var(--gold);box-shadow:0 4px 24px rgba(0,0,0,0.4);margin-bottom:20px;overflow:hidden;}
+.rpt-card .card-header{background:linear-gradient(90deg,var(--olive-dark),var(--olive));}
+.rpt-body{padding:14px 18px 20px;}
+/* display result: fixed col for item numbers */
+.rpt-result-row{display:grid;grid-template-columns:36px 1fr;gap:4px;padding:2px 0;font-size:13.5px;color:var(--ink-soft);}
+.rpt-result-row .rn{font-weight:700;color:var(--olive);font-size:12px;padding-top:2px;}
 </style>
 </head>
 <body>
@@ -159,6 +195,15 @@ input::placeholder{color:#bbb;}
 </div>
 
 <div class="container">
+
+  <!-- PAGE TABS -->
+  <div class="page-tabs">
+    <button class="page-tab-btn active" id="pgTab0" onclick="switchPageTab(0)">📋 รายชื่อเวร</button>
+    <button class="page-tab-btn" id="pgTab1" onclick="switchPageTab(1)">📄 รายงาน</button>
+  </div>
+
+  <!-- PAGE 0: GUARD DUTY -->
+  <div class="page-section active" id="pgSection0">
 
   <!-- ADMIN PANEL -->
   <div class="card admin-panel hidden" id="adminPanel">
@@ -221,6 +266,110 @@ input::placeholder{color:#bbb;}
       <button class="btn btn-copy" onclick="copyText()">⎘ คัดลอกข้อความ</button>
     </div>
   </div>
+
+  </div><!-- end pgSection0 -->
+
+  <!-- PAGE 1: REPORT -->
+  <div class="page-section" id="pgSection1">
+
+  <div class="rpt-card">
+    <div class="card-header"><span class="icon">📄</span><h2>รายงานการปฏิบัติหน้าที่เวรรักษาการณ์</h2></div>
+    <div class="rpt-body">
+
+      <div style="font-size:12px;color:var(--olive-light);margin-bottom:8px;">
+        เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp; ประจำวันที่ <strong id="rptDateDisplay" style="color:var(--olive-dark);"></strong>
+      </div>
+
+      <!-- ข้อ 1 -->
+      <div class="rpt-section-title">1. ผู้ปฏิบัติหน้าที่</div>
+      <div class="rpt-row"><label>1.1 นายทหารเวร</label><div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;max-width:380px;" onchange="rptSync()"><option value="">— เลือก —</option></select></div></div>
+      <div class="rpt-row"><label>1.2 เสมียนเวร</label><div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;max-width:380px;" onchange="rptSync()"><option value="">— เลือก —</option></select></div></div>
+
+      <!-- ข้อ 2 -->
+      <div class="rpt-section-title">2. การรักษาการณ์ที่ตั้ง บก.ควบคุม 2</div>
+      <div class="rpt-row"><label>2.1 ปิด-เปิด ไฟและคอมพิวเตอร์</label><div class="rpt-ctrl"><select id="rpt_21"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row"><label>2.2 ทำความสะอาดเขตสุขาภิบาล</label><div class="rpt-ctrl"><select id="rpt_22"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row"><label>2.3 ทำความสะอาด สนง.ผบช.</label><div class="rpt-ctrl"><select id="rpt_23"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row"><label>2.4 กำกับดูแลการ เข้า-ออก</label><div class="rpt-ctrl"><select id="rpt_24"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row" style="align-items:center;"><label style="font-weight:600;color:var(--olive);">2.5 เปิด/ปิด ล็อคประตู (2200 น.)</label></div>
+      <div class="rpt-row" style="padding-left:20px;"><label>2.5.1 ห้องประชุม</label><div class="rpt-ctrl"><select id="rpt_251"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row" style="padding-left:20px;"><label>2.5.2 ห้อง ผบช.</label><div class="rpt-ctrl"><select id="rpt_252"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row" style="padding-left:20px;"><label>2.5.3 ห้อง ศยก.ฯ</label><div class="rpt-ctrl"><select id="rpt_253"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row" style="padding-left:20px;"><label>2.5.4 ประตูทางเข้า (4 จุด)</label><div class="rpt-ctrl"><select id="rpt_254"><option value="เรียบร้อย">เรียบร้อย</option><option value="ไม่เรียบร้อย">ไม่เรียบร้อย</option></select></div></div>
+      <div class="rpt-row"><label>2.6 เหตุการณ์ทั่วไป</label><div class="rpt-ctrl"><select id="rpt_26" onchange="toggleDetail('rpt_26_detail',this.value==='ไม่ปกติ')"><option value="ปกติ">ปกติ</option><option value="ไม่ปกติ">ไม่ปกติ</option></select></div></div>
+      <div id="rpt_26_detail" class="hidden rpt-row" style="padding-left:20px;"><label>รายละเอียด</label><div class="rpt-ctrl" style="width:100%;"><textarea id="rpt_26_txt" style="width:100%;min-height:52px;" placeholder="ระบุรายละเอียด..."></textarea></div></div>
+
+      <!-- ข้อ 3 -->
+      <div class="rpt-section-title">3. ตรวจ สป. ประจำ บก. และสิ่งอำนวยความสะดวก</div>
+      <div class="rpt-row"><label>สถานะ</label><div class="rpt-ctrl"><select id="rpt_3" onchange="toggleDetail('rpt_3_detail',this.value==='ไม่ปกติ')"><option value="ปกติ">ปกติ</option><option value="ไม่ปกติ">ไม่ปกติ</option></select></div></div>
+      <div id="rpt_3_detail" class="hidden rpt-row" style="padding-left:20px;"><label>รายละเอียด</label><div class="rpt-ctrl" style="width:100%;"><textarea id="rpt_3_txt" style="width:100%;min-height:52px;" placeholder="ระบุรายละเอียด..."></textarea></div></div>
+
+      <!-- ข้อ 4 -->
+      <div class="rpt-section-title">4. ตรวจจุดน้ำอุปโภค บก.</div>
+      <div class="rpt-row"><label>สถานะ</label><div class="rpt-ctrl"><select id="rpt_4" onchange="toggleDetail('rpt_4_detail',this.value==='น้ำไหลไม่ปกติ')"><option value="น้ำไหลปกติ">น้ำไหลปกติ</option><option value="น้ำไหลไม่ปกติ">น้ำไหลไม่ปกติ</option></select></div></div>
+      <div id="rpt_4_detail" class="hidden rpt-row" style="padding-left:20px;"><label>รายละเอียด</label><div class="rpt-ctrl" style="width:100%;"><textarea id="rpt_4_txt" style="width:100%;min-height:52px;" placeholder="ระบุรายละเอียด..."></textarea></div></div>
+
+      <!-- ข้อ 5 -->
+      <div class="rpt-section-title">5. ยอดกำลังพล</div>
+      <div class="rpt-row" style="align-items:center;">
+        <label>5.1 ยอดเดิม</label>
+        <div class="rpt-num-group" style="flex-wrap:nowrap;align-items:center;overflow:visible;">
+          <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;min-width:46px;">
+          <span class="ng-label" style="font-size:11px;">นาย น.</span><input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;min-width:46px;">
+          <span class="ng-label" style="font-size:11px;">ส.</span><input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;min-width:46px;">
+          <span class="ng-label" style="font-size:11px;">พลฯ</span><input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;min-width:46px;">
+          <span class="ng-label" style="font-size:11px;">กพ.ข่ายฯ</span><input type="number" id="rpt_t" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;min-width:46px;">
+          <button onclick="saveStrength()" title="บันทึกค่า" style="margin-left:4px;width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">💾</button>
+          <span id="strength_saved_label" style="font-size:10px;color:var(--olive-light);display:none;white-space:nowrap;"></span>
+        </div>
+      </div>
+      <div class="rpt-row" style="align-items:center;"><label style="font-weight:600;color:var(--olive);">5.2 จำหน่าย</label></div>
+      <div id="rpt_discharge_rows"></div>
+      <div class="rpt-row"><label style="font-weight:700;color:var(--olive-dark);">5.3 คงเหลือ</label><div class="rpt-ctrl"><span class="rpt-computed" id="rpt_remain">0</span><span style="font-size:13px;margin-left:4px;">นาย</span></div></div>
+
+      <!-- ข้อ 6 -->
+      <div class="rpt-section-title">6. สถานภาพยานพาหนะ ประจำ บก.ควบคุม 2</div>
+      <div class="rpt-row"><label>6.1 ยอดเดิม</label><div class="rpt-ctrl" style="display:flex;align-items:center;gap:6px;">
+        <strong id="rpt_veh_base_display">10</strong>
+        <span style="font-size:13px;">คัน</span>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <button onclick="changeVehBase(1)" style="width:20px;height:14px;padding:0;border:1px solid var(--line);border-radius:2px 2px 0 0;background:#f0ede4;color:var(--olive);font-size:9px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">▲</button>
+          <button onclick="changeVehBase(-1)" style="width:20px;height:14px;padding:0;border:1px solid var(--line);border-top:none;border-radius:0 0 2px 2px;background:#f0ede4;color:var(--olive);font-size:9px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">▼</button>
+        </div>
+        <button onclick="saveVehBase()" title="บันทึกจำนวนรถ" style="width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;">💾</button>
+        <span id="veh_saved_label" style="font-size:10px;color:var(--olive-light);display:none;white-space:nowrap;"></span>
+      </div></div>
+      <div class="rpt-row" style="align-items:start;">
+        <label style="padding-top:6px;">6.2 จำหน่าย</label>
+        <div class="rpt-ctrl" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input type="number" id="rpt_veh_out" min="0" max="10" value="0" oninput="calcVehicle()" style="width:45px;"> <span style="font-size:13px;">คัน</span>
+          </div>
+          <textarea id="rpt_veh_detail" style="width:100%;min-height:48px;max-width:360px;padding:5px 8px;border:1px solid var(--line);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:12px;resize:vertical;" placeholder="รายละเอียดยานพาหนะที่จำหน่าย..."></textarea>
+        </div>
+      </div>
+      <div class="rpt-row"><label>6.3 คงเหลือ</label><div class="rpt-ctrl"><span class="rpt-computed" id="rpt_veh_remain">10</span><span style="font-size:13px;margin-left:4px;">คัน</span></div></div>
+
+      <!-- ข้อ 7 -->
+      <div class="rpt-section-title">7. การสั่งการที่สำคัญของ ผบช.</div>
+      <div class="rpt-row"><label>สถานะ</label><div class="rpt-ctrl"><select id="rpt_7" onchange="toggleDetail('rpt_7_detail',this.value==='มีการสั่งการ')" style="width:220px;"><option value="ไม่มีการสั่งการที่สำคัญ">ไม่มีการสั่งการที่สำคัญ</option><option value="มีการสั่งการ">มีการสั่งการ</option></select></div></div>
+      <div id="rpt_7_detail" class="hidden rpt-row" style="padding-left:20px;"><label>รายละเอียด</label><div class="rpt-ctrl" style="width:100%;"><textarea id="rpt_7_txt" style="width:100%;min-height:52px;" placeholder="ระบุรายละเอียด..."></textarea></div></div>
+
+      <div style="margin-top:18px;">
+        <button class="btn btn-primary" onclick="generateReport()">⊞ แสดงผลเอกสาร</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT RESULT -->
+  <div class="result-card hidden" id="reportResultCard">
+    <div class="result-inner" id="reportResultContent"></div>
+    <div style="padding:0 26px 20px;">
+      <button class="btn btn-copy" onclick="copyReport()">⎘ คัดลอกข้อความ</button>
+    </div>
+  </div>
+
+  </div><!-- end pgSection1 -->
 
 </div>
 
@@ -758,6 +907,399 @@ function addSchItem(grp,period){
   document.getElementById(`nad_${grp}_${period}`).value='';
   renderSchItemsInDOM(grp,period);
 }
+
+// ===== PAGE TABS =====
+function switchPageTab(idx){
+  [0,1].forEach(i=>{
+    document.getElementById('pgTab'+i).classList.toggle('active',i===idx);
+    document.getElementById('pgSection'+i).classList.toggle('active',i===idx);
+  });
+}
+
+// ===== REPORT =====
+const dischargeCategories=[
+  {id:'522',label:'5.2.2 ลากิจ'},
+  {id:'523',label:'5.2.3 ลาป่วย'},
+  {id:'524',label:'5.2.4 ขออนุญาต'},
+  {id:'525',label:'5.2.5 ขาด'},
+  {id:'526',label:'5.2.6 ราชการ'},
+  {id:'527',label:'5.2.7 ภารกิจอื่นๆ'},
+];
+// leave: ลาพักตามวงรอบ (แยก)
+let leaveN=0,leaveS=0,leaveP=0;
+
+function buildDischargeRows(){
+  const con=document.getElementById('rpt_discharge_rows');
+  con.innerHTML='';
+
+  // 5.2.1 ลาพัก
+  const leaveRow=document.createElement('div');
+  leaveRow.className='rpt-row';
+  leaveRow.style.paddingLeft='20px';
+  leaveRow.innerHTML=`<label>5.2.1 ลาพักตามวงรอบ</label>
+    <div class="rpt-num-group">
+      <span class="ng-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;">
+      <span class="ng-label">, ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;">
+      <span class="ng-label">, พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;">
+      <span class="ng-label">นาย</span>
+    </div>`;
+  con.appendChild(leaveRow);
+
+  // 5.2.2 - 5.2.7
+  dischargeCategories.forEach(cat=>{
+    const row=document.createElement('div');
+    row.className='rpt-row';
+    row.style.cssText='padding-left:20px;align-items:flex-start;';
+    const lbl=document.createElement('label');
+    lbl.textContent=cat.label;lbl.style.paddingTop='6px';
+    const mpDiv=document.createElement('div');
+    mpDiv.className='rpt-multi-person';
+    mpDiv.id='mpcon_'+cat.id;
+    mpDiv.innerHTML=`<div class="mp-ctrl">
+        <select id="mpsel_${cat.id}" style="font-size:13px;"><option value="">— ไม่มี —</option></select>
+        <button class="btn-add-person" onclick="addPerson('${cat.id}')">+ เพิ่ม</button>
+      </div>
+      <div id="mplist_${cat.id}" style="display:flex;flex-direction:column;gap:3px;margin-top:4px;"></div>`;
+    row.appendChild(lbl);row.appendChild(mpDiv);
+    con.appendChild(row);
+    const sel=mpDiv.querySelector('#mpsel_'+cat.id);
+    [...officers,...clerks].forEach(p=>{
+      const o=document.createElement('option');
+      o.value=p.name; o.textContent=p.name; sel.appendChild(o);
+    });
+  });
+}
+
+// Track selected persons per category
+const selectedPersons={};
+dischargeCategories.forEach(c=>{selectedPersons[c.id]=[];});
+
+function addPerson(catId){
+  const sel=document.getElementById('mpsel_'+catId);
+  const val=sel.value;
+  if(!val)return;
+  if(selectedPersons[catId].includes(val)){sel.value='';return;}
+  selectedPersons[catId].push(val);
+  renderPersonList(catId);
+  sel.value='';
+  calcStrength();
+}
+function removePerson(catId,name){
+  selectedPersons[catId]=selectedPersons[catId].filter(n=>n!==name);
+  renderPersonList(catId);
+  calcStrength();
+}
+function renderPersonList(catId){
+  const con=document.getElementById('mplist_'+catId);
+  if(!con)return;
+  con.innerHTML='';
+  selectedPersons[catId].forEach(name=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:6px;';
+    row.innerHTML=`<span style="font-size:12px;color:var(--ink);">• ${name}</span>
+      <button class="btn-remove-person" onclick="removePerson('${catId}','${name.replace(/'/g,"\'")}')">✕</button>`;
+    con.appendChild(row);
+  });
+}
+
+function calcStrength(){
+  const total=parseInt(document.getElementById('rpt_total').value)||0;
+  const ln=parseInt(document.getElementById('leave_n')?document.getElementById('leave_n').value:0)||0;
+  const ls=parseInt(document.getElementById('leave_s')?document.getElementById('leave_s').value:0)||0;
+  const lp=parseInt(document.getElementById('leave_p')?document.getElementById('leave_p').value:0)||0;
+  let discharge=ln+ls+lp;
+  dischargeCategories.forEach(c=>{discharge+=selectedPersons[c.id].length;});
+  document.getElementById('rpt_remain').textContent=Math.max(0,total-discharge);
+}
+
+let vehBase=10;
+function changeVehBase(dir){
+  vehBase=Math.max(0,vehBase+dir);
+  document.getElementById('rpt_veh_base_display').textContent=vehBase;
+  calcVehicle();
+}
+function saveVehBase(){
+  storeSet('veh_base', vehBase);
+  const lbl=document.getElementById('veh_saved_label');
+  lbl.textContent=`✓ บันทึก ${tsNow()}`;
+  lbl.style.display='inline';
+}
+function loadVehBase(){
+  const v=storeGet('veh_base');
+  if(v!==null){
+    vehBase=parseInt(v)||10;
+    document.getElementById('rpt_veh_base_display').textContent=vehBase;
+    calcVehicle();
+  }
+}
+function calcVehicle(){
+  const out=parseInt(document.getElementById('rpt_veh_out').value)||0;
+  document.getElementById('rpt_veh_out').max=vehBase;
+  document.getElementById('rpt_veh_remain').textContent=Math.max(0,vehBase-out);
+}
+
+function toggleDetail(id,show){
+  document.getElementById(id).classList.toggle('hidden',!show);
+}
+
+function rptSync(){
+  // sync officer/clerk selections from report tab to main tab and vice versa
+}
+
+function populateRptSelects(){
+  const rptO=document.getElementById('rpt_officer');
+  const rptC=document.getElementById('rpt_clerk');
+  const prevO=rptO.value, prevC=rptC.value;
+  rptO.innerHTML='<option value="">— เลือกนายทหารเวร —</option>';
+  rptC.innerHTML='<option value="">— เลือกเสมียนเวร —</option>';
+  officers.forEach((p,i)=>{
+    const o=document.createElement('option');o.value=i;o.textContent=`${p.name}  |  ${p.phone}`;rptO.appendChild(o);
+  });
+  clerks.forEach((p,i)=>{
+    const o=document.createElement('option');o.value=i;o.textContent=`${p.name}  |  ${p.phone}`;rptC.appendChild(o);
+  });
+  if(prevO)rptO.value=prevO;
+  if(prevC)rptC.value=prevC;
+  // update date display
+  document.getElementById('rptDateDisplay').textContent=thDate(now);
+}
+
+function getVal(id){return document.getElementById(id).value;}
+function getTxt(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+
+function generateReport(){
+  const oIdx=getVal('rpt_officer'), cIdx=getVal('rpt_clerk');
+  if(!oIdx){alert('กรุณาเลือกนายทหารเวร');return;}
+  if(!cIdx){alert('กรุณาเลือกเสมียนเวร');return;}
+  const ofc=officers[parseInt(oIdx)], clk=clerks[parseInt(cIdx)];
+  const total=parseInt(document.getElementById('rpt_total').value)||0;
+  const n=parseInt(document.getElementById('rpt_n').value)||0;
+  const s=parseInt(document.getElementById('rpt_s').value)||0;
+  const p=parseInt(document.getElementById('rpt_p').value)||0;
+  const t=parseInt(document.getElementById('rpt_t').value)||0;
+  const ln=parseInt(document.getElementById('leave_n')?document.getElementById('leave_n').value:0)||0;
+  const ls=parseInt(document.getElementById('leave_s')?document.getElementById('leave_s').value:0)||0;
+  const lp=parseInt(document.getElementById('leave_p')?document.getElementById('leave_p').value:0)||0;
+  let discharge=ln+ls+lp;
+  dischargeCategories.forEach(c=>{discharge+=selectedPersons[c.id].length;});
+  const remain=Math.max(0,total-discharge);
+  const vehOut=parseInt(document.getElementById('rpt_veh_out').value)||0;
+
+  let d26=getVal('rpt_26'); let d26txt=getTxt('rpt_26_txt');
+  let d3=getVal('rpt_3'); let d3txt=getTxt('rpt_3_txt');
+  let d4=getVal('rpt_4'); let d4txt=getTxt('rpt_4_txt');
+  let d7=getVal('rpt_7'); let d7txt=getTxt('rpt_7_txt');
+
+  const dischargeLabels=['ลากิจ','ลาป่วย','ขออนุญาต','ขาด','ราชการ','ภารกิจอื่นๆ'];
+  let dischargeRows='';
+  dischargeCategories.forEach((cat,i)=>{
+    const persons=selectedPersons[cat.id];
+    const pStr=persons.length>0?persons.join(', '):'-';
+    dischargeRows+=`<li><span class="time">${cat.label.split(' ')[0]} ${dischargeLabels[i]} :</span><span>${pStr} (${persons.length} นาย)</span></li>`;
+  });
+
+  // build discharge sub-rows for result
+  let dischargeSubRows=`<div class="rpt-result-row"><span class="rn">5.2.1</span><span>ลาพักตามวงรอบ : ${ln+ls+lp} นาย (น.${ln}, ส.${ls}, พล.ฯ ${lp})</span></div>`;
+  dischargeCategories.forEach((cat,i)=>{
+    const persons=selectedPersons[cat.id];
+    const pStr=persons.length>0?persons.join(', '):'-';
+    dischargeSubRows+=`<div class="rpt-result-row"><span class="rn">${cat.id.replace(/^(\d)(\d+)$/,'$1.$2')}</span><span>${['ลากิจ','ลาป่วย','ขออนุญาต','ขาด','ราชการ','ภารกิจอื่นๆ'][i]} : ${pStr}</span></div>`;
+  });
+  const vehDetail=getTxt('rpt_veh_detail');
+
+  const html=`
+    <div class="doc-title">รายงานการปฏิบัติหน้าที่เวรรักษาการณ์</div>
+    <div class="doc-date-line">เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp; ประจำวันที่ ${thDate(now)} <span class="day-badge">${thDays[dow]}</span></div>
+    <hr class="divider gold">
+
+    <div class="section-header">1. ผู้ปฏิบัติหน้าที่</div>
+    <div class="personnel-row" style="flex-wrap:wrap;"><span class="p-num">1.1</span><span class="p-role" style="min-width:100px;">นายทหารเวร :</span><span style="flex:1;min-width:200px;">${ofc.name} &nbsp;<span style="color:var(--accent)">☎</span> ${ofc.phone}</span></div>
+    <div class="personnel-row" style="flex-wrap:wrap;"><span class="p-num">1.2</span><span class="p-role" style="min-width:100px;">เสมียนเวร :</span><span style="flex:1;min-width:200px;">${clk.name} &nbsp;<span style="color:var(--accent)">☎</span> ${clk.phone}</span></div>
+    <hr class="divider">
+
+    <div class="section-header">2. การรักษาการณ์ที่ตั้ง บก.ควบคุม 2</div>
+    <div class="rpt-result-row"><span class="rn">2.1</span><span>ปิด-เปิด ไฟแสงสว่าง และคอมพิวเตอร์ : <strong>${getVal('rpt_21')}</strong></span></div>
+    <div class="rpt-result-row"><span class="rn">2.2</span><span>ทำความสะอาดเขตสุขาภิบาล : <strong>${getVal('rpt_22')}</strong></span></div>
+    <div class="rpt-result-row"><span class="rn">2.3</span><span>ทำความสะอาด สนง.ผบช. : <strong>${getVal('rpt_23')}</strong></span></div>
+    <div class="rpt-result-row"><span class="rn">2.4</span><span>กำกับดูแลการ เข้า-ออก นอกที่ตั้ง : <strong>${getVal('rpt_24')}</strong></span></div>
+    <div class="rpt-result-row"><span class="rn">2.5</span><span>การเปิด/ปิด (ล็อคประตู)
+      <div style="padding-left:4px;margin-top:2px;display:flex;flex-direction:column;gap:2px;">
+        <div class="rpt-result-row"><span class="rn">2.5.1</span><span>ห้องประชุม : <strong>${getVal('rpt_251')}</strong></span></div>
+        <div class="rpt-result-row"><span class="rn">2.5.2</span><span>ห้อง ผบช. : <strong>${getVal('rpt_252')}</strong></span></div>
+        <div class="rpt-result-row"><span class="rn">2.5.3</span><span>ห้อง ศยก.ฯ : <strong>${getVal('rpt_253')}</strong></span></div>
+        <div class="rpt-result-row"><span class="rn">2.5.4</span><span>ประตูทางเข้า (4 จุด) : <strong>${getVal('rpt_254')}</strong></span></div>
+      </div></span></div>
+    <div class="rpt-result-row"><span class="rn">2.6</span><span>เหตุการณ์ทั่วไป : <strong>${d26}</strong>${d26txt?'<br><span style="padding-left:8px;color:var(--ink-soft);">'+d26txt+'</span>':''}</span></div>
+    <hr class="divider">
+
+    <div class="section-header">3. ตรวจ สป. และสิ่งอำนวยความสะดวก</div>
+    <div class="rpt-result-row"><span class="rn"></span><span><strong>${d3}</strong>${d3txt?'<br><span style="color:var(--ink-soft);">'+d3txt+'</span>':''}</span></div>
+    <hr class="divider">
+
+    <div class="section-header">4. ตรวจจุดน้ำอุปโภค บก.</div>
+    <div class="rpt-result-row"><span class="rn"></span><span><strong>${d4}</strong>${d4txt?'<br><span style="color:var(--ink-soft);">'+d4txt+'</span>':''}</span></div>
+    <hr class="divider">
+
+    <div class="section-header">5. ยอดกำลังพล จำนวน ${total} นาย (น.${n}, ส.${s}, พลฯ ${p}, กพ.ข่ายฯ ${t})</div>
+    <div class="rpt-result-row"><span class="rn">5.1</span><span>ยอดเดิม : <strong>${total} นาย</strong></span></div>
+    <div class="rpt-result-row"><span class="rn">5.2</span><span>จำหน่าย : <strong>${discharge} นาย</strong> (น.${ln}, ส.${ls}, กพ.ข่ายฯ ${t}, พล.ฯ ${lp}) ดังนี้.-
+      <div style="padding-left:4px;margin-top:4px;display:flex;flex-direction:column;gap:2px;">${dischargeSubRows}</div>
+    </span></div>
+    <div class="rpt-result-row"><span class="rn">5.3</span><span>คงเหลือ : <strong>${remain} นาย</strong></span></div>
+    <hr class="divider">
+
+    <div class="section-header">6. สถานภาพยานพาหนะ ประจำ บก.ควบคุม 2</div>
+    <div class="rpt-result-row"><span class="rn">6.1</span><span>ยอดเดิม : ${vehBase} คัน</span></div>
+    <div class="rpt-result-row"><span class="rn">6.2</span><span>จำหน่าย : <strong>${vehOut} คัน</strong>${vehDetail?'<br><span style="color:var(--ink-soft);padding-left:4px;">'+vehDetail+'</span>':''}</span></div>
+    <div class="rpt-result-row"><span class="rn">6.3</span><span>คงเหลือ : <strong>${vehBase-vehOut} คัน</strong></span></div>
+    <hr class="divider">
+
+    <div class="section-header">7. การสั่งการที่สำคัญของ ผบช.</div>
+    <div class="rpt-result-row"><span class="rn"></span><span><strong>${d7==='มีการสั่งการ'&&d7txt?d7txt:d7}</strong></span></div>
+    <div class="footer-note">จึงเรียนมาเพื่อกรุณาทราบ</div>`;
+
+  document.getElementById('reportResultContent').innerHTML=html;
+  document.getElementById('reportResultCard').classList.remove('hidden');
+  document.getElementById('reportResultCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyReport(){
+  const oIdx=getVal('rpt_officer'), cIdx=getVal('rpt_clerk');
+  if(!oIdx||!cIdx){alert('กรุณาแสดงผลเอกสารก่อน');return;}
+  const ofc=officers[parseInt(oIdx)], clk=clerks[parseInt(cIdx)];
+  const total=parseInt(document.getElementById('rpt_total').value)||0;
+  const n=parseInt(document.getElementById('rpt_n').value)||0;
+  const s=parseInt(document.getElementById('rpt_s').value)||0;
+  const p=parseInt(document.getElementById('rpt_p').value)||0;
+  const t=parseInt(document.getElementById('rpt_t').value)||0;
+  const ln=parseInt(document.getElementById('leave_n')?document.getElementById('leave_n').value:0)||0;
+  const ls=parseInt(document.getElementById('leave_s')?document.getElementById('leave_s').value:0)||0;
+  const lp=parseInt(document.getElementById('leave_p')?document.getElementById('leave_p').value:0)||0;
+  let discharge=ln+ls+lp;
+  dischargeCategories.forEach(c=>{discharge+=selectedPersons[c.id].length;});
+  const remain=Math.max(0,total-discharge);
+  const vehOut=parseInt(document.getElementById('rpt_veh_out').value)||0;
+  const dischargeLabels=['ลากิจ','ลาป่วย','ขออนุญาต','ขาด','ราชการ','ภารกิจอื่นๆ'];
+
+  let txt=`เรียน ผบ.บก.ควบคุม 2
+`;
+  txt+=`ขอรายงานการปฏิบัติหน้าที่เวรรักษาการณ์ ประจำวันที่ ${thDate(now)}
+โดยมีรายละเอียด ดังนี้
+
+`;
+  txt+=`1. ผู้ปฏิบัติหน้าที่
+   1.1 นายทหารเวร : ${ofc.name} / ${ofc.phone}
+   1.2 เสมียนเวร : ${clk.name} / ${clk.phone}
+
+`;
+  txt+=`2. การรักษาการณ์ที่ตั้ง บก.ควบคุม 2
+`;
+  txt+=`   2.1 ปิด-เปิด ไฟแสงสว่าง และคอมพิวเตอร์ : ${getVal('rpt_21')}
+`;
+  txt+=`   2.2 ทำความสะอาดเขตสุขาภิบาล : ${getVal('rpt_22')}
+`;
+  txt+=`   2.3 ทำความสะอาด สนง.ผบช. : ${getVal('rpt_23')}
+`;
+  txt+=`   2.4 กำกับดูแลการ เข้า-ออก : ${getVal('rpt_24')}
+`;
+  txt+=`   2.5 การเปิด/ปิด (ล็อคประตู)
+       ห้องประชุม: ${getVal('rpt_251')} / ห้อง ผบช.: ${getVal('rpt_252')} / ห้อง ศยก.ฯ: ${getVal('rpt_253')} / ประตูทางเข้า (4 จุด): ${getVal('rpt_254')}
+`;
+  const d26=getVal('rpt_26'), d26txt=getTxt('rpt_26_txt');
+  txt+=`   2.6 เหตุการณ์ทั่วไป : ${d26}${d26txt?' — '+d26txt:''}
+
+`;
+  const d3=getVal('rpt_3'),d3txt=getTxt('rpt_3_txt');
+  txt+=`3. ตรวจ สป. และสิ่งอำนวยความสะดวก : ${d3}${d3txt?' — '+d3txt:''}
+
+`;
+  const d4=getVal('rpt_4'),d4txt=getTxt('rpt_4_txt');
+  txt+=`4. ตรวจจุดน้ำอุปโภค บก. : ${d4}${d4txt?' — '+d4txt:''}
+
+`;
+  txt+=`5. ยอดกำลังพล
+   5.1 ยอดเดิม : ${total} นาย (น.${n}, ส.${s}, พลฯ ${p}, กพ.ข่ายฯ ${t})
+`;
+  txt+=`   5.2 จำหน่าย : ${discharge} นาย (น.${ln}, ส.${ls}, กพ.ข่ายฯ 0, พล.ฯ ${lp}) ดังนี้.-
+`;
+  txt+=`       5.2.1 ลาพักตามวงรอบ : ${ln+ls+lp} นาย (น.${ln}, ส.${ls}, พล.ฯ ${lp})
+`;
+  dischargeCategories.forEach((cat,i)=>{
+    const persons=selectedPersons[cat.id];
+    txt+=`       ${cat.label} : ${persons.length>0?persons.join(', '):'-'}
+`;
+  });
+  txt+=`   5.3 คงเหลือ : ${remain} นาย
+
+`;
+  const vehDetailCopy=getTxt('rpt_veh_detail');
+  txt+=`6. สถานภาพยานพาหนะ ประจำ บก.ควบคุม 2
+   6.1 ยอดเดิม : ${vehBase} คัน
+   6.2 จำหน่าย : ${vehOut} คัน${vehDetailCopy?' — '+vehDetailCopy:''}
+   6.3 คงเหลือ : ${vehBase-vehOut} คัน
+
+`;
+  const d7=getVal('rpt_7'),d7txt=getTxt('rpt_7_txt');
+  txt+=`7. การสั่งการที่สำคัญของ ผบช. : ${d7==='มีการสั่งการ'&&d7txt?d7txt:d7}
+
+`;
+  txt+=`จึงเรียนมาเพื่อกรุณาทราบ`;
+
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.cssText='position:fixed;left:-9999px;top:-9999px;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  let ok=false;try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  const btn=document.querySelector('#reportResultCard .btn-copy');
+  const done=()=>{btn.textContent='✓ คัดลอกแล้ว!';setTimeout(()=>{btn.innerHTML='⎘ คัดลอกข้อความ';},2000);};
+  if(ok){done();}else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(done).catch(()=>{});}
+}
+
+// ===== SAVE/LOAD STRENGTH =====
+// ===== IN-MEMORY PERSISTENT STORE (survives within session) =====
+const _store={};
+function storeSet(k,v){_store[k]=v;try{localStorage.setItem(k,typeof v==='object'?JSON.stringify(v):String(v));}catch(e){}}
+function storeGet(k){try{const s=localStorage.getItem(k);if(s!==null)return s;}catch(e){}return _store[k]!==undefined?String(_store[k]):null;}
+
+function tsNow(){const n=new Date();return `${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')} น.`;}
+
+function saveStrength(){
+  const data={
+    total:document.getElementById('rpt_total').value,
+    n:document.getElementById('rpt_n').value,
+    s:document.getElementById('rpt_s').value,
+    p:document.getElementById('rpt_p').value,
+    t:document.getElementById('rpt_t').value,
+    ts:tsNow()
+  };
+  storeSet('strength_data', data);
+  const lbl=document.getElementById('strength_saved_label');
+  lbl.textContent=`✓ บันทึก ${data.ts}`;
+  lbl.style.display='inline';
+  calcStrength();
+}
+function loadStrength(){
+  const raw=storeGet('strength_data');
+  if(!raw)return;
+  let data=null;
+  try{data=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){}
+  if(!data||typeof data!=='object')return;
+  document.getElementById('rpt_total').value=data.total||0;
+  document.getElementById('rpt_n').value=data.n||0;
+  document.getElementById('rpt_s').value=data.s||0;
+  document.getElementById('rpt_p').value=data.p||0;
+  document.getElementById('rpt_t').value=data.t||0;
+  const lbl=document.getElementById('strength_saved_label');
+  lbl.textContent=data.ts?`✓ บันทึก ${data.ts}`:'✓ โหลดค่าที่บันทึกไว้';
+  lbl.style.display='inline';
+  calcStrength();
+}
+
+// Init report on load
+populateRptSelects();
+loadStrength();
+loadVehBase();
+buildDischargeRows();
 </script>
 </body>
 </html>
