@@ -1328,11 +1328,15 @@ async function checkConnection() {
   el.textContent = '⏳ กำลังเชื่อมต่อ Firebase...';
   el.style.color = 'var(--olive-light)';
   try {
-    const snap = await db.ref('guardduty/.ping').get();
-    await db.ref('guardduty/.ping').set(Date.now());
+    // เปลี่ยนจาก .ping เป็น _ping
+    const snap = await db.ref('guardduty/_ping').get();
+    await db.ref('guardduty/_ping').set(Date.now());
+    
     el.textContent = '🟢 เชื่อมต่อ Firebase แล้ว';
     el.style.color = 'var(--success)';
   } catch(e) {
+    // แนะนำให้ log error ดูด้วยว่ามันพังเพราะอะไร จะได้แก้ถูกจุด
+    console.error('Ping Error:', e);
     el.textContent = '🔴 Firebase เชื่อมต่อไม่สำเร็จ';
     el.style.color = 'var(--danger)';
   }
