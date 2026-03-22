@@ -1261,64 +1261,76 @@ function copyReport(){
 // ===== SAVE/LOAD STRENGTH =====
 // ===== IN-MEMORY PERSISTENT STORE (survives within session) =====
 // ===== CROSS-DEVICE STORAGE via Google Sheets Apps Script =====
-// 👇 ใส่ URL ของ Apps Script Web App ที่ได้จาก Deploy
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec';
+// 👇 วาง URL ของ Apps Script Web App ที่ได้จาก Deploy ตรงนี้
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
-const _memStore={};
+const _memStore = {};
 
-async function storeSet(k, v){
-  const val = typeof v==='object' ? JSON.stringify(v) : String(v);
-  _memStore[k] = val;
-  // fallback local
-  try{ localStorage.setItem(k, val); }catch(e){}
-
-  if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
-  try{
-    const url = `${APPS_SCRIPT_URL}?action=set&key=${encodeURIComponent(k)}&value=${encodeURIComponent(val)}`;
-    await fetch(url);
-  }catch(e){ console.warn('storeSet failed:', e); }
+// ใช้ fetch mode:"no-cors" สำหรับ SET (ไม่อ่าน response แต่ข้อมูลถึง sheet)
+// ใช้ fetch mode:"cors" + redirect follow สำหรับ GET (Apps Script redirect ให้ CORS ผ่าน)
+async function gsRequest(params) {
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return null;
+  const qs = Object.entries(params).map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+  const url = `${APPS_SCRIPT_URL}?${qs}`;
+  try {
+    // Apps Script redirects to googleapis — must follow redirect
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    // extract JSON from possible HTML wrapper
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+  } catch(e) {
+    console.warn('gsRequest error:', e);
+  }
+  return null;
 }
 
-async function storeGet(k){
-  // ถ้ายังไม่ได้ตั้ง URL ใช้ localStorage/memory
-  if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
-    try{ const s=localStorage.getItem(k); if(s!==null) return s; }catch(e){}
-    return _memStore[k] !== undefined ? _memStore[k] : null;
-  }
-  try{
-    const url = `${APPS_SCRIPT_URL}?action=get&key=${encodeURIComponent(k)}`;
-    const res = await fetch(url);
-    const json = await res.json();
-    if(json.status==='ok' && json.value !== null){
-      _memStore[k] = json.value; // cache
+async function storeSet(k, v) {
+  const val = typeof v === 'object' ? JSON.stringify(v) : String(v);
+  _memStore[k] = val;
+  try { localStorage.setItem(k, val); } catch(e) {}
+  await gsRequest({ action: 'set', key: k, value: val });
+}
+
+async function storeGet(k) {
+  if (APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+    const json = await gsRequest({ action: 'get', key: k });
+    if (json && json.status === 'ok' && json.value !== null) {
+      _memStore[k] = json.value;
+      try { localStorage.setItem(k, json.value); } catch(e) {}
       return json.value;
     }
-  }catch(e){ console.warn('storeGet failed:', e); }
-  // fallback
-  try{ const s=localStorage.getItem(k); if(s!==null) return s; }catch(e){}
+  }
+  try { const s = localStorage.getItem(k); if (s !== null) return s; } catch(e) {}
   return _memStore[k] !== undefined ? _memStore[k] : null;
 }
 
-// แสดงสถานะการเชื่อมต่อ
-async function checkConnection(){
+async function checkConnection() {
   const el = document.getElementById('gsStatus');
-  if(!el) return;
-  if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
-    el.textContent = '⚠ ยังไม่ได้เชื่อม Google Sheet';
-    el.style.color = '#b87700';
+  if (!el) return;
+  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec') {
+    el.innerHTML = '⚠ <a href="#" onclick="showUrlInput()" style="color:#b87700;text-decoration:underline;font-size:11px;">คลิกเพื่อตั้งค่า Google Sheet URL</a>';
     return;
   }
-  try{
-    const url = `${APPS_SCRIPT_URL}?action=getall`;
-    const res = await fetch(url);
-    const json = await res.json();
-    if(json.status==='ok'){
-      el.textContent = '🟢 เชื่อมต่อ Google Sheet แล้ว';
-      el.style.color = 'var(--success)';
-    }
-  }catch(e){
-    el.textContent = '🔴 ไม่สามารถเชื่อมต่อ Google Sheet';
+  el.textContent = '⏳ กำลังเชื่อมต่อ...';
+  el.style.color = 'var(--olive-light)';
+  const json = await gsRequest({ action: 'ping' });
+  if (json && json.status === 'ok') {
+    el.textContent = '🟢 เชื่อมต่อ Google Sheet แล้ว';
+    el.style.color = 'var(--success)';
+  } else {
+    el.textContent = '🔴 เชื่อมต่อไม่สำเร็จ — ตรวจสอบ URL';
     el.style.color = 'var(--danger)';
+  }
+}
+
+function showUrlInput() {
+  const url = prompt('วาง Apps Script Web App URL ที่นี่:');
+  if (url && url.startsWith('http')) {
+    // inject into constant at runtime
+    window._gsUrl = url;
+    Object.defineProperty(window, 'APPS_SCRIPT_URL_RUNTIME', { value: url, writable: false });
+    alert('บันทึก URL แล้ว — กรุณา Reload หน้าเว็บและแก้ไข APPS_SCRIPT_URL ในโค้ด HTML ด้วยครับ');
   }
 }
 
