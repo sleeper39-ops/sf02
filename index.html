@@ -201,6 +201,9 @@ input::placeholder{color:#bbb;}
     <button class="page-tab-btn active" id="pgTab0" onclick="switchPageTab(0)">📋 รายชื่อเวร</button>
     <button class="page-tab-btn" id="pgTab1" onclick="switchPageTab(1)">📄 รายงาน</button>
   </div>
+  <div style="text-align:right;margin-bottom:8px;margin-top:-10px;">
+    <span id="gsStatus" style="font-size:11px;color:var(--olive-light);">⏳ กำลังตรวจสอบ...</span>
+  </div>
 
   <!-- PAGE 0: GUARD DUTY -->
   <div class="page-section active" id="pgSection0">
@@ -1018,14 +1021,14 @@ function changeVehBase(dir){
   document.getElementById('rpt_veh_base_display').textContent=vehBase;
   calcVehicle();
 }
-function saveVehBase(){
-  storeSet('veh_base', vehBase);
+async function saveVehBase(){
+  await storeSet('veh_base', vehBase);
   const lbl=document.getElementById('veh_saved_label');
   lbl.textContent=`✓ บันทึก ${tsNow()}`;
   lbl.style.display='inline';
 }
-function loadVehBase(){
-  const v=storeGet('veh_base');
+async function loadVehBase(){
+  const v=await storeGet('veh_base');
   if(v!==null){
     vehBase=parseInt(v)||10;
     document.getElementById('rpt_veh_base_display').textContent=vehBase;
@@ -1257,13 +1260,71 @@ function copyReport(){
 
 // ===== SAVE/LOAD STRENGTH =====
 // ===== IN-MEMORY PERSISTENT STORE (survives within session) =====
-const _store={};
-function storeSet(k,v){_store[k]=v;try{localStorage.setItem(k,typeof v==='object'?JSON.stringify(v):String(v));}catch(e){}}
-function storeGet(k){try{const s=localStorage.getItem(k);if(s!==null)return s;}catch(e){}return _store[k]!==undefined?String(_store[k]):null;}
+// ===== CROSS-DEVICE STORAGE via Google Sheets Apps Script =====
+// 👇 ใส่ URL ของ Apps Script Web App ที่ได้จาก Deploy
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec';
+
+const _memStore={};
+
+async function storeSet(k, v){
+  const val = typeof v==='object' ? JSON.stringify(v) : String(v);
+  _memStore[k] = val;
+  // fallback local
+  try{ localStorage.setItem(k, val); }catch(e){}
+
+  if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
+  try{
+    const url = `${APPS_SCRIPT_URL}?action=set&key=${encodeURIComponent(k)}&value=${encodeURIComponent(val)}`;
+    await fetch(url);
+  }catch(e){ console.warn('storeSet failed:', e); }
+}
+
+async function storeGet(k){
+  // ถ้ายังไม่ได้ตั้ง URL ใช้ localStorage/memory
+  if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
+    try{ const s=localStorage.getItem(k); if(s!==null) return s; }catch(e){}
+    return _memStore[k] !== undefined ? _memStore[k] : null;
+  }
+  try{
+    const url = `${APPS_SCRIPT_URL}?action=get&key=${encodeURIComponent(k)}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if(json.status==='ok' && json.value !== null){
+      _memStore[k] = json.value; // cache
+      return json.value;
+    }
+  }catch(e){ console.warn('storeGet failed:', e); }
+  // fallback
+  try{ const s=localStorage.getItem(k); if(s!==null) return s; }catch(e){}
+  return _memStore[k] !== undefined ? _memStore[k] : null;
+}
+
+// แสดงสถานะการเชื่อมต่อ
+async function checkConnection(){
+  const el = document.getElementById('gsStatus');
+  if(!el) return;
+  if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
+    el.textContent = '⚠ ยังไม่ได้เชื่อม Google Sheet';
+    el.style.color = '#b87700';
+    return;
+  }
+  try{
+    const url = `${APPS_SCRIPT_URL}?action=getall`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if(json.status==='ok'){
+      el.textContent = '🟢 เชื่อมต่อ Google Sheet แล้ว';
+      el.style.color = 'var(--success)';
+    }
+  }catch(e){
+    el.textContent = '🔴 ไม่สามารถเชื่อมต่อ Google Sheet';
+    el.style.color = 'var(--danger)';
+  }
+}
 
 function tsNow(){const n=new Date();return `${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')} น.`;}
 
-function saveStrength(){
+async function saveStrength(){
   const data={
     total:document.getElementById('rpt_total').value,
     n:document.getElementById('rpt_n').value,
@@ -1272,14 +1333,14 @@ function saveStrength(){
     t:document.getElementById('rpt_t').value,
     ts:tsNow()
   };
-  storeSet('strength_data', data);
+  await storeSet('strength_data', data);
   const lbl=document.getElementById('strength_saved_label');
   lbl.textContent=`✓ บันทึก ${data.ts}`;
   lbl.style.display='inline';
   calcStrength();
 }
-function loadStrength(){
-  const raw=storeGet('strength_data');
+async function loadStrength(){
+  const raw=await storeGet('strength_data');
   if(!raw)return;
   let data=null;
   try{data=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){}
@@ -1299,6 +1360,7 @@ function loadStrength(){
 populateRptSelects();
 loadStrength();
 loadVehBase();
+checkConnection();
 buildDischargeRows();
 </script>
 </body>
