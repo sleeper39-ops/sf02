@@ -1329,7 +1329,7 @@ function showUrlInput() {
   if (url && url.startsWith('http')) {
     // inject into constant at runtime
     window._gsUrl = url;
-    Object.defineProperty(window, 'APPS_SCRIPT_URL_RUNTIME', { value: url, writable: false });
+    Object.defineProperty(window, 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec', { value: url, writable: false });
     alert('บันทึก URL แล้ว — กรุณา Reload หน้าเว็บและแก้ไข APPS_SCRIPT_URL ในโค้ด HTML ด้วยครับ');
   }
 }
