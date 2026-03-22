@@ -181,6 +181,9 @@ input::placeholder{color:#bbb;}
 .rpt-result-row{display:grid;grid-template-columns:36px 1fr;gap:4px;padding:2px 0;font-size:13.5px;color:var(--ink-soft);}
 .rpt-result-row .rn{font-weight:700;color:var(--olive);font-size:12px;padding-top:2px;}
 </style>
+<!-- Firebase SDK (compat version — ใช้งานได้โดยไม่ต้อง build tool) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -1260,53 +1263,54 @@ function copyReport(){
 
 // ===== SAVE/LOAD STRENGTH =====
 // ===== IN-MEMORY PERSISTENT STORE (survives within session) =====
-// ===== CROSS-DEVICE STORAGE via Google Sheets (JSONP - CORS-free) =====
-// 👇 วาง URL ของ Apps Script Web App ที่ได้จาก Deploy ตรงนี้
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec';
+// ===== CROSS-DEVICE STORAGE via Firebase Realtime Database =====
+const firebaseConfig = {
+  apiKey: "AIzaSyDeIIpluwGXGbj_9vaITPn9LVYSdc8Z0NY",
+  authDomain: "guardduty.firebaseapp.com",
+  databaseURL: "https://guardduty-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "guardduty",
+  storageBucket: "guardduty.firebasestorage.app",
+  messagingSenderId: "505517586886",
+  appId: "1:505517586886:web:0f6e61c5f59bf761c79ac7",
+  measurementId: "G-523Y8N3R8X"
+};
 
+let _fbDb = null;
 const _memStore = {};
-let _cbCounter = 0;
 
-// JSONP request — เลี่ยง CORS ได้ 100% ไม่ต้องตั้งค่า browser
-function gsJsonp(params) {
-  return new Promise((resolve) => {
-    if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec') { resolve(null); return; }
-    const cbName = '_gsCb' + (++_cbCounter);
-    const timer = setTimeout(() => {
-      delete window[cbName];
-      if(script.parentNode) script.parentNode.removeChild(script);
-      resolve(null);
-    }, 8000);
-    window[cbName] = function(data) {
-      clearTimeout(timer);
-      delete window[cbName];
-      if(script.parentNode) script.parentNode.removeChild(script);
-      resolve(data);
-    };
-    const qs = Object.entries({...params, callback: cbName})
-      .map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
-    const script = document.createElement('script');
-    script.src = APPS_SCRIPT_URL + '?' + qs;
-    script.onerror = () => { clearTimeout(timer); delete window[cbName]; resolve(null); };
-    document.head.appendChild(script);
-  });
+function getFbDb() {
+  if (_fbDb) return _fbDb;
+  if (typeof firebase === 'undefined') return null;
+  if (!firebase.apps || firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  _fbDb = firebase.database();
+  return _fbDb;
 }
 
 async function storeSet(k, v) {
   const val = typeof v === 'object' ? JSON.stringify(v) : String(v);
   _memStore[k] = val;
   try { localStorage.setItem(k, val); } catch(e) {}
-  await gsJsonp({ action: 'set', key: k, value: val });
+  const db = getFbDb();
+  if (!db) return;
+  try {
+    await db.ref('guardduty/' + k).set({ value: val, ts: Date.now() });
+  } catch(e) { console.warn('Firebase set error:', e); }
 }
 
 async function storeGet(k) {
-  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec') {
-    const json = await gsJsonp({ action: 'get', key: k });
-    if (json && json.status === 'ok' && json.value !== null) {
-      _memStore[k] = json.value;
-      try { localStorage.setItem(k, json.value); } catch(e) {}
-      return json.value;
-    }
+  const db = getFbDb();
+  if (db) {
+    try {
+      const snap = await db.ref('guardduty/' + k).get();
+      if (snap.exists()) {
+        const val = snap.val().value;
+        _memStore[k] = val;
+        try { localStorage.setItem(k, val); } catch(e) {}
+        return val;
+      }
+    } catch(e) { console.warn('Firebase get error:', e); }
   }
   try { const s = localStorage.getItem(k); if (s !== null) return s; } catch(e) {}
   return _memStore[k] !== undefined ? _memStore[k] : null;
@@ -1315,19 +1319,21 @@ async function storeGet(k) {
 async function checkConnection() {
   const el = document.getElementById('gsStatus');
   if (!el) return;
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxVjYL4oN2ZRJ6nXXFIPQr5CRpw0gT3eE2Zxo6Y8Lr_5HO0N_GMNhq3awqvgCQxD0pJ/exec') {
-    el.innerHTML = '⚠ ยังไม่ได้เชื่อม Google Sheet';
-    el.style.color = '#b87700';
+  const db = getFbDb();
+  if (!db) {
+    el.textContent = '🔴 Firebase โหลดไม่สำเร็จ';
+    el.style.color = 'var(--danger)';
     return;
   }
-  el.textContent = '⏳ กำลังเชื่อมต่อ...';
+  el.textContent = '⏳ กำลังเชื่อมต่อ Firebase...';
   el.style.color = 'var(--olive-light)';
-  const json = await gsJsonp({ action: 'ping' });
-  if (json && json.status === 'ok') {
-    el.textContent = '🟢 เชื่อมต่อ Google Sheet แล้ว';
+  try {
+    const snap = await db.ref('guardduty/.ping').get();
+    await db.ref('guardduty/.ping').set(Date.now());
+    el.textContent = '🟢 เชื่อมต่อ Firebase แล้ว';
     el.style.color = 'var(--success)';
-  } else {
-    el.textContent = '🔴 เชื่อมต่อไม่สำเร็จ — ตรวจสอบ URL';
+  } catch(e) {
+    el.textContent = '🔴 Firebase เชื่อมต่อไม่สำเร็จ';
     el.style.color = 'var(--danger)';
   }
 }
