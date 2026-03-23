@@ -522,19 +522,17 @@ body{font-family:'Sarabun',sans-serif;background:var(--green-dark);color:var(--t
     <div id="slidePanels"><!-- ==================== SLIDES 1-8 ==================== --></div>
 
     <!-- BOTTOM ACTION BAR -->
-    <div style="padding:16px;border-top:2px solid var(--green-mid);background:rgba(0,0,0,0.2);">
-      <button onclick="generatePptxResult()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--green),#0a2a0a);color:var(--gold-light);border:1px solid var(--gold);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:1px;">⊞ แสดงผลเอกสาร</button>
+    <div style="padding:12px 16px;border-top:2px solid var(--green-mid);background:rgba(0,0,0,0.2);">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button onclick="generateAllSlideResults()" style="flex:1;min-width:160px;padding:10px;background:linear-gradient(135deg,var(--green),#0a2a0a);color:var(--gold-light);border:1px solid var(--gold);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">⊞ แสดงผลเอกสาร</button>
+        <button onclick="copyAllSlidesZip('copy')" style="flex:1;min-width:130px;padding:10px;background:rgba(50,80,130,0.4);border:1px solid rgba(100,150,220,0.4);color:#90b8ff;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">📋 คัดลอกทุกสไลด์</button>
+        <button onclick="copyAllSlidesZip('save')" style="flex:1;min-width:130px;padding:10px;background:rgba(50,100,50,0.4);border:1px solid rgba(100,200,100,0.4);color:#90e090;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">💾 บันทึกทุกสไลด์ (ZIP)</button>
+      </div>
+      <div id="pptxActionStatus" style="text-align:center;font-size:11px;color:var(--soft);margin-top:6px;min-height:16px;"></div>
     </div>
 
-    <!-- RESULT AREA -->
-    <div id="pptxResult" style="display:none;padding:16px;">
-      <div id="pptxResultContent" style="background:linear-gradient(160deg,#1a3a2a,#0d2010);border:1px solid var(--green-mid);border-top:3px solid var(--gold);border-radius:4px;padding:20px;"></div>
-      <div style="display:flex;gap:10px;margin-top:12px;">
-        <button onclick="copyPptxResultImage()" style="flex:1;padding:9px;background:rgba(50,80,130,0.4);border:1px solid rgba(100,150,220,0.4);color:#90b8ff;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">📋 คัดลอกรูป</button>
-        <button onclick="savePptxResultZip()" style="flex:1;padding:9px;background:rgba(50,100,50,0.4);border:1px solid rgba(100,200,100,0.4);color:#90e090;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">💾 บันทึกรูป (ZIP)</button>
-      </div>
-      <div id="pptxActionStatus" style="text-align:center;font-size:11px;color:var(--soft);margin-top:6px;height:16px;"></div>
-    </div>
+    <!-- PER-SLIDE RESULT AREA -->
+    <div id="pptxSlideResults" style="display:none;padding:16px;"></div>
   </div>
 </div>
 
@@ -1273,169 +1271,230 @@ function showAllSlides(){
   document.querySelectorAll('.slide-panel').forEach(p=>p.classList.add('active'));
 }
 
-// Generate result summary
-function generatePptxResult(){
-  const resultDiv=document.getElementById('pptxResult');
-  const content=document.getElementById('pptxResultContent');
-  const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  const now=new Date();
-  const dateStr=`${now.getDate()} ${thMonths[now.getMonth()]} ${now.getFullYear()+543-2500}`;
+// ===== PER-SLIDE RESULT SYSTEM =====
 
-  // Collect uploaded images (slides 1-8)
-  let imgRows='';
-  slides18.forEach(s=>{
-    const img1=document.getElementById('img_img_'+s.id+'_1');
-    const img2=document.getElementById('img_img_'+s.id+'_2');
+function getSlideLabel(i){
+  const labels=['สไลด์ 1 — รวมแถวเคารพธงชาติ','สไลด์ 2 — ไหว้พระ/สวดมนต์','สไลด์ 3 — การปิด-เปิดไฟ สนง.','สไลด์ 4 — ทำความสะอาดห้อง ผบช.','สไลด์ 5 — การล็อคกุญแจประตู','สไลด์ 6 — ตรวจจุดจ่ายน้ำ','สไลด์ 7 — การกำกับดูแล น.เวรฯ','สไลด์ 8 — สวดมนต์/นั่งสมาธิ','สไลด์ 9 — ยอด กพ. (ปฏิบัติงาน)','สไลด์ 10 — ยอด กพ. (รวมแถว)','สไลด์ 11 — ยานพาหนะ','สไลด์ 12 — ข่าว OSINT (1)','สไลด์ 13 — ข่าว OSINT (2)'];
+  return labels[i]||('สไลด์ '+(i+1));
+}
+
+function buildSlideResultHTML(i){
+  const sid=i<8?i+1:(i===8?9:i===9?10:i===10?11:i===11?12:13);
+  // For photo slides
+  if(sid>=1&&sid<=8){
+    const img1=document.getElementById('img_img_'+sid+'_1');
+    const img2=document.getElementById('img_img_'+sid+'_2');
     const has1=img1&&img1.src&&img1.style.display!='none';
     const has2=img2&&img2.src&&img2.style.display!='none';
-    if(has1||has2){
-      imgRows+=`<div style="margin-bottom:12px;">
-        <div style="font-family:'Noto Serif Thai',serif;font-size:13px;color:var(--gold-light);margin-bottom:6px;padding:4px 10px;background:rgba(0,100,0,0.2);border-left:2px solid var(--gold);">${s.title}</div>
-        <div style="display:grid;grid-template-columns:${has1&&has2?'1fr 1fr':'1fr'};gap:8px;">
-          ${has1?`<img src="${img1.src}" style="width:100%;border-radius:2px;object-fit:cover;max-height:180px;">`:''}
-          ${has2?`<img src="${img2.src}" style="width:100%;border-radius:2px;object-fit:cover;max-height:180px;">`:''}
-        </div>
-      </div>`;
-    }
-  });
-
-  // Collect table 9 data - show ALL including zeros
-  const tdS='padding:4px 6px;border:1px solid rgba(255,255,255,0.12);text-align:center;font-size:11px;';
-  let t9rows='';
-  let t9sumBase=0,t9sumRemain=0,t9sumCols=Array(cols_discharge.length).fill(0);
-  rows9.forEach(r=>{
-    const base=parseInt(document.getElementById('t9_'+r.id+'_base')?.value)||0;
-    let discharged=0;
-    const colVals=cols_discharge.map((_,ci)=>{const v=parseInt(document.getElementById('t9_'+r.id+'_'+ci)?.value)||0;discharged+=v;t9sumCols[ci]+=v;return v;});
-    const remain=Math.max(0,base-discharged);
-    t9sumBase+=base;t9sumRemain+=remain;
-    t9rows+=`<tr>
-      <td style="${tdS}text-align:left;color:#d0e8ff;white-space:nowrap;">${r.label}</td>
-      <td style="${tdS}font-weight:700;">${base}</td>
-      ${colVals.map(v=>`<td style="${tdS}">${v>0?v:'-'}</td>`).join('')}
-      <td style="${tdS}color:#90ff90;font-weight:700;">${remain}</td>
-    </tr>`;
-  });
-  const t9sumRow=`<tr style="background:rgba(80,160,80,0.15);">
-    <td style="${tdS}text-align:left;font-weight:700;color:#d0e8ff;">รวม</td>
-    <td style="${tdS}font-weight:700;color:#90ff90;">${t9sumBase}</td>
-    ${t9sumCols.map(v=>`<td style="${tdS}font-weight:700;">${v>0?v:'-'}</td>`).join('')}
-    <td style="${tdS}font-weight:700;color:#90d8e8;">${t9sumRemain}</td>
-  </tr>`;
-
-  // Table 10 summary
-  const thMonthsR=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  const d2=new Date(); d2.setDate(d2.getDate()+1);
-  const dateStr2=`${d2.getDate()} ${thMonthsR[d2.getMonth()]} ${d2.getFullYear()+543-2500}`;
-  const rows10ids=[{id:'t10r1',label:'นายทหารชั้นสัญญาบัตร'},{id:'t10r2',label:'นายทหารชั้นประทวน'},{id:'t10r3',label:'กำลังพลอบรมข่าย'}];
-  let t10rows='',t10sb=0,t10sd=0,t10sm=0,t10sc=Array(7).fill(0);
-  rows10ids.forEach(r=>{
-    const base=parseInt(document.getElementById(r.id+'_base')?.value)||0;
-    let d=0;
-    const cv=cols_discharge.map((_,ci)=>{const v=parseInt(document.getElementById(r.id+'_'+ci)?.value)||0;d+=v;t10sc[ci]+=v;return v;});
-    const muster=Math.max(0,base-d);
-    t10sb+=base;t10sd+=d;t10sm+=muster;
-    t10rows+=`<tr>
-      <td style="${tdS}text-align:left;color:#d0e8ff;white-space:nowrap;">${r.label}</td>
-      <td style="${tdS}font-weight:700;">${base}</td>
-      ${cv.map(v=>`<td style="${tdS}">${v>0?v:'-'}</td>`).join('')}
-      <td style="${tdS}color:#add8ff;font-weight:700;">${d}</td>
-      <td style="${tdS}color:#90ff90;font-weight:700;">${muster}</td>
-    </tr>`;
-  });
-  const t10sumRow=`<tr style="background:rgba(80,160,80,0.15);">
-    <td style="${tdS}text-align:left;font-weight:700;color:#d0e8ff;">รวม</td>
-    <td style="${tdS}font-weight:700;color:#90ff90;">${t10sb}</td>
-    ${t10sc.map(v=>`<td style="${tdS}font-weight:700;">${v>0?v:'-'}</td>`).join('')}
-    <td style="${tdS}font-weight:700;color:#add8ff;">${t10sd}</td>
-    <td style="${tdS}font-weight:700;color:#90d8e8;">${t10sm}</td>
-  </tr>`;
-
-  // Table 11 vehicle
-  let vehRows='';
-  vehs.forEach(v=>{
-    const useVal=document.getElementById('veh_use_'+v.no)?.value||'-';
-    const mntVal=document.getElementById('veh_mnt_'+v.no)?.value||'-';
-    vehRows+=`<tr>
-      <td style="${tdS}">${v.no}</td>
-      <td style="${tdS}text-align:left;font-size:10px;">${v.name}</td>
-      <td style="${tdS}text-align:left;font-size:10px;">${v.brand}</td>
-      <td style="${tdS}font-size:10px;">${v.plate}</td>
-      <td style="${tdS}text-align:left;font-size:10px;">${useVal}</td>
-      <td style="${tdS}text-align:left;font-size:10px;">${mntVal}</td>
-    </tr>`;
-  });
-
-  // Map photos
-  let mapPhotoHtml='';
-  ['map12','map13'].forEach((mk,i)=>{
-    const img=document.getElementById('img_maphoto_'+mk);
-    if(img&&img.src&&img.style.display!='none'){
-      mapPhotoHtml+=`<div style="flex:1;"><div style="font-size:11px;color:var(--gold);margin-bottom:4px;">สไลด์ ${i===0?12:13}</div><img src="${img.src}" style="width:100%;border-radius:2px;max-height:140px;object-fit:cover;"></div>`;
-    }
-  });
-
-  content.innerHTML=`
-    <div style="font-family:'Noto Serif Thai',serif;font-size:18px;font-weight:700;color:var(--gold-light);text-align:center;margin-bottom:4px;">รายงาน PPTX — บก.ควบคุม 2</div>
-    <div style="text-align:center;font-size:12px;color:var(--soft);margin-bottom:16px;">ประจำวันที่ ${dateStr}</div>
-    <hr style="border-color:var(--gold);margin-bottom:16px;">
-
-    ${imgRows||'<div style="font-size:12px;color:var(--soft);padding:8px;">ยังไม่มีรูปภาพที่อัพโหลด (สไลด์ 1-8)</div>'}
-
-    <div style="font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:700;color:var(--gold-light);margin:14px 0 8px;display:flex;align-items:center;gap:8px;">
-      สถานภาพกำลังพล (ปฏิบัติงาน) — สไลด์ 9
-      <span style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></span>
-    </div>
-    <div style="overflow-x:auto;width:100%;">
-    <table style="width:100%;border-collapse:collapse;min-width:600px;font-size:11px;">
-      <thead>
+    if(!has1&&!has2) return '<div style="font-size:12px;color:var(--soft);padding:8px;">ยังไม่มีรูปภาพ</div>';
+    return `<div style="display:grid;grid-template-columns:${has1&&has2?'1fr 1fr':'1fr'};gap:10px;">
+      ${has1?`<img src="${img1.src}" style="width:100%;border-radius:3px;object-fit:cover;max-height:220px;">`:''}
+      ${has2?`<img src="${img2.src}" style="width:100%;border-radius:3px;object-fit:cover;max-height:220px;">`:''}
+    </div>`;
+  }
+  // Table 9 summary
+  if(sid===9){
+    const rows9d=[{id:'r1',label:'นายทหารชั้นสัญญาบัตร'},{id:'r2',label:'นายทหารชั้นประทวน'},{id:'r3',label:'ทหารกองประจำการ'},{id:'r4',label:'กำลังพลอบรมข่าย'}];
+    const cols9=['ลาพักตามวงรอบ','ลากิจ','ลาป่วย','ขออนุญาต','ขาด','หนี','ราชการ'];
+    const td='padding:5px 4px;border:1px solid rgba(255,255,255,0.12);text-align:center;font-size:11px;';
+    let rowsHtml=rows9d.map((r,ri)=>{
+      const bg=ri%2===0?'rgba(255,255,255,0.03)':'rgba(255,255,255,0.07)';
+      const base=document.getElementById('t9_'+r.id+'_base')?.value||'0';
+      const cells=cols9.map((_,ci)=>{const v=document.getElementById('t9_'+r.id+'_'+ci)?.value||'0';return `<td style="${td}background:${bg};">${v>0?v:'-'}</td>`;}).join('');
+      const remain=document.getElementById('t9_'+r.id+'_remain')?.textContent||'0';
+      return `<tr><td style="${td}background:rgba(50,80,130,0.3);text-align:left;font-size:11px;">${r.label}</td><td style="${td}background:rgba(50,100,180,0.25);font-weight:700;">${base}</td>${cells}<td style="${td}background:rgba(50,150,50,0.25);color:#90ff90;font-weight:700;">${remain}</td></tr>`;
+    }).join('');
+    const th='padding:5px 3px;border:1px solid rgba(255,255,255,0.2);text-align:center;font-size:10px;font-weight:600;';
+    return `<div style="overflow:hidden;"><table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <colgroup><col style="width:20%"><col style="width:7%">${cols9.map(()=>'<col style="width:9%">').join('')}<col style="width:10%"></colgroup>
+      <thead><tr>
+        <th style="${th}background:rgba(30,60,120,0.6);color:#b8d0ff;">กำลังพล</th>
+        <th style="${th}background:rgba(30,100,30,0.6);color:#90e090;">ยอด กพ.</th>
+        ${cols9.map(c=>`<th style="${th}background:rgba(120,40,40,0.4);color:#ffb0b0;">${c}</th>`).join('')}
+        <th style="${th}background:rgba(30,100,30,0.6);color:#90e090;">คงเหลือ</th>
+      </tr></thead>
+      <tbody>${rowsHtml}
         <tr>
-          <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);text-align:left;font-size:11px;white-space:nowrap;">กำลังพล</th>
-          <th style="background:#1a4a1a;color:#90e090;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:11px;">ยอด กพ.</th>
-          ${cols_discharge.map(c=>`<th style="background:#1a2a5a;color:#b8d0ff;padding:5px 4px;border:1px solid rgba(255,255,255,0.15);font-size:10px;white-space:nowrap;">${c}</th>`).join('')}
-          <th style="background:#1a3a4a;color:#90d8e8;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:11px;">คงเหลือ</th>
+          <td style="${td}color:#b8d0ff;font-weight:700;background:rgba(30,60,120,0.3);">รวม</td>
+          <td style="${td}background:rgba(150,50,50,0.35);color:#ffb0b0;font-weight:700;">${document.getElementById('t9_sum_base')?.textContent||'0'}</td>
+          ${cols9.map((_,ci)=>`<td style="${td}background:rgba(150,50,50,0.25);color:#ffb0b0;font-weight:700;">${document.getElementById('t9_sum_'+ci)?.textContent||'0'}</td>`).join('')}
+          <td style="${td}background:rgba(30,100,30,0.35);color:#90e090;font-weight:700;">${document.getElementById('t9_sum_remain')?.textContent||'0'}</td>
         </tr>
-      </thead>
-      <tbody>${t9rows}${t9sumRow}</tbody>
-    </table></div>
-
-    <div style="font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:700;color:var(--gold-light);margin:14px 0 8px;display:flex;align-items:center;gap:8px;">
-      สถานภาพกำลังพล (รวมแถว) — สไลด์ 10 &nbsp;<span style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></span>
-    </div>
-    <div style="overflow-x:auto;width:100%;">
-    <table style="width:100%;border-collapse:collapse;min-width:640px;font-size:11px;">
+      </tbody>
+    </table></div>`;
+  }
+  // Table 10 summary
+  if(sid===10){
+    const rows10d=[{id:'t10r1',label:'นายทหารชั้นสัญญาบัตร'},{id:'t10r2',label:'นายทหารชั้นประทวน'},{id:'t10r3',label:'กำลังพลอบรมข่าย'}];
+    const cols10=['ลาพักตามวงรอบ','ลากิจ','ลาป่วย','ขออนุญาต','ขาด','หนี','ราชการ'];
+    const td='padding:5px 4px;border:1px solid rgba(255,255,255,0.12);text-align:center;font-size:11px;';
+    const th='padding:5px 3px;border:1px solid rgba(255,255,255,0.2);text-align:center;font-size:10px;font-weight:600;';
+    let rowsHtml=rows10d.map((r,ri)=>{
+      const bg=ri%2===0?'rgba(255,255,255,0.03)':'rgba(255,255,255,0.07)';
+      const base=document.getElementById(r.id+'_base')?.value||'0';
+      const cells=cols10.map((_,ci)=>{const v=document.getElementById(r.id+'_'+ci)?.value||'0';return `<td style="${td}background:${bg};">${v>0?v:'-'}</td>`;}).join('');
+      return `<tr><td style="${td}background:rgba(50,80,130,0.3);text-align:left;font-size:11px;">${r.label}</td><td style="${td}background:rgba(50,100,180,0.25);font-weight:700;">${base}</td>${cells}<td style="${td}background:rgba(80,80,160,0.3);color:#d0d0ff;font-weight:700;">${document.getElementById(r.id+'_discharge')?.textContent||'0'}</td><td style="${td}background:rgba(50,150,50,0.25);color:#90ff90;font-weight:700;">${document.getElementById(r.id+'_muster')?.textContent||'0'}</td></tr>`;
+    }).join('');
+    return `<div style="overflow:hidden;"><table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <colgroup><col style="width:19%"><col style="width:7%">${cols10.map(()=>'<col style="width:8%">').join('')}<col style="width:9%"><col style="width:9%"></colgroup>
       <thead><tr>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);text-align:left;font-size:11px;white-space:nowrap;">กำลังพล</th>
-        <th style="background:#1a4a1a;color:#90e090;padding:5px 4px;border:1px solid rgba(255,255,255,0.15);font-size:10px;">ยอด กพ.</th>
-        ${cols_discharge.map(c=>`<th style="background:#1a2a5a;color:#b8d0ff;padding:5px 3px;border:1px solid rgba(255,255,255,0.15);font-size:9px;white-space:nowrap;">${c}</th>`).join('')}
-        <th style="background:#1a3a5a;color:#add8ff;padding:5px 4px;border:1px solid rgba(255,255,255,0.15);font-size:10px;">รวมจำหน่าย</th>
-        <th style="background:#1a4a1a;color:#90e090;padding:5px 4px;border:1px solid rgba(255,255,255,0.15);font-size:10px;">รวมแถว</th>
+        <th style="${th}background:rgba(30,60,120,0.6);color:#b8d0ff;">กำลังพล</th>
+        <th style="${th}background:rgba(30,100,30,0.6);color:#90e090;">ยอด กพ.</th>
+        ${cols10.map(c=>`<th style="${th}background:rgba(80,70,20,0.5);color:#ffe090;">${c}</th>`).join('')}
+        <th style="${th}background:rgba(80,80,160,0.5);color:#d0d0ff;">รวมจำหน่าย</th>
+        <th style="${th}background:rgba(30,100,30,0.6);color:#90e090;">รวมแถว</th>
       </tr></thead>
-      <tbody>${t10rows}${t10sumRow}</tbody>
-    </table></div>
-
-    <div style="font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:700;color:var(--gold-light);margin:14px 0 8px;display:flex;align-items:center;gap:8px;">
-      ยานพาหนะ บก.ควบคุม 2 — สไลด์ 11 &nbsp;<span style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></span>
-    </div>
-    <div style="overflow-x:auto;width:100%;">
-    <table style="width:100%;border-collapse:collapse;min-width:600px;font-size:11px;">
+      <tbody>${rowsHtml}
+        <tr>
+          <td style="${td}color:#ffe090;font-weight:700;background:rgba(80,70,20,0.3);">รวม</td>
+          <td style="${td}background:rgba(80,70,20,0.3);color:#ffe090;font-weight:700;">${document.getElementById('t10_sum_base')?.textContent||'0'}</td>
+          ${cols10.map((_,ci)=>`<td style="${td}background:rgba(60,50,10,0.3);color:#ffe090;font-weight:700;">${document.getElementById('t10_sum_'+ci)?.textContent||'0'}</td>`).join('')}
+          <td style="${td}background:rgba(80,80,160,0.35);color:#d0d0ff;font-weight:700;">${document.getElementById('t10_sum_discharge')?.textContent||'0'}</td>
+          <td style="${td}background:rgba(30,100,30,0.35);color:#90e090;font-weight:700;">${document.getElementById('t10_sum_muster')?.textContent||'0'}</td>
+        </tr>
+      </tbody>
+    </table></div>`;
+  }
+  // Table 11
+  if(sid===11){
+    const td='padding:5px 6px;border:1px solid rgba(255,255,255,0.12);font-size:11px;';
+    const rows=vehs.map((v,i)=>{
+      const use=document.getElementById('veh_use_'+v.no)?.value||'-';
+      const mnt=document.getElementById('veh_mnt_'+v.no)?.value||'-';
+      const bg=i%2===0?'rgba(255,255,255,0.03)':'rgba(255,255,255,0.07)';
+      return `<tr><td style="${td}text-align:center;background:rgba(50,80,130,0.3);">${v.no}</td><td style="${td}background:${bg};">${v.name}</td><td style="${td}background:${bg};">${v.brand}</td><td style="${td}text-align:center;background:${bg};">${v.plate}</td><td style="${td}background:${bg};">${use}</td><td style="${td}background:${bg};">${mnt}</td></tr>`;
+    }).join('');
+    return `<div style="overflow:hidden;"><table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <colgroup><col style="width:4%"><col style="width:20%"><col style="width:22%"><col style="width:12%"><col style="width:21%"><col style="width:21%"></colgroup>
       <thead><tr>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 4px;border:1px solid rgba(255,255,255,0.15);font-size:10px;">#</th>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:10px;text-align:left;">ชื่อ</th>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:10px;text-align:left;">ยี่ห้อ/แบบรุ่น</th>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:10px;">ทะเบียน</th>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:10px;text-align:left;">การใช้งาน</th>
-        <th style="background:#1a3a6a;color:#c0d8ff;padding:5px 6px;border:1px solid rgba(255,255,255,0.15);font-size:10px;text-align:left;">การปรนนิบัติบำรุง</th>
+        ${['#','ชื่อ','ยี่ห้อ/แบบรุ่น','ทะเบียน','การใช้งาน','การปรนนิบัติบำรุง'].map(h=>`<th style="padding:5px 4px;border:1px solid rgba(255,255,255,0.2);background:rgba(30,60,120,0.6);color:#b8d0ff;font-size:11px;">${h}</th>`).join('')}
       </tr></thead>
-      <tbody>${vehRows}</tbody>
-    </table></div>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  }
+  // Map slides
+  if(sid===12||sid===13){
+    const mk=sid===12?'map12':'map13';
+    const img=document.getElementById('img_maphoto_'+mk);
+    const text=document.getElementById('maptext_'+sid)?.value||'';
+    const osint=document.getElementById('osint_'+sid)?.value||'';
+    return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:rgba(0,0,0,0.2);border-radius:3px;overflow:hidden;min-height:180px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--soft);">
+        <div style="position:relative;width:100%;">
+          <img id="mapimg_${mk}_res" style="width:100%;display:block;">
+          <div id="starlayer_${mk}_res" style="position:absolute;inset:0;"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${img&&img.src&&img.style.display!='none'?`<img src="${img.src}" style="width:100%;border-radius:3px;max-height:120px;object-fit:cover;">`:''}
+        ${osint?`<div style="font-size:11px;color:var(--gold);background:rgba(0,0,0,0.2);padding:5px 8px;border-radius:2px;">📡 ${osint}</div>`:''}
+        ${text?`<div style="font-size:11px;color:var(--text);line-height:1.5;background:rgba(0,0,0,0.15);padding:6px 8px;border-radius:2px;">${text}</div>`:''}
+      </div>
+    </div>`;
+  }
+  return '';
+}
 
-    ${mapPhotoHtml?`<div style="font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:700;color:var(--gold-light);margin:14px 0 8px;">รูปภาพสไลด์ 12-13</div><div style="display:flex;gap:10px;">${mapPhotoHtml}</div>`:''}
+async function generateAllSlideResults(){
+  const con=document.getElementById('pptxSlideResults');
+  con.style.display='block';
+  const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const now=new Date();
+  const ds=`${now.getDate()} ${thM[now.getMonth()]} ${now.getFullYear()+543-2500}`;
+  let html=`<div style="background:linear-gradient(160deg,#1a3a2a,#0d2010);border:1px solid var(--green-mid);border-top:3px solid var(--gold);border-radius:4px;padding:16px;margin-bottom:16px;">
+    <div style="font-family:'Noto Serif Thai',serif;font-size:18px;font-weight:700;color:var(--gold-light);text-align:center;">รายงาน PPTX — บก.ควบคุม 2</div>
+    <div style="text-align:center;font-size:12px;color:var(--soft);margin-top:4px;">ประจำวันที่ ${ds}</div>
+  </div>`;
+  for(let i=0;i<13;i++){
+    const body=buildSlideResultHTML(i);
+    html+=`<div id="slideResult_${i}" style="background:linear-gradient(160deg,#1a3a2a,#0d2010);border:1px solid var(--green-mid);border-radius:4px;margin-bottom:12px;overflow:hidden;">
+      <div style="background:linear-gradient(90deg,var(--green-header),var(--teal));padding:8px 14px;border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Noto Serif Thai',serif;font-size:13px;color:var(--gold-light);font-weight:700;">${getSlideLabel(i)}</span>
+        <div style="display:flex;gap:6px;">
+          <button onclick="copyOneSlide(${i})" style="padding:3px 10px;background:rgba(50,80,130,0.5);border:1px solid rgba(100,150,220,0.5);color:#90b8ff;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:11px;cursor:pointer;">📋 คัดลอก</button>
+          <button onclick="saveOneSlide(${i})" style="padding:3px 10px;background:rgba(50,100,50,0.5);border:1px solid rgba(100,200,100,0.5);color:#90e090;border-radius:2px;font-family:'Sarabun',sans-serif;font-size:11px;cursor:pointer;">💾 บันทึก</button>
+        </div>
+      </div>
+      <div style="padding:12px;">${body||'<span style="font-size:11px;color:var(--soft);">ไม่มีข้อมูล</span>'}</div>
+    </div>`;
+  }
+  con.innerHTML=html;
+  // copy map images to result
+  setTimeout(()=>{
+    ['map12','map13'].forEach(mk=>{
+      const src=document.getElementById('mapimg_'+mk);
+      const dst=document.getElementById('mapimg_'+mk+'_res');
+      if(src&&dst)dst.src=src.src;
+    });
+  },100);
+  con.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
-    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--soft);border-top:1px dashed rgba(255,255,255,0.15);padding-top:12px;">จัดทำโดย บก.ควบคุม 2</div>
-  `;
-  resultDiv.style.display='block';
-  resultDiv.scrollIntoView({behavior:'smooth',block:'start'});
+async function copyOneSlide(i){
+  const el=document.getElementById('slideResult_'+i);
+  if(!el)return;
+  const status=document.getElementById('pptxActionStatus');
+  status.textContent='⏳ กำลังคัดลอกสไลด์ '+(i+1)+'...';
+  if(!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  const canvas=await html2canvas(el,{backgroundColor:'#0d2010',scale:2,useCORS:true,logging:false,width:el.scrollWidth,windowWidth:el.scrollWidth});
+  canvas.toBlob(async blob=>{
+    try{
+      await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+      status.textContent='✓ คัดลอกสไลด์ '+(i+1)+' แล้ว';
+    }catch(e){
+      const url=URL.createObjectURL(blob);window.open(url,'_blank');
+      status.textContent='✓ เปิดในแท็บใหม่';
+    }
+    setTimeout(()=>status.textContent='',3000);
+  },'image/png');
+}
+
+async function saveOneSlide(i){
+  const el=document.getElementById('slideResult_'+i);
+  if(!el)return;
+  const status=document.getElementById('pptxActionStatus');
+  status.textContent='⏳ กำลังบันทึกสไลด์ '+(i+1)+'...';
+  if(!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  const canvas=await html2canvas(el,{backgroundColor:'#0d2010',scale:2,useCORS:true,logging:false,width:el.scrollWidth,windowWidth:el.scrollWidth});
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=`slide_${String(i+1).padStart(2,'0')}_${getSlideLabel(i).replace(/[^ก-๙a-zA-Z0-9]/g,'_')}.png`;a.click();
+    URL.revokeObjectURL(url);
+    status.textContent='✓ บันทึกสไลด์ '+(i+1)+' แล้ว';
+    setTimeout(()=>status.textContent='',3000);
+  },'image/png');
+}
+
+async function copyAllSlidesZip(mode){
+  const status=document.getElementById('pptxActionStatus');
+  // Generate results first if not done
+  if(document.getElementById('pptxSlideResults').style.display==='none'){
+    await generateAllSlideResults();
+    await new Promise(r=>setTimeout(r,300));
+  }
+  if(!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  if(mode==='save'){
+    if(!window.JSZip) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+    const zip=new JSZip();
+    for(let i=0;i<13;i++){
+      const el=document.getElementById('slideResult_'+i);
+      if(!el)continue;
+      status.textContent=`⏳ กำลังสร้าง ${i+1}/13...`;
+      const canvas=await html2canvas(el,{backgroundColor:'#0d2010',scale:2,useCORS:true,logging:false,width:el.scrollWidth,windowWidth:el.scrollWidth});
+      const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+      zip.file(`slide_${String(i+1).padStart(2,'0')}.png`,await blob.arrayBuffer());
+    }
+    const zipBlob=await zip.generateAsync({type:'blob'});
+    const url=URL.createObjectURL(zipBlob);
+    const a=document.createElement('a');a.href=url;a.download='pptx_slides.zip';a.click();
+    URL.revokeObjectURL(url);
+    status.textContent='✓ ดาวน์โหลด ZIP (13 สไลด์) แล้ว';
+  } else {
+    // Copy first available slide
+    status.textContent='⏳ คัดลอกสไลด์แรก...';
+    await copyOneSlide(0);
+  }
+  setTimeout(()=>status.textContent='',3000);
 }
 
 // Copy result as image
