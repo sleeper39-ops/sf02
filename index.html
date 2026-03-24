@@ -1846,9 +1846,9 @@
           <div style="font-size:12px;color:var(--olive-light);margin-bottom:8px;display:flex;align-items:center;gap:8px;">เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp;
             ประจำวันที่ 
             <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(201,168,76,0.2);">
-              <button onclick="changeGlobalDate(-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button>
+              <button onclick="changeReportDate(-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button>
               <strong id="rptDateDisplay" style="color:var(--olive-dark);"></strong>
-              <button onclick="changeGlobalDate(1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button>
+              <button onclick="changeReportDate(1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button>
             </div>
           </div>
           <div class="rpt-section-title">1. ผู้ปฏิบัติหน้าที่</div>
@@ -2316,6 +2316,12 @@
       const btn = document.getElementById('numToggleBtn');
       if (useArabicNum) { btn.textContent = '🔢 เลขอาราบิก (ปัจจุบัน)'; }
       else { btn.textContent = '๑๒ เลขไทย (ปัจจุบัน)'; }
+    }
+
+    function changeReportDate(days) {
+      now.setDate(now.getDate() + days);
+      const rptDate = document.getElementById('rptDateDisplay');
+      if (rptDate) rptDate.textContent = thDate(now);
     }
 
     function changeGlobalDate(days) {
@@ -4116,16 +4122,26 @@
       vehicleData.forEach(function (v, i) { v.num = i + 1; });
       closeModal('addVehicleModal');
       renderVehicleAdminTable();
-      buildSlide11();
-      setTimeout(applyBgToContainers, 100);
+      buildSlide12();
+      // Sync total count with report
+      vehBase = vehicleData.length;
+      var baseDisp = document.getElementById('rpt_veh_base_display');
+      if (baseDisp) baseDisp.textContent = vehBase;
+      saveVehBase();
+      calcVehicle();
     }
     function deleteVehicle(idx) {
       if (!confirm('ลบ "' + vehicleData[idx].name + '" ออก?')) return;
       vehicleData.splice(idx, 1);
       vehicleData.forEach(function (v, i) { v.num = i + 1; });
       renderVehicleAdminTable();
-      buildSlide11();
-      setTimeout(applyBgToContainers, 100);
+      buildSlide12();
+      // Sync total count with report
+      vehBase = vehicleData.length;
+      var baseDisp = document.getElementById('rpt_veh_base_display');
+      if (baseDisp) baseDisp.textContent = vehBase;
+      saveVehBase();
+      calcVehicle();
     }
     function moveVehicle(idx, dir) {
       var ni = idx + dir;
@@ -4133,8 +4149,7 @@
       var tmp = vehicleData[idx]; vehicleData[idx] = vehicleData[ni]; vehicleData[ni] = tmp;
       vehicleData.forEach(function (v, i) { v.num = i + 1; });
       renderVehicleAdminTable();
-      buildSlide11();
-      setTimeout(applyBgToContainers, 100);
+      buildSlide12();
     }
 
 
