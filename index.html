@@ -3151,7 +3151,13 @@
         if (data.values) Object.assign(sdata.values, data.values);
         if (data.kpdList && Array.isArray(data.kpdList)) {
           data.kpdList.forEach((k, i) => {
-            if (sdata.rows[i]) sdata.rows[i].kpd = k;
+            if (sdata.rows[i]) {
+                sdata.rows[i].kpd = k;
+                // Force to 4 for this specific role if it's currently 8 or 9 (migration/fix)
+                if (sdata.rows[i].label.includes('กพ.ข่ายฯ') && (k === 8 || k === 9)) {
+                    sdata.rows[i].kpd = 4;
+                }
+            }
           });
         }
       }
