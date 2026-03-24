@@ -1966,7 +1966,7 @@
               <span class="ng-label" style="font-size:11px;">พลฯ</span><input type="number" id="rpt_p" min="0" max="999"
                 value="0" oninput="calcStrength()" style="width:46px;">
               <span class="ng-label" style="font-size:11px;">กพ.ข่ายฯ</span><input type="number" id="rpt_t" min="0"
-                max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                max="999" value="4" oninput="calcStrength()" style="width:46px;">
               <button onclick="saveStrength()"
                 style="margin-left:4px;width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">💾</button>
               <span id="strength_saved_label"
@@ -2134,7 +2134,7 @@
           <div style="padding:14px 18px;">
             <div
               style="font-size:13px;font-weight:700;color:black;margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:8px;">
-              🗂 จัดการสไลด์ PPTX</div>
+            </div>
             <!-- CATEGORY SECTIONS -->
             <div id="slideManagerList" style="display:flex;flex-direction:column;gap:16px;"></div>
             <!-- ADD BUTTONS -->
@@ -2382,7 +2382,7 @@
       if (!selectedOfficer) { alert('กรุณาเลือกนายทหารเวร'); return; }
       if (!selectedClerk) { alert('กรุณาเลือกเสมียนเวร'); return; }
       const ti = getScheduleToday(), tm = getScheduleTomorrow();
-      document.getElementById('resultContent').innerHTML = `<div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div><div class="doc-date-line">ประจำ${fullThDate(now)} ดังนี้ <span class="day-badge">${thDays[dow]}</span></div><hr class="divider gold"><div><div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div><div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div></div><hr class="divider"><div class="section-header">การปฏิบัติ</div><div><div class="day-label">วันที่ ${thDate(now)}</div><ul class="schedule-list">${renderSchItems(ti)}</ul></div><div class="section-header">การปฏิบัติ</div><div><div class="day-label">วันที่ ${thDate(tomorrow)}</div><ul class="schedule-list">${renderSchItems(tm)}</ul></div><div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
+      document.getElementById('resultContent').innerHTML = `<div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div><div class="doc-date-line">ประจำวันที่ ${thDate(now)}</div><hr class="divider gold"><div><div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div><div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div></div><hr class="divider"><div class="section-header">การปฏิบัติ</div><div><div class="day-label">วันที่ ${thDate(now)}</div><ul class="schedule-list">${renderSchItems(ti)}</ul></div><div class="section-header">การปฏิบัติ</div><div><div class="day-label">วันที่ ${thDate(tomorrow)}</div><ul class="schedule-list">${renderSchItems(tm)}</ul></div><div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
       document.getElementById('resultCard').classList.remove('hidden');
       document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -2390,7 +2390,7 @@
       if (!selectedOfficer || !selectedClerk) return;
       const ti = getScheduleToday(), tm = getScheduleTomorrow();
       let t = `รายชื่อเจ้าหน้าที่รักษาการณ์
-ประจำ${fullThDate(now)} ดังนี้
+ประจำวันที่ ${thDate(now)}
 
 1. นายทหารเวร : ${selectedOfficer.name} / ${selectedOfficer.phone}
 2. เสมียนเวร : ${selectedClerk.name} / ${selectedClerk.phone}
@@ -2747,7 +2747,7 @@
       });
       const html = `
     <div class="doc-title">รายงานการปฏิบัติหน้าที่เวรรักษาการณ์</div>
-    <div class="doc-date-line">เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp; ประจำวันที่ ${thDate(now)} <span class="day-badge">${thDays[dow]}</span></div>
+    <div class="doc-date-line">เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp; ประจำวันที่ ${thDate(now)}</div>
     <hr class="divider gold">
     <div class="section-header">1. ผู้ปฏิบัติหน้าที่</div>
     <div class="personnel-row"><span class="p-num">1.1</span><span class="p-role" style="min-width:100px;">นายทหารเวร :</span><span>${ofc.name} &nbsp;<span style="color:var(--accent)">☎</span> ${ofc.phone}</span></div>
@@ -2840,7 +2840,7 @@
       const d7txt = getTxt('rpt_7_txt');
 
       let text = `รายงานการปฏิบัติหน้าที่เวรรักษาการณ์\n`;
-      text += `เรียน ผบ.บก.ควบคุม 2  ·  ประจำวันที่ ${thDate(now)} (${thDays[dow]})\n`;
+      text += `เรียน ผบ.บก.ควบคุม 2  ·  ประจำวันที่ ${thDate(now)}\n`;
       text += `----------------------------------------\n`;
       text += `1. ผู้ปฏิบัติหน้าที่\n`;
       text += `1.1 นายทหารเวร : ${ofc.name} (โทร ${ofc.phone})\n`;
@@ -2904,20 +2904,13 @@
     async function saveStrength() {
       const data = { total: document.getElementById('rpt_total').value, n: document.getElementById('rpt_n').value, s: document.getElementById('rpt_s').value, p: document.getElementById('rpt_p').value, t: document.getElementById('rpt_t').value, ts: tsNow() };
       await storeSet('strength_data', data);
-      const lbl = document.getElementById('strength_saved_label'); lbl.textContent = '✓ บันทึก ' + data.ts; lbl.style.display = 'inline'; calcStrength(); refreshPptxKpd();
+      const lbl = document.getElementById('strength_saved_label'); lbl.textContent = '✓ บันทึก ' + data.ts; lbl.style.display = 'inline'; calcStrength();
     }
     async function loadStrength() {
       const raw = await storeGet('strength_data'); if (!raw) return;
       let data = null; try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { } if (!data || typeof data !== 'object') return;
       ['total', 'n', 's', 'p', 't'].forEach(k => { document.getElementById('rpt_' + k).value = data[k] || 0; });
       const lbl = document.getElementById('strength_saved_label'); lbl.textContent = data.ts ? '✓ บันทึก ' + data.ts : '✓ โหลดค่าที่บันทึกไว้'; lbl.style.display = 'inline'; calcStrength();
-    }
-    function refreshPptxKpd() {
-      const total = parseInt(document.getElementById('rpt_total').value) || 0;
-      const n = parseInt(document.getElementById('rpt_n').value) || 0, s = parseInt(document.getElementById('rpt_s').value) || 0, p = parseInt(document.getElementById('rpt_p').value) || 0, t = parseInt(document.getElementById('rpt_t').value) || 0;
-      const ts = document.getElementById('strength_saved_label').textContent || '';
-      document.getElementById('pptx_kpd_total').textContent = total || '—';
-      document.getElementById('pptx_kpd_sub').textContent = total ? 'น.' + n + ', ส.' + s + ', พลฯ' + p + ', ข่ายฯ' + t + '  ' + ts : 'ยังไม่ได้บันทึก';
     }
 
     // ===========================
@@ -4401,7 +4394,6 @@
     loadMasterSlides().then(() => {
       buildAllSlides();
       populateAllOsintSelects();
-      refreshPptxKpd();
       loadSlide910Data().then(() => { [10, 11].forEach(s => calcSlide910(s)); });
       loadBgImage().then(() => { applyBgToContainers(); });
       setTimeout(applyBgToContainers, 350); // Final check
