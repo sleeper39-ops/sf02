@@ -2280,6 +2280,10 @@
     let tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
     let dow = now.getDay(), tDow = tomorrow.getDay();
 
+    // Independent Report Date
+    let rptNow = new Date(now);
+
+
     // Independent PPTX Date
     let pptxNow = new Date();
     let pptxDate10 = new Date(pptxNow);
@@ -2309,9 +2313,9 @@
     }
 
     function changeReportDate(days) {
-      now.setDate(now.getDate() + days);
+      rptNow.setDate(rptNow.getDate() + days);
       const rptDate = document.getElementById('rptDateDisplay');
-      if (rptDate) rptDate.textContent = thDate(now);
+      if (rptDate) rptDate.textContent = thDate(rptNow);
     }
 
     function changeGlobalDate(days) {
@@ -2382,7 +2386,7 @@
       if (!selectedOfficer) { alert('กรุณาเลือกนายทหารเวร'); return; }
       if (!selectedClerk) { alert('กรุณาเลือกเสมียนเวร'); return; }
       const ti = getScheduleToday(), tm = getScheduleTomorrow();
-      document.getElementById('resultContent').innerHTML = `<div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div><div class="doc-date-line">ประจำวันที่ ${thDate(now)}</div><hr class="divider gold"><div><div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div><div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div></div><hr class="divider"><div class="section-header">การปฏิบัติ</div><div><div class="day-label">วันที่ ${thDate(now)}</div><ul class="schedule-list">${renderSchItems(ti)}</ul></div><div class="section-header">การปฏิบัติ</div><div><div class="day-label">วันที่ ${thDate(tomorrow)}</div><ul class="schedule-list">${renderSchItems(tm)}</ul></div><div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
+      document.getElementById('resultContent').innerHTML = `<div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div><div class="doc-date-line">ประจำวันที่ ${thDate(now)}</div><hr class="divider gold"><div><div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div><div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div></div><hr class="divider"><div class="section-header">การปฏิบัติ วันที่ ${thDate(now)}</div><ul class="schedule-list">${renderSchItems(ti)}</ul><div class="section-header">การปฏิบัติ วันที่ ${thDate(tomorrow)}</div><ul class="schedule-list">${renderSchItems(tm)}</ul><div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
       document.getElementById('resultCard').classList.remove('hidden');
       document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -2395,15 +2399,13 @@
 1. นายทหารเวร : ${selectedOfficer.name} / ${selectedOfficer.phone}
 2. เสมียนเวร : ${selectedClerk.name} / ${selectedClerk.phone}
 
-การปฏิบัติ
-* วันที่ ${thDate(now)}
+การปฏิบัติ วันที่ ${thDate(now)}
 `;
       ti.forEach(i => {
         t += `- ${i.time} ${i.text}
 `;
       }); t += `
-การปฏิบัติ
-* วันที่ ${thDate(tomorrow)}
+การปฏิบัติ วันที่ ${thDate(tomorrow)}
 `; tm.forEach(i => {
         t += `- ${i.time} ${i.text}
 `;
@@ -2746,8 +2748,8 @@
         dischargeSubRows += `<div class="rpt-result-row"><span class="rn">${num}</span><span>${dischargeLabels[i]} : ${persons.length > 0 ? persons.join(', ') : '-'}</span></div>`;
       });
       const html = `
-    <div class="doc-title">รายงานการปฏิบัติหน้าที่เวรรักษาการณ์</div>
-    <div class="doc-date-line">เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp; ประจำวันที่ ${thDate(now)}</div>
+    <div class="doc-title" style="margin-bottom:4px; font-size:16px;">เรียน ผบ.บก.ควบคุม 2</div>
+    <div class="doc-date-line" style="margin-bottom:12px; font-size:13px; text-align:center;">ขอรายงานการปฏิบัติหน้าที่เวรรักษาการณ์ ประจำวันที่ ${thDate(rptNow)} โดยมีรายละเอียด ดังนี้</div>
     <hr class="divider gold">
     <div class="section-header">1. ผู้ปฏิบัติหน้าที่</div>
     <div class="personnel-row"><span class="p-num">1.1</span><span class="p-role" style="min-width:100px;">นายทหารเวร :</span><span>${ofc.name} &nbsp;<span style="color:var(--accent)">☎</span> ${ofc.phone}</span></div>
@@ -2839,8 +2841,8 @@
       const d7 = getVal('rpt_7');
       const d7txt = getTxt('rpt_7_txt');
 
-      let text = `รายงานการปฏิบัติหน้าที่เวรรักษาการณ์\n`;
-      text += `เรียน ผบ.บก.ควบคุม 2  ·  ประจำวันที่ ${thDate(now)}\n`;
+      let text = `เรียน ผบ.บก.ควบคุม 2\n`;
+      text += `ขอรายงานการปฏิบัติหน้าที่เวรรักษาการณ์ ประจำวันที่ ${thDate(rptNow)} โดยมีรายละเอียด ดังนี้\n`;
       text += `----------------------------------------\n`;
       text += `1. ผู้ปฏิบัติหน้าที่\n`;
       text += `1.1 นายทหารเวร : ${ofc.name} (โทร ${ofc.phone})\n`;
@@ -3626,7 +3628,7 @@
         if (!slideHasData(s)) return;
         slideSeq++;
         const wrap = document.createElement('div'); wrap.className = 'preview-slide-wrap';
-        wrap.innerHTML = '<div class="preview-slide-title-bar">ลำดับที่ ' + slideSeq + ' &ndash; ' + slide.title + '</div><div class="preview-canvas-wrap" id="previewWrap_' + s + '" style="width:100%;"><canvas id="slideCanvas_' + s + '" style="width:100%;display:block;image-rendering:crisp-edges;image-rendering:-webkit-optimize-contrast;"></canvas></div>';
+        wrap.innerHTML = '<div class="preview-slide-title-bar">- ' + slideSeq + ' -</div><div class="preview-canvas-wrap" id="previewWrap_' + s + '" style="width:100%;"><canvas id="slideCanvas_' + s + '" style="width:100%;display:block;image-rendering:crisp-edges;image-rendering:-webkit-optimize-contrast;"></canvas></div>';
         con.appendChild(wrap);
         (function (sn, seq) {
           setTimeout(function () { drawSlideToCanvas(sn); }, 80 * seq);
