@@ -1800,7 +1800,9 @@
       <button class="page-tab-btn active" id="pgTab0" onclick="switchPageTab(0)">📋 รายชื่อเวร</button>
       <button class="page-tab-btn" id="pgTab1" onclick="switchPageTab(1)">📄 รายงาน</button>
       <button class="page-tab-btn" id="pgTab2" onclick="switchPageTab(2)">📊 รายงาน PPTX</button>
-      <button class="page-tab-btn admin-only" id="pgTab3" onclick="switchPageTab(3)" style="background:linear-gradient(135deg,var(--olive-dark),#1a2a18);color:var(--gold-light);border-color:var(--gold);display:none;">⚙ แผงควบคุมแอดมิน</button>
+      <button class="page-tab-btn admin-only" id="pgTab3" onclick="switchPageTab(3)"
+        style="background:linear-gradient(135deg,var(--olive-dark),#1a2a18);color:var(--gold-light);border-color:var(--gold);display:none;">⚙
+        แผงควบคุมแอดมิน</button>
     </div>
     <div style="text-align:right;margin-bottom:8px;margin-top:-10px;">
       <span id="gsStatus" style="font-size:11px;color:var(--olive-light);">⏳ กำลังตรวจสอบ...</span>
@@ -1843,12 +1845,17 @@
           <h2>รายงานการปฏิบัติหน้าที่เวรรักษาการณ์</h2>
         </div>
         <div class="rpt-body">
-          <div style="font-size:12px;color:var(--olive-light);margin-bottom:8px;display:flex;align-items:center;gap:8px;">เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp;
-            ประจำวันที่ 
-            <div style="display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(201,168,76,0.2);">
-              <button onclick="changeReportDate(-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button>
+          <div
+            style="font-size:12px;color:var(--olive-light);margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+            เรียน ผบ.บก.ควบคุม 2 &nbsp;·&nbsp;
+            ประจำวันที่
+            <div
+              style="display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(201,168,76,0.2);">
+              <button onclick="changeReportDate(-1)"
+                style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button>
               <strong id="rptDateDisplay" style="color:var(--olive-dark);"></strong>
-              <button onclick="changeReportDate(1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button>
+              <button onclick="changeReportDate(1)"
+                style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button>
             </div>
           </div>
           <div class="rpt-section-title">1. ผู้ปฏิบัติหน้าที่</div>
@@ -1975,17 +1982,9 @@
           </div>
           <div class="rpt-section-title">6. สถานภาพยานพาหนะ</div>
           <div class="rpt-row"><label>6.1 ยอดเดิม</label>
-            <div class="rpt-ctrl" style="display:flex;align-items:center;gap:6px;">
-              <strong id="rpt_veh_base_display">10</strong><span style="font-size:13px;">คัน</span>
-              <div style="display:flex;flex-direction:column;gap:1px;">
-                <button onclick="changeVehBase(1)"
-                  style="width:20px;height:14px;padding:0;border:1px solid var(--line);border-radius:2px 2px 0 0;background:#f0ede4;color:var(--olive);font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;">▲</button>
-                <button onclick="changeVehBase(-1)"
-                  style="width:20px;height:14px;padding:0;border:1px solid var(--line);border-top:none;border-radius:0 0 2px 2px;background:#f0ede4;color:var(--olive);font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;">▼</button>
-              </div>
-              <button onclick="saveVehBase()"
-                style="width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;">💾</button>
-              <span id="veh_saved_label" style="font-size:10px;color:var(--olive-light);display:none;"></span>
+            <div class="rpt-ctrl" style="display:flex;align-items:center;gap:8px;">
+              <strong id="rpt_veh_base_display">0</strong><span style="font-size:13px;">คัน</span>
+              <span id="veh_saved_label" style="font-size:10px;color:var(--olive-light);display:none;margin-left:8px;"></span>
             </div>
           </div>
           <div class="rpt-row" style="align-items:start;"><label style="padding-top:6px;">6.2 จำหน่าย</label>
@@ -2028,21 +2027,7 @@
     <!-- PAGE 2: PPTX REPORT -->
     <div class="page-section" id="pgSection2">
 
-      <!-- Slides 1-8 -->
-      <div class="pptx-section-label">📸 สไลด์รูปภาพ : อัพโหลดรูปภาพ (ไม่เกิน 2 รูปต่อสไลด์)</div>
-      <div id="slides_1_8_container"></div>
-
-      <!-- Slides 10-11 -->
-      <div class="pptx-section-label" style="margin-top:16px;">📊 ยอดบัญชีกำลังพล</div>
-      <div id="slides_10_11_container"></div>
-
-      <!-- Slide 12 -->
-      <div class="pptx-section-label" style="margin-top:16px;">🚗 สถานภาพยานพาหนะ</div>
-      <div id="slide_12_container"></div>
-
-      <!-- Slides 13-14 -->
-      <div class="pptx-section-label" style="margin-top:16px;">🗺 สรุปข่าวสารสำคัญประจำวัน</div>
-      <div id="slides_13_14_container"></div>
+      <div id="master_slides_container"></div>
 
       <div style="margin-top:20px;">
         <button class="btn btn-primary" onclick="openPptxPreview()" style="font-size:15px;padding:12px;">⊞
@@ -2055,13 +2040,13 @@
         <div class="card-header"><span class="icon">⚙</span>
           <h2>แผงควบคุมแอดมิน</h2>
         </div>
-        <div class="tabs">
+        <div class="tabs" style="flex-wrap:wrap;">
           <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">นายทหารเวร</button>
           <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">เสมียนเวร</button>
           <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">การปฏิบัติ</button>
           <button class="tab-btn" id="tabBtn3" onclick="switchTab(3)">ยานพาหนะ</button>
-          <button class="tab-btn" id="tabBtn4" onclick="switchTab(4)">จัดการประเภทข่าวกรอง</button>
-          <button class="tab-btn" id="tabBtn5" onclick="switchTab(5)">จัดการหัวข้อสไลด์</button>
+          <button class="tab-btn" id="tabBtn5" onclick="switchTab(5)">ประเภทข่าวกรอง</button>
+          <button class="tab-btn" id="tabBtn6" onclick="switchTab(6)">จัดการสไลด์</button>
         </div>
 
         <div class="tab-content active" id="tab0">
@@ -2103,10 +2088,14 @@
           <div id="scheduleEditor"></div>
         </div>
         <div class="tab-content" id="tab3">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <span style="font-size:12px;color:var(--ink-soft);">จำนวนรถทั้งหมด: <strong id="adminVehCount">0</strong>
-              คัน</span>
-            <button class="btn btn-add-item" onclick="openAddVehicleModal()">+ เพิ่มยานพาหนะ</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;">
+            <div style="font-size:12px;color:var(--ink-soft);flex:1;">
+               จำนวนรถทั้งหมด: <strong id="adminVehCount">0</strong> คัน
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-add-item" onclick="syncVehBase()" style="background:var(--olive);border:1px solid var(--gold);font-size:12px;padding:6px 12px;color:rgba(255,255,255,0.9);">ซิงค์กับรายงาน</button>
+              <button class="btn btn-add-item" onclick="openAddVehicleModal()">+ เพิ่มยานพาหนะ</button>
+            </div>
           </div>
           <div style="overflow-x:auto;">
             <table class="p-table" id="vehicleAdminTable" style="min-width:700px;">
@@ -2125,39 +2114,40 @@
             </table>
           </div>
         </div>
-      
-        <div class="tab-content" id="tab4">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <span style="font-size:12px;color:var(--ink-soft);">สไลด์ข่าว (<span id="newsSlideCount">0</span>
-              สไลด์)</span>
-            <button class="btn btn-add-item" onclick="addNewsSlide()">+ เพิ่มสไลด์ข่าว</button>
-          </div>
-          <div id="newsSlideAdminList" style="display:flex;flex-direction:column;gap:6px;"></div>
-        </div>
-      <div class="tab-content" id="tab5">
-        
-        <div style="padding:14px 18px;">
-          <div style="font-size:12px;font-weight:700;color:var(--olive);margin-bottom:8px;">ประเภทข่าวกรองที่มีอยู่
-          </div>
-          <div id="osintAdminList"></div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <input type="text" id="osintNewItem" placeholder="เพิ่มประเภทข่าวกรอง เช่น ข่าวกรองทางยุทธศาสตร์..."
-              style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;">
-            <button class="btn-osint-add" onclick="addOsintItem()">+ เพิ่ม</button>
-          </div>
-        </div>
-      </div>
 
-      <div class="tab-content" id="tab6">
-        <div style="padding:14px 18px;">
-          <div style="font-size:12px;font-weight:700;color:var(--olive);margin-bottom:8px;">หัวข้อสไลด์ทั้งหมด (1-14+)</div>
-          <div id="slideTitleAdminList" style="display:flex;flex-direction:column;gap:6px;max-height:450px;overflow-y:auto;padding-right:8px;"></div>
-          <div style="margin-top:12px;display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:12px;">
-            <button class="btn btn-save" onclick="saveSlideNames()" style="padding:6px 14px;font-size:13px;">💾 บันทึกหัวข้อสไลด์</button>
-            <span class="saved-ts" id="slide_names_saved_label" style="font-size:12px;"></span>
+
+        <div class="tab-content" id="tab5">
+
+          <div style="padding:14px 18px;">
+            <div style="font-size:12px;font-weight:700;color:var(--olive);margin-bottom:8px;">ประเภทข่าวกรองที่มีอยู่
+            </div>
+            <div id="osintAdminList"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input type="text" id="osintNewItem" placeholder="เพิ่มประเภทข่าวกรอง เช่น ข่าวกรองทางยุทธศาสตร์..."
+                style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:13px;">
+              <button class="btn-osint-add" onclick="addOsintItem()">+ เพิ่ม</button>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="tab-content" id="tab6">
+          <div style="padding:14px 18px;">
+            <div
+              style="font-size:13px;font-weight:700;color:black;margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:8px;">
+              🗂 จัดการสไลด์ PPTX</div>
+            <!-- CATEGORY SECTIONS -->
+            <div id="slideManagerList" style="display:flex;flex-direction:column;gap:16px;"></div>
+            <!-- ADD BUTTONS -->
+            <div
+              style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:12px;">
+              <button class="btn btn-add-item" onclick="addSlideOfType('photo')"
+                style="font-size:12px;padding:6px 14px;">+ เพิ่มสไลด์ภาพถ่าย</button>
+              <button class="btn btn-add-item" onclick="addSlideOfType('news')"
+                style="font-size:12px;padding:6px 14px;">+ เพิ่มสไลด์ข่าวสาร</button>
+              <span style="font-size:11px;color:black;align-self:center;">* สไลด์ กพ. และยานพาหนะมีได้ 1 รายการ</span>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -2286,10 +2276,10 @@
     // ===========================
     const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
     const thDays = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
-    let now = new Date(); 
+    let now = new Date();
     let tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
     let dow = now.getDay(), tDow = tomorrow.getDay();
-    
+
     // Independent PPTX Date
     let pptxNow = new Date();
     let pptxDate10 = new Date(pptxNow);
@@ -2336,23 +2326,25 @@
       if (rptDate) rptDate.textContent = thDate(now);
     }
 
+    // Updates all date label elements for a KPD slide rendered in master_slides_container
+    function updatePptxDateLabels(sn, dateStr) {
+      document.querySelectorAll('.pptx_date_label_' + sn).forEach(el => { el.textContent = 'ประจำวันที่ ' + dateStr; });
+    }
+
     function changePptxDate(days) {
       pptxNow.setDate(pptxNow.getDate() + days);
       pptxDate10 = new Date(pptxNow);
       pptxDate11 = new Date(pptxNow);
       pptxTomorrow = new Date(pptxNow);
       pptxTomorrow.setDate(pptxNow.getDate() + 1);
-      
+
       const pptxPrevDate = document.getElementById('pptxPreviewDateDisplay');
       if (pptxPrevDate) pptxPrevDate.textContent = thDate(pptxNow);
-      
-      [10, 11].forEach(sn => {
-        const el = document.getElementById('pptxDate' + sn);
-        const sDate = sn === 10 ? pptxDate10 : pptxDate11;
-        if (el) el.textContent = 'ประจำวันที่ ' + thDate(sDate);
-      });
-      
-      buildSlides10to11();
+
+      updatePptxDateLabels(10, thDate(pptxDate10));
+      updatePptxDateLabels(11, thDate(pptxDate11));
+
+      buildAllSlides();
       if (document.getElementById('pptxPreviewModal').classList.contains('active')) {
         renderPreviewSlides();
       }
@@ -2361,16 +2353,12 @@
     function changePptxDateSn(sn, days) {
       if (sn === 10) {
         pptxDate10.setDate(pptxDate10.getDate() + days);
+        updatePptxDateLabels(10, thDate(pptxDate10));
       } else if (sn === 11) {
         pptxDate11.setDate(pptxDate11.getDate() + days);
+        updatePptxDateLabels(11, thDate(pptxDate11));
       }
-      
-      const el = document.getElementById('pptxDate' + sn);
-      const sDate = sn === 10 ? pptxDate10 : pptxDate11;
-      if (el) el.textContent = 'ประจำวันที่ ' + thDate(sDate);
-      
-      // We don't necessarily need to rebuild the whole thing, but for simplicity:
-      buildSlides10to11();
+
       if (document.getElementById('pptxPreviewModal').classList.contains('active')) {
         renderPreviewSlides();
       }
@@ -2455,7 +2443,7 @@
     }
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    function switchTab(idx) { [0, 1, 2, 3, 4, 5, 6].forEach(i => { const tb = document.getElementById('tabBtn' + i); const tc = document.getElementById('tab' + i); if (tb) tb.classList.toggle('active', i === idx); if (tc) tc.classList.toggle('active', i === idx); }); if (idx === 3) renderVehicleAdminTable(); if (idx === 4) renderNewsSlideAdmin(); if (idx === 5) renderOsintAdmin(); if (idx === 6) renderSlideTitleAdmin(); }
+    function switchTab(idx) { [0, 1, 2, 3, 5, 6].forEach(i => { const tb = document.getElementById('tabBtn' + i); const tc = document.getElementById('tab' + i); if (tb) tb.classList.toggle('active', i === idx); if (tc) tc.classList.toggle('active', i === idx); }); if (idx === 3) renderVehicleAdminTable(); if (idx === 5) renderOsintAdmin(); if (idx === 6) renderSlideManager(); }
 
     // ===========================
     // PERSONNEL TABLE
@@ -2683,10 +2671,25 @@
       dischargeCategories.forEach(c => { discharge += selectedPersons[c.id].length; });
       document.getElementById('rpt_remain').textContent = Math.max(0, total - discharge);
     }
-    let vehBase = 10;
-    function changeVehBase(dir) { vehBase = Math.max(0, vehBase + dir); document.getElementById('rpt_veh_base_display').textContent = vehBase; calcVehicle(); }
+    let vehBase = 11;
+    function syncVehBase() {
+      vehBase = vehicleData.length;
+      const el = document.getElementById('rpt_veh_base_display');
+      if (el) el.textContent = vehBase;
+      saveVehBase();
+      calcVehicle();
+      buildAllSlides();
+      // Feedback to user
+      const lbl = document.getElementById('veh_saved_label');
+      if (lbl) {
+        lbl.textContent = '✓ ซิงค์ข้อมูลเรียบร้อย ' + tsNow();
+        lbl.style.display = 'inline';
+        setTimeout(() => { lbl.style.display = 'none'; }, 3000);
+      }
+    }
+
     async function saveVehBase() { await storeSet('veh_base', vehBase); const lbl = document.getElementById('veh_saved_label'); lbl.textContent = '✓ บันทึก ' + tsNow(); lbl.style.display = 'inline'; }
-    async function loadVehBase() { const v = await storeGet('veh_base'); if (v !== null) { vehBase = parseInt(v) || 10; document.getElementById('rpt_veh_base_display').textContent = vehBase; calcVehicle(); } }
+    async function loadVehBase() { const v = await storeGet('veh_base'); if (v !== null) { vehBase = parseInt(v) || 11; if (vehBase === 10) vehBase = 11; document.getElementById('rpt_veh_base_display').textContent = vehBase; calcVehicle(); } else { syncVehBase(); } }
     function calcVehicle() { const out = parseInt(document.getElementById('rpt_veh_out').value) || 0; document.getElementById('rpt_veh_remain').textContent = Math.max(0, vehBase - out); }
     function toggleDetail(id, show) { document.getElementById(id).classList.toggle('hidden', !show); }
     function populateRptSelects() {
@@ -2792,20 +2795,20 @@
       const cIdx = getVal('rpt_clerk');
       const ofc = officers[parseInt(oIdx)] || { name: '-', phone: '-' };
       const clk = clerks[parseInt(cIdx)] || { name: '-', phone: '-' };
-      
+
       const total = getInt('rpt_total');
       const n = getInt('rpt_n');
       const s = getInt('rpt_s');
       const p = getInt('rpt_p');
       const t = getInt('rpt_t');
-      
+
       const ln = getInt('leave_n');
       const ls = getInt('leave_s');
       const lp = getInt('leave_p');
-      
+
       let discharge = ln + ls + lp;
       let dischargeText = `5.2.1 ลาพักตามวงรอบ : ${ln + ls + lp} นาย (น.${ln}, ส.${ls}, พล.ฯ ${lp})`;
-      
+
       const dischargeLabels = ['ลากิจ', 'ลาป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'ภารกิจอื่นๆ'];
       dischargeCategories.forEach((cat, i) => {
         const persons = selectedPersons[cat.id] || [];
@@ -2813,12 +2816,12 @@
         const num = cat.id.replace(/^(\d)(\d)(\d)$/, '$1.$2.$3');
         dischargeText += `\n${num} ${dischargeLabels[i]} : ${persons.length > 0 ? persons.join(', ') : '-'}`;
       });
-      
+
       const remain = Math.max(0, total - discharge);
-      const vBase = typeof vehBase !== 'undefined' ? vehBase : (getInt('rpt_veh_base') || 10);
+      const vBase = typeof vehBase !== 'undefined' ? vehBase : (getInt('rpt_veh_base') || 11);
       const vehOut = getInt('rpt_veh_out');
       const vehDetail = getTxt('rpt_veh_detail');
-      
+
       const d21 = getVal('rpt_21');
       const d22 = getVal('rpt_22');
       const d23 = getVal('rpt_23');
@@ -2874,15 +2877,15 @@
       copyToClipboard(text, document.querySelector('#reportResultCard .btn-copy'));
     }
     function copyToClipboard(text, btn) {
-      navigator.clipboard.writeText(text).then(function() {
+      navigator.clipboard.writeText(text).then(function () {
         const originalText = btn.innerHTML;
         btn.innerHTML = '✓ คัดลอกแล้ว';
         btn.disabled = true;
-        setTimeout(function() {
+        setTimeout(function () {
           btn.innerHTML = originalText;
           btn.disabled = false;
         }, 1500);
-      }, function(err) {
+      }, function (err) {
         console.error('Could not copy text: ', err);
         alert('ไม่สามารถคัดลอกข้อความได้');
       });
@@ -2918,79 +2921,143 @@
     }
 
     // ===========================
-    // PPTX BUILDERS
+    // MASTER SLIDES CONFIG
     // ===========================
-    let slideNames = ['', 'รวมแถวเคารพธงชาติ', 'ไหว้พระ/สวดมนต์', 'การปิด-เปิดไฟ สนง.', 'ทำความสะอาดห้อง ผบช.', 'ทำความสะอาดเขตรับผิดชอบ', 'การล็อคกุญแจประตูห้อง สนง.', 'การตรวจจุดจ่ายน้ำและสวิตช์ไฟ', 'การกำกับดูแลของนายทหารเวร', 'สวดมนต์/นั่งสมาธิ', 'สถานภาพบัญชียอด (ปฏิบัติงาน)', 'สถานภาพบัญชียอด (รวมแถว)', 'บัญชีสถานภาพยานพาหนะ', 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว', 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว'];
-    async function loadSlideNames() { const s = await storeGet('slide_names'); if (s) { try { const arr = JSON.parse(s); if (Array.isArray(arr)) slideNames = arr; } catch (e) {} } }
-    async function saveSlideNames() { await storeSet('slide_names', slideNames); const lbl = document.getElementById('slide_names_saved_label'); if (lbl) { lbl.textContent = '✓ บันทึก ' + tsNow(); lbl.style.display = 'inline'; } }
-
-    // Photo slides config: [{id, name}] - admin can modify
-    let photoSlides = [
-      { id: 1, name: 'รวมแถวเคารพธงชาติ' },
-      { id: 2, name: 'ไหว้พระ/สวดมนต์' },
-      { id: 3, name: 'การปิด-เปิดไฟ สนง.' },
-      { id: 4, name: 'ทำความสะอาดห้อง ผบช.' },
-      { id: 5, name: 'ทำความสะอาดเขตรับผิดชอบ' },
-      { id: 6, name: 'การล็อคกุญแจประตูห้อง สนง.' },
-      { id: 7, name: 'การตรวจจุดจ่ายน้ำและสวิตช์ไฟ' },
-      { id: 8, name: 'การกำกับดูแลของนายทหารเวร' },
-      { id: 9, name: 'สวดมนต์/นั่งสมาธิ' },
+    let masterSlides = [
+      { id: 1, type: 'photo', title: 'รวมแถวเคารพธงชาติ' },
+      { id: 2, type: 'photo', title: 'ไหว้พระ/สวดมนต์' },
+      { id: 3, type: 'photo', title: 'การปิด-เปิดไฟ สนง.' },
+      { id: 4, type: 'photo', title: 'ทำความสะอาดห้อง ผบช.' },
+      { id: 5, type: 'photo', title: 'ทำความสะอาดเขตรับผิดชอบ' },
+      { id: 6, type: 'photo', title: 'การล็อคกุญแจประตูห้อง สนง.' },
+      { id: 7, type: 'photo', title: 'การตรวจจุดจ่ายน้ำและสวิตช์ไฟ' },
+      { id: 8, type: 'photo', title: 'การกำกับดูแลของนายทหารเวร' },
+      { id: 9, type: 'photo', title: 'สวดมนต์/นั่งสมาธิ' },
+      { id: 10, type: 'kpd_op', title: 'สถานภาพบัญชียอด (ปฏิบัติงาน) กพ. บก.ควบคุม 2' },
+      { id: 11, type: 'kpd_tot', title: 'สถานภาพบัญชียอด (รวมแถว) กพ. บก.ควบคุม 2' },
+      { id: 12, type: 'veh', title: 'บัญชีสถานภาพยานพาหนะ บก.ควบคุม 2' },
+      { id: 13, type: 'news', title: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว' },
+      { id: 14, type: 'news', title: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว' }
     ];
+    let nextSlideId = 15;
 
-    function buildSlides1to8() {
-      var con = document.getElementById('slides_1_8_container');
+    async function saveMasterSlides() {
+      await storeSet('master_slides_v3', { masterSlides, nextSlideId });
+    }
+
+    async function loadMasterSlides() {
+      const raw = await storeGet('master_slides_v3');
+      if (raw) {
+        try {
+          const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (data && data.masterSlides) {
+            masterSlides = data.masterSlides;
+            nextSlideId = data.nextSlideId || (Math.max(...masterSlides.map(s => s.id)) + 1);
+          }
+        } catch (e) { }
+      } else {
+        // Migration from old newsSlides if exists
+        try {
+          const nsRaw = await storeGet('news_slides');
+          if (nsRaw) {
+            const ns = typeof nsRaw === 'string' ? JSON.parse(nsRaw) : nsRaw;
+            if (Array.isArray(ns)) {
+              masterSlides = masterSlides.filter(s => s.type !== 'news');
+              ns.forEach(n => {
+                masterSlides.push({ id: n.sn, type: 'news', title: n.title });
+                nextSlideId = Math.max(nextSlideId, n.sn + 1);
+              });
+            }
+          }
+        } catch (e) { }
+      }
+    }
+
+    function buildAllSlides() {
+      var con = document.getElementById('master_slides_container');
+      if (!con) return;
       con.innerHTML = '';
-      photoSlides.forEach(function (ps) {
-        var s = ps.id;
-        var wrap = document.createElement('div');
-        wrap.className = 'pptx-slide-container';
-        wrap.style.cssText = 'padding:12px;';
-        // Header
-        var hdr = document.createElement('div');
-        hdr.className = 'pptx-slide-header';
-        var numSpan = document.createElement('span');
-        numSpan.className = 'pptx-slide-num';
-        numSpan.textContent = 'สไลด์ ' + s;
-        var titleSpan = document.createElement('span');
-        titleSpan.className = 'pptx-slide-title';
-        titleSpan.textContent = ps.name;
-        hdr.appendChild(numSpan);
-        hdr.appendChild(titleSpan);
-        // Add an empty spacer to keep the title centered in the grid
-        var spacer = document.createElement('div');
-        spacer.style.width = '50px'; // approximate width of numSpan
-        hdr.appendChild(spacer);
-        wrap.appendChild(hdr);
-        // Photo grid: centered, equal spacing, landscape 12:9
-        var grid = document.createElement('div');
-        grid.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:12px;margin-top:8px;';
-        (function (slideNum) {
-          [0, 1].forEach(function (p) {
-            var dz = document.createElement('div');
-            dz.className = 'photo-drop-zone';
-            dz.id = 'dz_' + slideNum + '_' + p;
-            // landscape 12:9, each takes ~45% width with gap
-            dz.style.cssText = 'width:45%;aspect-ratio:12/9;flex-shrink:0;';
-            var inp = document.createElement('input');
-            inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'fi_' + slideNum + '_' + p;
-            inp.addEventListener('change', function (e) { handlePhotoUpload(e, slideNum, p); });
-            inp.addEventListener('click', function (e) { e.stopPropagation(); });
-            var icon = document.createElement('span');
-            icon.className = 'dz-icon'; icon.textContent = '🖼';
-            var lbl = document.createElement('span');
-            lbl.className = 'dz-label';
-            lbl.innerHTML = 'รูปที่ ' + (p + 1) + '<br>คลิกเพื่ออัพโหลด';
-            var rmBtn = document.createElement('button');
-            rmBtn.className = 'dz-remove'; rmBtn.title = 'ลบรูป'; rmBtn.textContent = '✕';
-            rmBtn.addEventListener('click', function (e) { removePhoto(e, slideNum, p); });
-            dz.addEventListener('click', function () { triggerFileInput('dz_' + slideNum + '_' + p); });
-            dz.appendChild(inp); dz.appendChild(icon); dz.appendChild(lbl); dz.appendChild(rmBtn);
-            grid.appendChild(dz);
-          });
-        })(s);
-        wrap.appendChild(grid);
-        con.appendChild(wrap);
+      let currentSeq = 1;
+      masterSlides.forEach(function (slide) {
+        if (slide.hidden) return;
+        var seq = currentSeq++;
+        var slideDOM = null;
+        if (slide.type === 'photo') slideDOM = buildPhotoSlideDOM(slide, seq);
+        else if (slide.type === 'kpd_op') slideDOM = buildKpdSlideDOM(slide, seq, 10);
+        else if (slide.type === 'kpd_tot') slideDOM = buildKpdSlideDOM(slide, seq, 11);
+        else if (slide.type === 'veh') slideDOM = buildVehSlideDOM(slide, seq);
+        else if (slide.type === 'news') slideDOM = buildNewsSlideDOM(slide, seq);
+
+        if (slideDOM) con.appendChild(slideDOM);
       });
+      // Post render map updates
+      setTimeout(function () {
+        masterSlides.forEach(function (slide) {
+          if (slide.type === 'news') {
+            populateOsintSelect(slide.id);
+            var mapZone = document.getElementById('mapZone_' + slide.id);
+            if (mapZone && mapState[slide.id] && mapState[slide.id].photo) {
+              var bg = mapZone.querySelector('img.map-bg-img');
+              if (!bg) { bg = document.createElement('img'); bg.className = 'map-bg-img'; mapZone.insertBefore(bg, mapZone.firstChild); }
+              bg.src = mapState[slide.id].photo;
+              var overlay = document.getElementById('mapOverlay_' + slide.id);
+              if (overlay) { overlay.classList.add('has-image'); }
+            }
+            setupMapInteraction(slide.id);
+            loadMapStars(slide.id);
+          }
+        });
+        applyBgToContainers();
+      }, 100);
+    }
+
+    function buildPhotoSlideDOM(slide, seq) {
+      var s = slide.id;
+      var wrap = document.createElement('div');
+      wrap.className = 'pptx-slide-container';
+      wrap.style.cssText = 'padding:12px;';
+      var hdr = document.createElement('div');
+      hdr.className = 'pptx-slide-header';
+      var numSpan = document.createElement('span');
+      numSpan.className = 'pptx-slide-num';
+      numSpan.textContent = 'สไลด์ ' + seq;
+      var titleSpan = document.createElement('span');
+      titleSpan.className = 'pptx-slide-title';
+      titleSpan.textContent = slide.title;
+      hdr.appendChild(numSpan);
+      hdr.appendChild(titleSpan);
+      var spacer = document.createElement('div');
+      spacer.style.width = '50px';
+      hdr.appendChild(spacer);
+      wrap.appendChild(hdr);
+      var grid = document.createElement('div');
+      grid.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:12px;margin-top:8px;';
+      [0, 1].forEach(function (p) {
+        var dz = document.createElement('div');
+        dz.className = 'photo-drop-zone';
+        dz.id = 'dz_' + s + '_' + p;
+        dz.style.cssText = 'width:45%;aspect-ratio:12/9;flex-shrink:0;';
+        var inp = document.createElement('input');
+        inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'fi_' + s + '_' + p;
+        inp.addEventListener('change', function (e) { handlePhotoUpload(e, s, p); });
+        inp.addEventListener('click', function (e) { e.stopPropagation(); });
+        var icon = document.createElement('span');
+        icon.className = 'dz-icon'; icon.textContent = '🖼';
+        var lbl = document.createElement('span');
+        lbl.className = 'dz-label';
+        lbl.innerHTML = 'รูปที่ ' + (p + 1) + '<br>คลิกเพื่ออัพโหลด';
+        var rmBtn = document.createElement('button');
+        rmBtn.className = 'dz-remove'; rmBtn.title = 'ลบรูป'; rmBtn.textContent = '✕';
+        rmBtn.addEventListener('click', function (e) { removePhoto(e, s, p); });
+        dz.addEventListener('click', function () { triggerFileInput('dz_' + s + '_' + p); });
+        dz.appendChild(inp); dz.appendChild(icon); dz.appendChild(lbl); dz.appendChild(rmBtn);
+        grid.appendChild(dz);
+        if (typeof pptxPhotos !== 'undefined' && pptxPhotos[s] && pptxPhotos[s][p]) {
+          setTimeout(function () { updatePhotoZone(s, p, pptxPhotos[s][p]); }, 50);
+        }
+      });
+      wrap.appendChild(grid);
+      return wrap;
     }
 
 
@@ -3016,45 +3083,46 @@
       const inp = dz.querySelector('input[type=file]'); if (inp) inp.value = '';
     }
 
-    function buildSlides10to11() {
-      const con = document.getElementById('slides_10_11_container'); con.innerHTML = '';
-      [10, 11].forEach(sn => {
-        const sdata = sn === 10 ? slide9Data : slide10Data;
-        const title = sn === 10 ? 'สถานภาพบัญชียอด (ปฏิบัติงาน) กพ. บก.ควบคุม 2' : 'สถานภาพบัญชียอด (รวมแถว) กพ. บก.ควบคุม 2';
-        const lastCol = sn === 10 ? 'คงเหลือ กพ. ปฏิบัติงาน' : 'รวมแถว';
-        const sDate = sn === 10 ? pptxDate10 : pptxDate11;
-        const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
-        let tableHtml = '<div class="pptx-table-wrap"><div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;"><span>' + title + '</span><div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);"><button onclick="changePptxDateSn(' + sn + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button><span id="pptxDate' + sn + '">ประจำวันที่ ' + thDate(sDate) + '</span><button onclick="changePptxDateSn(' + sn + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button></div></div><table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + sdata.cols.map(c => '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>').join('') + '<th>' + lastCol + '</th></tr></thead><tbody>';
-        sdata.rows.forEach((row, ri) => {
-          tableHtml += '<tr><td class="row-label">' + row.label + '</td><td style="text-align:center;padding:2px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><button onclick="changeKpd(' + sn + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button><span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" id="kpd_' + sn + '_' + ri + '">' + row.kpd + '</span><button onclick="changeKpd(' + sn + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button></div></td>' + sdata.cols.map((_, ci) => '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + sn + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>').join('') + '<td style="text-align:center;font-weight:600;color:#7fc47f;" id="remain_' + sn + '_' + ri + '">-</td></tr>';
-        });
-        tableHtml += '<tr class="total-row"><td class="row-label">รวม</td><td style="text-align:center;font-weight:700;" id="total_kpd_' + sn + '">-</td>' + sdata.cols.map((_, ci) => '<td style="text-align:center;font-weight:700;" id="total_col_' + sn + '_' + ci + '">-</td>').join('') + '<td style="text-align:center;font-weight:700;color:#7fc47f;" id="total_remain_' + sn + '">-</td></tr>';
-        tableHtml += '</tbody></table></div><div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + sn + ')">💾 บันทึกข้อมูล</button><span class="saved-ts" id="saved_ts_' + sn + '"></span></div>';
-        wrap.innerHTML = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + sn + '</span></div>' + tableHtml;
-        con.appendChild(wrap); calcSlide910(sn);
+    function buildKpdSlideDOM(slide, seq, modelId) {
+      var sdata = modelId === 10 ? slide9Data : slide10Data;
+      var sDate = modelId === 10 ? pptxDate10 : pptxDate11;
+      var wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
+      var tableHtml = '<div class="pptx-table-wrap"><div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;"><span>' + slide.title + '</span><div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);"><button onclick="changePptxDateSn(' + modelId + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button><span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span><button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button></div></div><table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + sdata.cols.map(c => '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>').join('') + '<th>' + (modelId === 10 ? 'คงเหลือ กพ. ปฏิบัติงาน' : 'รวมแถว') + '</th></tr></thead><tbody>';
+      sdata.rows.forEach((row, ri) => {
+        tableHtml += '<tr><td class="row-label">' + row.label + '</td><td style="text-align:center;padding:2px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button><span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button></div></td>' + sdata.cols.map((_, ci) => '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>').join('') + '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
       });
+      tableHtml += '<tr class="total-row"><td class="row-label">รวม</td><td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' + sdata.cols.map((_, ci) => '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>').join('') + '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
+      tableHtml += '</tbody></table></div><div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button><span class="saved-ts saved_ts_val_' + modelId + '"></span></div>';
+      wrap.innerHTML = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + seq + '</span></div>' + tableHtml;
+      setTimeout(() => calcSlide910(modelId), 50);
+      return wrap;
     }
-    function changeKpd(sn, ri, dir) {
-      var sdata = sn === 10 ? slide9Data : slide10Data;
+
+    // For date labels, need to update all instances
+    function updatePptxDateLabels(modelId, thDateStr) {
+      document.querySelectorAll('.pptxDateLabel_' + modelId).forEach(el => el.textContent = 'ประจำวันที่ ' + thDateStr);
+    }
+
+    function changeKpd(slideId, modelId, ri, dir) {
+      var sdata = modelId === 10 ? slide9Data : slide10Data;
       sdata.rows[ri].kpd = Math.max(0, (sdata.rows[ri].kpd || 0) + dir);
-      var el = document.getElementById('kpd_' + sn + '_' + ri);
-      if (el) el.textContent = sdata.rows[ri].kpd;
-      calcSlide910(sn);
+      calcSlide910(modelId);
     }
-    function updateSlideData(sn, ri, ci, val) { const sdata = sn === 10 || sn === 11 ? (sn === 10 ? slide9Data : slide10Data) : null; if(sdata) sdata.values['r' + ri + '_c' + ci] = parseInt(val) || 0; calcSlide910(sn); }
-    function calcSlide910(sn) {
-      const sdata = sn === 10 ? slide9Data : (sn === 11 ? slide10Data : null);
-      if(!sdata) return;
+    function updateSlideData(slideId, modelId, ri, ci, val) { const sdata = modelId === 10 ? slide9Data : (modelId === 11 ? slide10Data : null); if (sdata) sdata.values['r' + ri + '_c' + ci] = parseInt(val) || 0; calcSlide910(modelId); }
+    function calcSlide910(modelId) {
+      const sdata = modelId === 10 ? slide9Data : (modelId === 11 ? slide10Data : null);
+      if (!sdata) return;
       let totalKpd = 0; const colTotals = sdata.cols.map(() => 0); let totalRemain = 0;
       sdata.rows.forEach((row, ri) => {
         totalKpd += row.kpd; let rowSum = 0;
         sdata.cols.forEach((_, ci) => { const v = parseInt(sdata.values['r' + ri + '_c' + ci]) || 0; rowSum += v; colTotals[ci] += v; });
         const remain = Math.max(0, row.kpd - rowSum); totalRemain += remain;
-        const remEl = document.getElementById('remain_' + sn + '_' + ri); if (remEl) remEl.textContent = remain;
+        document.querySelectorAll('.remain_val_' + modelId + '_' + ri).forEach(el => el.textContent = remain);
+        document.querySelectorAll('.kpd_val_' + modelId + '_' + ri).forEach(el => el.textContent = row.kpd);
       });
-      const tkEl = document.getElementById('total_kpd_' + sn); if (tkEl) tkEl.textContent = totalKpd;
-      const trEl = document.getElementById('total_remain_' + sn); if (trEl) trEl.textContent = totalRemain;
-      sdata.cols.forEach((_, ci) => { const el = document.getElementById('total_col_' + sn + '_' + ci); if (el) el.textContent = colTotals[ci] || '-'; });
+      document.querySelectorAll('.total_kpd_val_' + modelId).forEach(el => el.textContent = totalKpd);
+      document.querySelectorAll('.total_remain_val_' + modelId).forEach(el => el.textContent = totalRemain);
+      sdata.cols.forEach((_, ci) => { document.querySelectorAll('.total_col_val_' + modelId + '_' + ci).forEach(el => el.textContent = colTotals[ci] || '-'); });
     }
     async function saveSlide910Data(sn) {
       const sdata = sn === 10 ? slide9Data : slide10Data;
@@ -3064,11 +3132,12 @@
         kpdList: sdata.rows.map(r => r.kpd)
       };
       await storeSet('slide' + sn + '_data_v2', dataToSave);
-      const el = document.getElementById('saved_ts_' + sn); if (el) el.textContent = '✓ บันทึก ' + tsNow();
+      const ts = '✓ บันทึก ' + tsNow();
+      document.querySelectorAll('.saved_ts_val_' + sn).forEach(el => el.textContent = ts);
     }
     async function loadSlide910Data() {
       for (const sn of [10, 11]) {
-        const raw = await storeGet('slide' + sn + '_data_v2'); 
+        const raw = await storeGet('slide' + sn + '_data_v2');
         if (!raw) {
           // Fallback to old format if v2 doesn't exist
           const oldRaw = await storeGet('slide' + sn + '_data');
@@ -3081,10 +3150,10 @@
           }
           continue;
         }
-        
+
         let data = null; try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { }
         if (!data) continue;
-        
+
         const sdata = sn === 10 ? slide9Data : slide10Data;
         if (data.values) Object.assign(sdata.values, data.values);
         if (data.kpdList && Array.isArray(data.kpdList)) {
@@ -3095,28 +3164,37 @@
       }
     }
 
-    function buildSlide12() {
-      const con = document.getElementById('slide_12_container'); con.innerHTML = '';
+    function buildVehSlideDOM(slide, seq) {
       const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
-      let html = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ 12</span><span class="pptx-slide-title">บัญชีสถานภาพยานพาหนะ บก.ควบคุม 2</span></div><div class="vehicle-table-wrap"><table class="vehicle-table"><thead><tr><th width="24">ลำดับ</th><th>ชื่อ</th><th>ยี่ห้อ/แบบรุ่น</th><th>การได้มา</th><th>หมายเลขทะเบียน</th><th>หน่วยครอบครอง</th><th style="min-width:80px;">การใช้งาน</th><th style="min-width:80px;">การปรนนิบัติบำรุง</th></tr></thead><tbody>';
+      let html = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + seq + '</span></div><div class="vehicle-table-wrap"><div class="pptx-table-title" style="text-align:center;font-size:14px;font-weight:700;margin-bottom:8px;">' + slide.title + '</div><table class="vehicle-table"><thead><tr><th width="24">ลำดับ</th><th>ชื่อ</th><th>ยี่ห้อ/แบบรุ่น</th><th>การได้มา</th><th>หมายเลขทะเบียน</th><th>หน่วยครอบครอง</th><th style="min-width:80px;">การใช้งาน</th><th style="min-width:80px;">การปรนนิบัติบำรุง</th></tr></thead><tbody>';
       vehicleData.forEach((v, i) => {
-        html += '<tr><td style="text-align:center;font-size:10px;">' + v.num + '</td><td style="font-size:10px;">' + v.name + '</td><td style="font-size:10px;">' + v.brand + '</td><td style="font-size:10px;">' + v.source + '</td><td style="font-size:10px;">' + v.plate + '</td><td style="font-size:10px;">' + v.unit + '</td><td><input type="text" id="veh_usage_' + i + '" value="' + v.usage + '" placeholder="-" oninput="vehicleData[' + i + '].usage=this.value"></td><td><input type="text" id="veh_maint_' + i + '" value="' + v.maintenance + '" placeholder="-" oninput="vehicleData[' + i + '].maintenance=this.value"></td></tr>';
+        html += '<tr><td style="text-align:center;font-size:10px;">' + v.num + '</td><td style="font-size:10px;">' + v.name + '</td><td style="font-size:10px;">' + v.brand + '</td><td style="font-size:10px;">' + v.source + '</td><td style="font-size:10px;">' + v.plate + '</td><td style="font-size:10px;">' + v.unit + '</td><td><input type="text" class="veh_usage_' + i + '" value="' + v.usage + '" placeholder="-" oninput="updateVehUsage(' + i + ',this.value)"></td><td><input type="text" class="veh_maint_' + i + '" value="' + v.maintenance + '" placeholder="-" oninput="updateVehMaint(' + i + ',this.value)"></td></tr>';
       });
       html += '</tbody></table></div><div style="font-size:10px;color:rgba(255,255,255,0.35);padding:4px 8px 8px;">* ช่องที่ไม่กรอกจะแสดงเป็น " - " ในผลลัพธ์</div>';
-      wrap.innerHTML = html; con.appendChild(wrap);
+      wrap.innerHTML = html;
+      return wrap;
     }
+    function updateVehUsage(i, val) { vehicleData[i].usage = val; document.querySelectorAll('.veh_usage_' + i).forEach(el => { if (el.value !== val) el.value = val; }); }
+    function updateVehMaint(i, val) { vehicleData[i].maintenance = val; document.querySelectorAll('.veh_maint_' + i).forEach(el => { if (el.value !== val) el.value = val; }); }
     function changeVehTotal(dir) {
-      vehicleTotalCount = Math.max(0, vehicleTotalCount + dir);
-      const el = document.getElementById('veh_total_display'); if (el) el.textContent = vehicleTotalCount;
+      // Syncing with vehicleData or manual count? User wants 11 by default.
+      // Already sync'd via vehicleData.length for table rows.
+      // If we change total, it currently only updates a label.
     }
 
-    function buildSlides13to14() {
-      const con = document.getElementById('slides_13_14_container'); con.innerHTML = '';
-      getNewsSns().forEach(sn => {
-        const st = slide12_13[sn];
-        const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
-        wrap.innerHTML = `
-    <div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ${sn}</span><span class="pptx-slide-title">${st.title}</span></div>
+    function buildNewsSlideDOM(slide, seq) {
+      const sn = slide.id;
+      if (!slide12_13[sn]) {
+        slide12_13[sn] = { title: slide.title, text: '', osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)', photo: null };
+      }
+      if (!mapState[sn]) {
+        mapState[sn] = { stars: [], photo: DEFAULT_MAP_URL };
+      }
+
+      const st = slide12_13[sn];
+      const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
+      wrap.innerHTML = `
+    <div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ${seq}</span><span class="pptx-slide-title">${slide.title}</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div>
         <div style="font-size:10px;color:var(--gold);font-weight:600;margin-bottom:4px;">📍 แผนที่ — คลิกเพื่อเพิ่มดาว ★</div>
@@ -3156,22 +3234,8 @@
         </div>
       </div>
     </div>`;
-        con.appendChild(wrap);
-        populateOsintSelect(sn);
-        // Load default map
-        setTimeout(() => {
-          const mapZone = document.getElementById('mapZone_' + sn);
-          if (mapZone && mapState[sn].photo) {
-            let bg = mapZone.querySelector('img.map-bg-img');
-            if (!bg) { bg = document.createElement('img'); bg.className = 'map-bg-img'; mapZone.insertBefore(bg, mapZone.firstChild); }
-            bg.src = mapState[sn].photo;
-            const overlay = document.getElementById('mapOverlay_' + sn);
-            if (overlay) { overlay.classList.add('has-image'); }
-          }
-          setupMapInteraction(sn);
-          loadMapStars(sn);
-        }, 100);
-      });
+
+      return wrap;
     }
 
     function populateOsintSelect(sn) {
@@ -3180,7 +3244,7 @@
       osintItems.forEach(item => { const o = document.createElement('option'); o.value = item; o.textContent = item; sel.appendChild(o); });
       if (prev && osintItems.includes(prev)) sel.value = prev;
     }
-    function populateAllOsintSelects() { getNewsSns().forEach(sn => populateOsintSelect(sn)); }
+    function populateAllOsintSelects() { masterSlides.filter(s => s.type === 'news').forEach(s => populateOsintSelect(s.id)); }
 
     // OSINT ADMIN
     function renderOsintAdmin() {
@@ -3193,21 +3257,217 @@
     }
     function renderSlideTitleAdmin() {
       const con = document.getElementById('slideTitleAdminList'); if (!con) return; con.innerHTML = '';
-      // Titles 1-9 (Photo slides)
-      photoSlides.forEach((ps, i) => {
+      masterSlides.forEach((s, i) => {
         const row = document.createElement('div'); row.className = 'osint-item-row';
         row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;';
-        row.innerHTML = `<span style="font-size:11px;color:var(--gold);min-width:60px;font-weight:600;">สไลด์ ${ps.id}</span><input type="text" value="${ps.name}" style="flex:1;padding:5px 8px;border:1px solid var(--line);border-radius:2px;font-size:12px;" onchange="photoSlides[${i}].name=this.value;buildSlides1to8();">`;
+        const typeLabel = { photo: '🖼ภาพ', kpd_op: '📊กพ.(ปฏิบัติ)', kpd_tot: '📊กพ.(รวม)', veh: '🚗ยาน', news: '📰ข่าว' }[s.type] || s.type;
+        row.innerHTML = `<span style="font-size:11px;color:var(--gold);min-width:70px;font-weight:600;">${typeLabel}</span><input type="text" value="${s.title}" style="flex:1;padding:5px 8px;border:1px solid var(--line);border-radius:2px;font-size:12px;" onchange="masterSlides[${i}].title=this.value;buildAllSlides();">`;
         con.appendChild(row);
       });
-      // Titles 10-14+ (Table/News slides)
-      // slideNames is 0-indexed, slide 10 is at index 10
-      for (let i = 10; i < slideNames.length; i++) {
-        const row = document.createElement('div'); row.className = 'osint-item-row';
-        row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;';
-        row.innerHTML = `<span style="font-size:11px;color:var(--gold);min-width:60px;font-weight:600;">สไลด์ ${i}</span><input type="text" value="${slideNames[i]}" style="flex:1;padding:5px 8px;border:1px solid var(--line);border-radius:2px;font-size:12px;" onchange="slideNames[${i}]=this.value;buildSlides10to11();buildSlide12();buildSlides13to14();">`;
-        con.appendChild(row);
+    }
+
+
+
+    // ============================================================
+    // SLIDE MANAGER (Tab 6)
+    // ============================================================
+
+    const SM_CATEGORIES = [
+      { type: 'photo', label: '📷 อัพโหลดรูป', color: 'rgba(201,168,76,0.15)', border: 'rgba(201,168,76,0.4)', canAdd: true, canDelete: true, canHide: false },
+      { type: 'kpd_op', label: '📊 สถานภาพบัญชียอด (ปฏิบัติงาน)', color: 'rgba(100,180,100,0.15)', border: 'rgba(100,180,100,0.45)', canAdd: false, canDelete: false, canHide: true },
+      { type: 'kpd_tot', label: '📊 สถานภาพบัญชียอด (รวมแถว)', color: 'rgba(100,180,100,0.15)', border: 'rgba(100,180,100,0.45)', canAdd: false, canDelete: false, canHide: true },
+      { type: 'veh', label: '🚗 บัญชีสถานภาพยานพาหนะ', color: 'rgba(120,160,220,0.15)', border: 'rgba(120,160,220,0.45)', canAdd: false, canDelete: false, canHide: true },
+      { type: 'news', label: '📰 สรุปข่าวสารสำคัญประจำวัน', color: 'rgba(200,120,80,0.15)', border: 'rgba(200,120,80,0.45)', canAdd: true, canDelete: true, canHide: false },
+    ];
+
+    function renderSlideManager() {
+      const con = document.getElementById('slideManagerList');
+      if (!con) return;
+      con.innerHTML = '';
+
+      // Compute display sequence numbers across all slides
+      const seqMap = {};
+      masterSlides.forEach((s, i) => { seqMap[s.id] = i + 1; });
+
+      SM_CATEGORIES.forEach(cat => {
+        const slides = masterSlides.filter(s => s.type === cat.type);
+        const sect = document.createElement('div');
+        sect.style.cssText = `background:${cat.color};border:1px solid ${cat.border};border-radius:4px;padding:10px 12px;`;
+
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
+        header.innerHTML = `
+          <span style="font-size:12px;font-weight:700;color:black;">${cat.label}</span>
+          <span style="font-size:11px;color:rgba(0,0,0,0.5);">${slides.length} สไลด์</span>`;
+        sect.appendChild(header);
+
+        if (slides.length === 0) {
+          const empty = document.createElement('div');
+          empty.style.cssText = 'font-size:11px;color:rgba(0,0,0,0.4);padding:6px 0;';
+          empty.textContent = '— ไม่มีสไลด์ในหมวดนี้ —';
+          sect.appendChild(empty);
+        }
+
+        slides.forEach(slide => {
+          const globalIdx = masterSlides.indexOf(slide);
+          const seq = seqMap[slide.id];
+          const isFirstGlobal = globalIdx === 0;
+          const isLastGlobal = globalIdx === masterSlides.length - 1;
+          const isFirstInCat = masterSlides.filter((s, i) => s.type === cat.type && i < globalIdx).length === 0;
+          const isLastInCat = masterSlides.filter((s, i) => s.type === cat.type && i > globalIdx).length === 0;
+
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.07);';
+
+          // Sequence badge
+          const badge = document.createElement('span');
+          badge.style.cssText = 'font-size:10px;font-weight:700;color:black;min-width:28px;text-align:center;background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:2px 4px;';
+          badge.textContent = seq;
+          row.appendChild(badge);
+
+          // Title input
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          inp.value = slide.title;
+          inp.style.cssText = 'flex:1;padding:5px 8px;border:1px solid rgba(0,0,0,0.15);border-radius:3px;font-size:12px;background:white;color:black;font-family:\'Sarabun\',sans-serif;';
+          inp.onchange = () => { slide.title = inp.value.trim() || slide.title; buildAllSlides(); saveMasterSlides(); };
+          row.appendChild(inp);
+
+          // HIDE TOGGLE
+          if (cat.canHide) {
+            const btnHide = document.createElement('button');
+            btnHide.className = 'btn-sm';
+            btnHide.style.cssText = 'font-size:11px;padding:3px 8px;border-radius:3px;cursor:pointer;background:' + (slide.hidden ? '#e0e0e0' : 'rgba(201,168,76,0.15)') + ';border:1px solid rgba(0,0,0,0.15);color:black;';
+            btnHide.textContent = slide.hidden ? '👁 แสดง' : '👁‍🗨 ซ่อน';
+            btnHide.onclick = () => { slide.hidden = !slide.hidden; buildAllSlides(); saveMasterSlides(); renderSlideManager(); };
+            row.appendChild(btnHide);
+          }
+
+          // Move up
+          const btnUp = document.createElement('button');
+          btnUp.className = 'btn-sm btn-up';
+          btnUp.textContent = '▲';
+          btnUp.title = 'เลื่อนขึ้น';
+          btnUp.disabled = isFirstGlobal;
+          btnUp.onclick = () => { smMoveSlide(globalIdx, -1); };
+          row.appendChild(btnUp);
+
+          // Move down
+          const btnDn = document.createElement('button');
+          btnDn.className = 'btn-sm btn-down';
+          btnDn.textContent = '▼';
+          btnDn.title = 'เลื่อนลง';
+          btnDn.disabled = isLastGlobal;
+          btnDn.onclick = () => { smMoveSlide(globalIdx, +1); };
+          row.appendChild(btnDn);
+
+          // Delete (only for photo and news)
+          if (cat.canDelete) {
+            const btnDel = document.createElement('button');
+            btnDel.className = 'btn-sm btn-delete';
+            btnDel.textContent = '✕';
+            btnDel.title = 'ลบสไลด์นี้';
+            btnDel.onclick = () => { smDeleteSlide(slide.id); };
+            row.appendChild(btnDel);
+          }
+
+          sect.appendChild(row);
+        });
+
+        con.appendChild(sect);
+      });
+
+      // Summary
+      const summary = document.createElement('div');
+      summary.style.cssText = 'font-size:11px;color:rgba(0,0,0,0.5);padding-top:4px;text-align:right;';
+      summary.textContent = `รวม ${masterSlides.length} สไลด์`;
+      con.appendChild(summary);
+    }
+
+    function smMoveSlide(idx, dir) {
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= masterSlides.length) return;
+      const tmp = masterSlides[idx];
+      masterSlides[idx] = masterSlides[newIdx];
+      masterSlides[newIdx] = tmp;
+      buildAllSlides();
+      saveMasterSlides();
+      renderSlideManager();
+    }
+
+    function smDeleteSlide(id) {
+      const slide = masterSlides.find(s => s.id === id);
+      if (!slide) return;
+      if (!confirm(`ลบสไลด์ "${slide.title}"?\n\nข้อมูลรูปและเนื้อหาของสไลด์นี้จะหายไป`)) return;
+      masterSlides = masterSlides.filter(s => s.id !== id);
+      // Clean up data
+      if (pptxPhotos[id]) delete pptxPhotos[id];
+      if (slide12_13[id]) delete slide12_13[id];
+      buildAllSlides();
+      saveMasterSlides();
+      renderSlideManager();
+      // Also refresh news admin if open
+      const tab4 = document.getElementById('tab4');
+      if (tab4 && tab4.classList.contains('active')) renderNewsSlideAdmin();
+    }
+
+    function addSlideOfType(type) {
+      if (type === 'kpd_op' && masterSlides.some(s => s.type === 'kpd_op')) {
+        alert('มีสไลด์สถานภาพ (ปฏิบัติงาน) อยู่แล้ว 1 รายการ'); return;
       }
+      if (type === 'kpd_tot' && masterSlides.some(s => s.type === 'kpd_tot')) {
+        alert('มีสไลด์สถานภาพ (รวมแถว) อยู่แล้ว 1 รายการ'); return;
+      }
+      if (type === 'veh' && masterSlides.some(s => s.type === 'veh')) {
+        alert('มีสไลด์ยานพาหนะอยู่แล้ว 1 รายการ'); return;
+      }
+
+      const defaultTitles = {
+        photo: 'สไลด์ภาพถ่าย',
+        news: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว',
+        kpd_op: 'สถานภาพบัญชียอด (ปฏิบัติงาน)',
+        kpd_tot: 'สถานภาพบัญชียอด (รวมแถว)',
+        veh: 'บัญชีสถานภาพยานพาหนะ',
+      };
+
+      const id = nextSlideId++;
+      const newSlide = { id, type, title: defaultTitles[type] || 'สไลด์ใหม่' };
+
+      // Find the last index of the same type to maintain order grouping
+      let insertIdx = -1;
+      for (let i = masterSlides.length - 1; i >= 0; i--) {
+        if (masterSlides[i].type === type) {
+          insertIdx = i + 1;
+          break;
+        }
+      }
+
+      if (insertIdx === -1) {
+        // If type not found, push to end
+        masterSlides.push(newSlide);
+      } else {
+        // Insert after the last matching type
+        masterSlides.splice(insertIdx, 0, newSlide);
+      }
+
+      // Init data
+      if (type === 'news') {
+        slide12_13[id] = { text: '', photo: null, osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)' };
+        // Use Slide 13's map as default (copy stars and photo)
+        const srcId = 13;
+        const srcMap = mapState[srcId] || { photo: DEFAULT_MAP_URL, stars: [] };
+        mapState[id] = {
+          photo: srcMap.photo || DEFAULT_MAP_URL,
+          stars: JSON.parse(JSON.stringify(srcMap.stars || []))
+        };
+      }
+      if (type === 'photo') {
+        pptxPhotos[id] = {};
+      }
+
+      buildAllSlides();
+      saveMasterSlides();
+      renderSlideManager();
     }
 
     function addOsintItem() { const inp = document.getElementById('osintNewItem'); const val = inp.value.trim(); if (!val) return; osintItems.push(val); inp.value = ''; renderOsintAdmin(); populateAllOsintSelects(); }
@@ -3361,41 +3621,31 @@
 
     function renderPreviewSlides() {
       const con = document.getElementById('pptxPreviewSlides'); con.innerHTML = '';
-      // IDs for all slides in order: 1-9 (Photos), 10-11 (Tables), 12 (Vehicle), 13-14+ (News)
-      let allSns = [];
-      photoSlides.forEach(p => { if (!allSns.includes(p.id)) allSns.push(p.id); });
-      [10, 11, 12].forEach(sn => { if (!allSns.includes(sn)) allSns.push(sn); });
-      getNewsSns().forEach(sn => { if (!allSns.includes(sn)) allSns.push(sn); });
-      
       let slideSeq = 0;
-      for (let si = 0; si < allSns.length; si++) {
-        let s = allSns[si];
-        if (!slideHasData(s)) continue;
+      masterSlides.forEach(function (slide) {
+        const s = slide.id;
+        if (!slideHasData(s)) return;
         slideSeq++;
-        const sName = photoSlides.find(p => p.id === s) ? photoSlides.find(p => p.id === s).name : (slideNames[s] || 'สรุปข่าวสารสำคัญฯ');
         const wrap = document.createElement('div'); wrap.className = 'preview-slide-wrap';
-        // Add a class for styling and removed sName from the HTML bar to avoid redundancy with the Canvas header
-        wrap.innerHTML = '<div class="preview-slide-title-bar">ลำดับที่ ' + slideSeq + '</div><div class="preview-canvas-wrap" id="previewWrap_' + s + '" style="width:100%;"><canvas id="slideCanvas_' + s + '" style="width:100%;display:block;image-rendering:crisp-edges;image-rendering:-webkit-optimize-contrast;"></canvas></div>';
+        wrap.innerHTML = '<div class="preview-slide-title-bar">ลำดับที่ ' + slideSeq + ' &ndash; ' + slide.title + '</div><div class="preview-canvas-wrap" id="previewWrap_' + s + '" style="width:100%;"><canvas id="slideCanvas_' + s + '" style="width:100%;display:block;image-rendering:crisp-edges;image-rendering:-webkit-optimize-contrast;"></canvas></div>';
         con.appendChild(wrap);
-        // Robust closure to ensure 's' is captured correctly
-        (function(sn, seq) {
-          setTimeout(function() { drawSlideToCanvas(sn); }, 80 * seq);
+        (function (sn, seq) {
+          setTimeout(function () { drawSlideToCanvas(sn); }, 80 * seq);
         })(s, slideSeq);
-      }
+      });
     }
 
     function slideHasData(sn) {
-      // Personnel tables & Vehicle slides: always show (Slides 10, 11, 12)
-      // บังคับแสดงผล: สถานภาพบัญชียอด (ปฏิบัติงาน), สถานภาพบัญชียอด (รวมแถว), บัญชีสถานภาพยานพาหนะ
-      if (sn === 10 || sn === 11 || sn === 12) return true;
-      
-      // Photo slides (1-9): only if has at least one photo
-      if (photoSlides.some(function (p) { return p.id === sn; }) || sn === 9) {
+      const slide = masterSlides.find(s => s.id === sn);
+      if (!slide) return false;
+      // KPD and Vehicle slides always show
+      if (slide.type === 'kpd_op' || slide.type === 'kpd_tot' || slide.type === 'veh') return true;
+      // Photo slides: only if has at least one photo
+      if (slide.type === 'photo') {
         var ph = pptxPhotos[sn] || {}; return !!(ph[0] || ph[1]);
       }
-      
-      // News slides (13+): only show if they have text or a custom photo
-      if (getNewsSns().includes(sn)) {
+      // News slides: only if they have text or a custom photo
+      if (slide.type === 'news') {
         var ns = slide12_13[sn];
         return !!(ns && ((ns.text && ns.text.trim()) || ns.photo));
       }
@@ -3424,58 +3674,50 @@
     }
 
     async function exportAllSlides() {
-      const allSns = [];
-      photoSlides.forEach(p => { if (!allSns.includes(p.id)) allSns.push(p.id); });
-      [10, 11, 12].forEach(sn => { if (!allSns.includes(sn)) allSns.push(sn); });
-      getNewsSns().forEach(sn => { if (!allSns.includes(sn)) allSns.push(sn); });
-      
-      const validSns = allSns.filter(sn => slideHasData(sn));
-      
-      if (validSns.length === 0) {
+      const validSlides = masterSlides.filter(s => slideHasData(s.id));
+
+      if (validSlides.length === 0) {
         alert('ไม่มีข้อมูลสไลด์สำหรับส่งออก');
         return;
       }
-      
+
       const btn = document.querySelector('.btn-export-all');
       const originalText = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '⏳ กำลังเตรียมไฟล์ ZIP...';
-      
+
       const zip = new JSZip();
       const folderName = "PPTX_Slides_" + toISO(pptxNow).replace(/-/g, '');
       const imgFolder = zip.folder(folderName);
-      
-      for (let i = 0; i < validSns.length; i++) {
-        const sn = validSns[i];
-        btn.innerHTML = `⏳ กำลังประมวลผลรูปที่ ${i + 1}/${validSns.length}`;
-        
+
+      for (let i = 0; i < validSlides.length; i++) {
+        const slide = validSlides[i];
+        const sn = slide.id;
+        btn.innerHTML = `⏳ กำลังประมวลผลรูปที่ ${i + 1}/${validSlides.length}`;
+
         // Redraw to ensure correct data
         let canvas = document.getElementById('slideCanvas_' + sn);
         if (!canvas) {
-           canvas = document.createElement('canvas');
-           canvas.width = 1280; canvas.height = 720;
-           const ctx = canvas.getContext('2d');
-           drawSlide(ctx, 1280, 720, sn);
+          canvas = document.createElement('canvas');
+          canvas.width = 1280; canvas.height = 720;
+          const ctx = canvas.getContext('2d');
+          drawSlide(ctx, 1280, 720, sn);
         } else {
-           // If canvas exists, redraw it to be sure
-           drawSlideToCanvas(sn);
+          drawSlideToCanvas(sn);
         }
-        
-        // Get base64 data
+
         const dataUrl = canvas.toDataURL('image/png', 1.0);
         const base64Data = dataUrl.split(',')[1];
-        
-        const sName = photoSlides.find(p => p.id === sn) ? photoSlides.find(p => p.id === sn).name : (slideNames[sn] || 'ข่าวสาร');
-        const fileName = `Slide_${String(i + 1).padStart(2, '0')}_${sName.replace(/[\/\\?%*:|"<>]/g, '-')}.png`;
-        
-        imgFolder.file(fileName, base64Data, {base64: true});
-        
-        // Short delay to keep UI responsive
+
+        const sName = slide.title.replace(/[\/\\?%*:|"<>]/g, '-');
+        const fileName = `Slide_${String(i + 1).padStart(2, '0')}_${sName}.png`;
+
+        imgFolder.file(fileName, base64Data, { base64: true });
         await new Promise(resolve => setTimeout(resolve, 50));
       }
-      
+
       btn.innerHTML = '⏳ กำลังบีบอัดไฟล์...';
-      zip.generateAsync({type: "blob"}).then(function(content) {
+      zip.generateAsync({ type: "blob" }).then(function (content) {
         saveAs(content, folderName + ".zip");
         btn.innerHTML = '✅ ส่งออก ZIP สำเร็จ!';
         setTimeout(() => {
@@ -3491,10 +3733,13 @@
 
     function drawSlide(ctx, W, H, sn) {
       drawBg(ctx, W, H);
-      if (photoSlides.some(function (p) { return p.id === sn; })) drawSlide1to8Canvas(ctx, W, H, sn);
-      else if (sn === 10 || sn === 11) drawSlide910Canvas(ctx, W, H, sn);
-      else if (sn === 12) drawSlide11Canvas(ctx, W, H);
-      else if (getNewsSns().includes(sn)) drawSlide1213Canvas(ctx, W, H, sn);
+      const slide = masterSlides.find(s => s.id === sn);
+      if (!slide) return;
+      if (slide.type === 'photo') drawSlide1to8Canvas(ctx, W, H, sn);
+      else if (slide.type === 'kpd_op') drawSlide910Canvas(ctx, W, H, 10);
+      else if (slide.type === 'kpd_tot') drawSlide910Canvas(ctx, W, H, 11);
+      else if (slide.type === 'veh') drawSlide11Canvas(ctx, W, H, sn);
+      else if (slide.type === 'news') drawSlide1213Canvas(ctx, W, H, sn);
     }
 
     // Draw BG image (bgt.jpg)
@@ -3506,7 +3751,7 @@
       g.addColorStop(1, '#1a1e16');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
-      
+
       // Subtle vignette
       var v = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, W / 2);
       v.addColorStop(0, 'transparent');
@@ -3530,8 +3775,8 @@
       ctx.font = 'bold ' + Math.round(W * 0.026) + 'px Sarabun,Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      var _ps = photoSlides.find(function (p) { return p.id === sn; });
-      ctx.fillText(_ps ? _ps.name : (slideNames[sn] || ''), W / 2, hH / 2, W * 0.92);
+      var _ms = masterSlides.find(function (s) { return s.id === sn; });
+      ctx.fillText(_ms ? _ms.title : '', W / 2, hH / 2, W * 0.92);
       ctx.textBaseline = 'alphabetic';
     }
 
@@ -3595,11 +3840,11 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(title, W / 2, H * 0.035, W * 0.92);
-      
+
       // Draw Date under title - Centered between Title and Table
       ctx.font = 'bold ' + Math.round(W * 0.0125) + 'px Sarabun,Arial';
       ctx.fillText('ประจำวันที่ ' + thDate(sDate), W / 2, H * 0.075, W * 0.92);
-      
+
       ctx.textBaseline = 'alphabetic';
 
       // Table starts just below the header bar
@@ -3727,8 +3972,8 @@
     }
 
     // ── SLIDE 11: vehicle table matching CSS ──────────────
-    function drawSlide11Canvas(ctx, W, H) {
-      drawSlideHeader(ctx, W, H, 12);
+    function drawSlide11Canvas(ctx, W, H, targetId) {
+      drawSlideHeader(ctx, W, H, targetId);
 
       // Table starts right after header bar (no vehicle count display)
       var tTop = H * 0.10;
@@ -3863,12 +4108,12 @@
         var startY = st.photo ? (pTop + pH + H * 0.02) : (mapTop + osintH + H * 0.02);
         var availH = H - startY - 10;
         var maxTxtW = pW - 12;
-        
+
         // Dynamic Font Sizing (Auto-fit)
         var txtFontSz = Math.round(W * 0.0135);
         var lineH = Math.round(txtFontSz * 1.55);
         var txtLines = wrapCanvasText(ctx, st.text, maxTxtW, lineH);
-        
+
         // Shrink font if too many lines
         while (txtLines.length * lineH > availH && txtFontSz > Math.round(W * 0.008)) {
           txtFontSz -= 0.5;
@@ -3876,7 +4121,7 @@
           ctx.font = txtFontSz + 'px Sarabun,Arial';
           txtLines = wrapCanvasText(ctx, st.text, maxTxtW, lineH);
         }
-        
+
         // Center text vertically if there is extra space
         var totalTextH = txtLines.length * lineH;
         var txtY = startY + (availH - totalTextH) / 2;
@@ -3885,7 +4130,7 @@
         ctx.fillStyle = 'rgba(255,255,255,0.95)';
         ctx.font = txtFontSz + 'px Sarabun,Arial';
         ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-        
+
         // Background box for text
         var boxPadding = 8;
         var boxH = Math.min(totalTextH + boxPadding * 2, availH + 4);
@@ -3893,7 +4138,7 @@
         ctx.fillRect(rightX + pPad - 4, txtY - 4, pW + 8, boxH);
         ctx.strokeStyle = 'rgba(201,168,76,0.2)';
         ctx.strokeRect(rightX + pPad - 4, txtY - 4, pW + 8, boxH);
-        
+
         ctx.fillStyle = 'rgba(255,255,255,0.98)';
         txtLines.forEach(function (line, i) {
           var ly = txtY + i * lineH;
@@ -3929,7 +4174,7 @@
       var lines = [];
       // Split on explicit newlines first
       var paragraphs = text.split('\n');
-      paragraphs.forEach(function(para) {
+      paragraphs.forEach(function (para) {
         if (!para) { lines.push(''); return; }
         // Try word-based wrapping (for space-separated words like English)
         var words = para.split(' ');
@@ -3968,10 +4213,10 @@
       if (window._bgImg && window._bgImg.complete && window._bgImg.naturalWidth > 0) {
         return Promise.resolve(window._bgImg);
       }
-      return new Promise(function(resolve) {
+      return new Promise(function (resolve) {
         var img = new Image();
-        img.onload = function() { window._bgImg = img; resolve(img); };
-        img.onerror = function() { resolve(null); };
+        img.onload = function () { window._bgImg = img; resolve(img); };
+        img.onerror = function () { resolve(null); };
         img.src = BG_IMAGE_URL;
       });
     }
@@ -3985,9 +4230,10 @@
       var containers = document.querySelectorAll('.pptx-slide-container');
       containers.forEach(function (el) {
         el.style.backgroundImage = 'none';
-        el.style.backgroundColor = 'var(--paper)';
+        el.style.backgroundColor = 'var(--olive-dark)';
         el.style.backgroundSize = 'cover';
         el.style.backgroundPosition = 'center';
+        el.style.border = '1px solid rgba(201, 168, 76, 0.3)';
       });
     }
 
@@ -4002,7 +4248,7 @@
     ];
     let _nextNewsSn = 15;
 
-    function getNewsSns() { return newsSlides.map(n => n.sn); }
+    function getNewsSns() { return masterSlides.filter(s => s.type === 'news').map(s => s.id); }
 
     function renderNewsSlideAdmin() {
       var con = document.getElementById('newsSlideAdminList');
@@ -4122,26 +4368,16 @@
       vehicleData.forEach(function (v, i) { v.num = i + 1; });
       closeModal('addVehicleModal');
       renderVehicleAdminTable();
-      buildSlide12();
-      // Sync total count with report
-      vehBase = vehicleData.length;
-      var baseDisp = document.getElementById('rpt_veh_base_display');
-      if (baseDisp) baseDisp.textContent = vehBase;
-      saveVehBase();
-      calcVehicle();
+
+      syncVehBase();
     }
     function deleteVehicle(idx) {
       if (!confirm('ลบ "' + vehicleData[idx].name + '" ออก?')) return;
       vehicleData.splice(idx, 1);
       vehicleData.forEach(function (v, i) { v.num = i + 1; });
       renderVehicleAdminTable();
-      buildSlide12();
-      // Sync total count with report
-      vehBase = vehicleData.length;
-      var baseDisp = document.getElementById('rpt_veh_base_display');
-      if (baseDisp) baseDisp.textContent = vehBase;
-      saveVehBase();
-      calcVehicle();
+
+      syncVehBase();
     }
     function moveVehicle(idx, dir) {
       var ni = idx + dir;
@@ -4149,7 +4385,7 @@
       var tmp = vehicleData[idx]; vehicleData[idx] = vehicleData[ni]; vehicleData[ni] = tmp;
       vehicleData.forEach(function (v, i) { v.num = i + 1; });
       renderVehicleAdminTable();
-      buildSlide12();
+      syncVehBase();
     }
 
 
@@ -4161,15 +4397,15 @@
     loadVehBase();
     checkConnection();
     buildDischargeRows();
-    buildSlides1to8();
-    loadSlideNames();
-    buildSlides10to11();
-    buildSlide12();
-    buildSlides13to14();
-    refreshPptxKpd();
-    loadSlide910Data().then(() => { [10, 11].forEach(s => calcSlide910(s)); });
-    loadBgImage().then(function () { applyBgToContainers(); });
-    setTimeout(applyBgToContainers, 300);
+    // Combined Load Sequence for PPTX report
+    loadMasterSlides().then(() => {
+      buildAllSlides();
+      populateAllOsintSelects();
+      refreshPptxKpd();
+      loadSlide910Data().then(() => { [10, 11].forEach(s => calcSlide910(s)); });
+      loadBgImage().then(() => { applyBgToContainers(); });
+      setTimeout(applyBgToContainers, 350); // Final check
+    }).catch(e => console.error('Slide Load Error:', e));
   </script>
 </body>
 
