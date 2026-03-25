@@ -1778,6 +1778,9 @@
       height: 1px;
       background: rgba(201, 168, 76, 0.3);
     }
+    @media (max-width: 768px) {
+      .mobile-rev { flex-direction: row-reverse; }
+    }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -1956,17 +1959,28 @@
           <div class="rpt-section-title">5. ยอดกำลังพล</div>
           <div class="rpt-row" style="align-items:center;">
             <label>5.1 ยอดเดิม</label>
-            <div class="rpt-num-group" style="flex-wrap:nowrap;align-items:center;">
-              <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()"
-                style="width:46px;">
-              <span class="ng-label" style="font-size:11px;">นาย น.</span><input type="number" id="rpt_n" min="0"
-                max="999" value="0" oninput="calcStrength()" style="width:46px;">
-              <span class="ng-label" style="font-size:11px;">ส.</span><input type="number" id="rpt_s" min="0" max="999"
-                value="0" oninput="calcStrength()" style="width:46px;">
-              <span class="ng-label" style="font-size:11px;">พลฯ</span><input type="number" id="rpt_p" min="0" max="999"
-                value="0" oninput="calcStrength()" style="width:46px;">
-              <span class="ng-label" style="font-size:11px;">กพ.ข่ายฯ</span><input type="number" id="rpt_t" min="0"
-                max="999" value="4" oninput="calcStrength()" style="width:46px;">
+            <div class="rpt-num-group" style="flex-wrap:wrap;align-items:center;">
+              <span style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <span class="ng-label" style="font-size:11px;">นาย</span>
+              </span>
+              
+              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <span class="ng-label" style="font-size:11px;">น.</span>
+              </span>
+              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <span class="ng-label" style="font-size:11px;">ส.</span>
+              </span>
+              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <span class="ng-label" style="font-size:11px;">พลฯ</span>
+              </span>
+              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
+                <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()" style="width:46px;">
+                <span class="ng-label" style="font-size:11px;">กพ.ข่ายฯ</span>
+              </span>
               <button onclick="saveStrength()"
                 style="margin-left:4px;width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">💾</button>
               <span id="strength_saved_label"
@@ -2601,7 +2615,7 @@
       var leaveRow = document.createElement('div');
       leaveRow.className = 'rpt-row';
       leaveRow.style.paddingLeft = '20px';
-      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group"><span class="ng-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">, ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">, พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">นาย</span></div>';
+      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group"><span class="mobile-rev" style="display:flex;align-items:center;gap:4px;"><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">น.</span></span> <span class="ng-label">, </span> <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;"><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">ส.</span></span> <span class="ng-label">, </span> <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;"><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">พล.ฯ</span></span> <span class="ng-label">นาย</span></div>';
       con.appendChild(leaveRow);
       dischargeCategories.forEach(function (cat) {
         var row = document.createElement('div');
@@ -3189,7 +3203,7 @@
     function buildNewsSlideDOM(slide, seq) {
       const sn = slide.id;
       if (!slide12_13[sn]) {
-        slide12_13[sn] = { title: slide.title, text: '', osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)', photo: null };
+        slide12_13[sn] = { title: slide.title, text: '', osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)', photo: null, justify: false };
       }
       if (!mapState[sn]) {
         mapState[sn] = { stars: [], photo: DEFAULT_MAP_URL };
@@ -3221,19 +3235,22 @@
         </div>
         <div class="rp-section">
           <div class="rp-label">📷 รูปภาพประกอบ (1 รูป)</div>
-          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:110px;" onclick="triggerFileInput('rpPhoto_${sn}')" onpaste="handleRpPaste(event,${sn})">
+          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:110px;" onclick="triggerFileInput('rpPhoto_${sn}')">
             <input type="file" accept="image/*" id="rpPhotoInput_${sn}" onchange="handleRpPhoto(event,${sn})" onclick="event.stopPropagation()">
             <span class="dz-icon" style="color:rgba(255,255,255,0.4);">🖼</span>
-            <span class="dz-label" style="font-size:10px;color:rgba(255,255,255,0.35);">อัพโหลดรูปภาพ (วางรูปได้)</span>
+            <span class="dz-label" style="font-size:10px;color:rgba(255,255,255,0.35);">อัพโหลดรูปภาพ</span>
             <button class="dz-remove" onclick="removeRpPhoto(event,${sn})">✕</button>
           </div>
         </div>
         <div class="rp-section">
-          <div class="rp-label" style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="rp-label" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
             <span>✏ รายละเอียดข่าว</span>
-            <button id="digitConvertBtn_${sn}" onclick="convertThaiDigits(${sn})" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="กดสลับ ไทย↔อาราบิก">🔢 แปลงเลขไทย↔อาราบิก</button>
+            <div style="display:flex;gap:4px;">
+              <button id="justifyConvertBtn_${sn}" onclick="toggleThaiJustify(${sn})" style="font-size:10px;padding:2px 7px;background:${st.justify ? 'rgba(46,125,50,0.8)' : 'rgba(201,168,76,0.15)'};border:1px solid ${st.justify ? '#4caf50' : 'var(--gold)'};color:${st.justify ? 'white' : 'var(--gold-light)'};border-radius:2px;cursor:pointer;" title="จัดตัวอักษรแบบกระจาย">📄 กระจายแบบไทย</button>
+              <button id="digitConvertBtn_${sn}" onclick="convertThaiDigits(${sn})" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="กดสลับ ไทย↔อาราบิก">🔢 แปลงเลขไทย↔อาราบิก</button>
+            </div>
           </div>
-          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:13px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;" placeholder="กรอกเนื้อหาข่าวโดยละเอียด... (วางรูปได้ที่นี่)" oninput="slide12_13[${sn}].text=this.value" onpaste="handleRpPaste(event,${sn})">${st.text}</textarea>
+          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:13px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;${st.justify ? 'text-align:justify;text-justify:inter-character;' : ''}" placeholder="กรอกเนื้อหาข่าวโดยละเอียด..." oninput="slide12_13[${sn}].text=this.value">${st.text}</textarea>
           <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;">* ข้อความจะถูกจัดรูปแบบให้อัตโนมัติในหน้าแสดงผล</div>
         </div>
       </div>
@@ -3647,24 +3664,10 @@
     // Right panel photo
     function handleRpPhoto(event, sn) {
       const file = event.target.files[0]; if (!file) return;
-      processRpImage(file, sn);
-    }
-    function handleRpPaste(event, sn) {
-      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-          const blob = items[i].getAsFile();
-          processRpImage(blob, sn);
-          event.preventDefault();
-          break;
-        }
-      }
-    }
-    function processRpImage(file, sn) {
       const reader = new FileReader();
-      reader.onload = function (e) {
-        slide12_13[sn].photo = e.target.result;
-        updateRpPhotoZone(sn, e.target.result);
+      reader.onload = function (e) { 
+        slide12_13[sn].photo = e.target.result; 
+        updateRpPhotoZone(sn, e.target.result); 
         buildAllSlides(); // Sync for export preview
       };
       reader.readAsDataURL(file);
@@ -4225,10 +4228,26 @@
         txtLines.forEach(function (line, i) {
           var ly = txtY + i * lineH;
           if (ly + lineH > H - 6) return;
+          if (st.justify && i < txtLines.length - 1 && typeof ctx.letterSpacing !== 'undefined') {
+            var tw = ctx.measureText(line).width;
+            if (tw < maxTxtW && tw > maxTxtW * 0.5) { // Only justify if it takes up more than half the line
+              var ls = (maxTxtW - tw) / Math.max(1, line.length);
+              ctx.letterSpacing = ls + 'px';
+              ctx.fillText(line, rightX + pPad, ly);
+              ctx.letterSpacing = '0px';
+              return;
+            }
+          }
           ctx.fillText(line, rightX + pPad, ly);
         });
         ctx.textBaseline = 'alphabetic';
       }
+    }
+
+    function toggleThaiJustify(sn) {
+      if (!slide12_13[sn]) return;
+      slide12_13[sn].justify = !slide12_13[sn].justify;
+      buildAllSlides();
     }
 
     function convertThaiDigits(sn) {
