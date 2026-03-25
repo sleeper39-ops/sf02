@@ -1965,21 +1965,21 @@
                 <span class="ng-label" style="font-size:11px;">นาย</span>
               </span>
               
-              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
-                <input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+              <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label" style="font-size:11px;">น.</span>
+                <input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
               </span>
-              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
-                <input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+              <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label" style="font-size:11px;">ส.</span>
+                <input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
               </span>
-              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
-                <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+              <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label" style="font-size:11px;">พลฯ</span>
+                <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
               </span>
-              <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;">
-                <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()" style="width:46px;">
+              <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label" style="font-size:11px;">กพ.ข่ายฯ</span>
+                <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()" style="width:46px;">
               </span>
               <button onclick="saveStrength()"
                 style="margin-left:4px;width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">💾</button>
@@ -2615,7 +2615,7 @@
       var leaveRow = document.createElement('div');
       leaveRow.className = 'rpt-row';
       leaveRow.style.paddingLeft = '20px';
-      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group"><span class="mobile-rev" style="display:flex;align-items:center;gap:4px;"><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">น.</span></span> <span class="ng-label">, </span> <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;"><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">ส.</span></span> <span class="ng-label">, </span> <span class="mobile-rev" style="display:flex;align-items:center;gap:4px;"><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">พล.ฯ</span></span> <span class="ng-label">นาย</span></div>';
+      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group"><span style="display:flex;align-items:center;gap:4px;"><span class="ng-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label">ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label">พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">นาย</span></div>';
       con.appendChild(leaveRow);
       dischargeCategories.forEach(function (cat) {
         var row = document.createElement('div');
