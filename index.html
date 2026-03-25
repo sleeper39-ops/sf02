@@ -1789,6 +1789,10 @@
     @media screen and (max-width: 1024px) and (orientation: portrait) {
       .col-portrait { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
       .row-portrait-align { align-items: flex-start !important; }
+      .col-portrait .align-label { width: 64px; text-align: right; display: inline-block; }
+      .hide-on-mobile { display: none !important; }
+      .col-portrait-row { flex-direction: column !important; align-items: stretch !important; gap: 4px !important; }
+      .col-portrait-row label { padding-top: 0 !important; }
     }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -1975,19 +1979,19 @@
               </span>
               
               <span style="display:flex;align-items:center;gap:4px;">
-                <span class="ng-label" style="font-size:11px;">น.</span>
+                <span class="ng-label align-label" style="font-size:11px;">น.</span>
                 <input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
               </span>
               <span style="display:flex;align-items:center;gap:4px;">
-                <span class="ng-label" style="font-size:11px;">ส.</span>
+                <span class="ng-label align-label" style="font-size:11px;">ส.</span>
                 <input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
               </span>
               <span style="display:flex;align-items:center;gap:4px;">
-                <span class="ng-label" style="font-size:11px;">พลฯ</span>
+                <span class="ng-label align-label" style="font-size:11px;">พลฯ</span>
                 <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
               </span>
               <span style="display:flex;align-items:center;gap:4px;">
-                <span class="ng-label" style="font-size:11px;">กพ.ข่ายฯ</span>
+                <span class="ng-label align-label" style="font-size:11px;">กพ.ข่ายฯ</span>
                 <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()" style="width:46px;">
               </span>
               <button onclick="saveStrength()"
@@ -2624,11 +2628,11 @@
       var leaveRow = document.createElement('div');
       leaveRow.className = 'rpt-row';
       leaveRow.style.paddingLeft = '20px';
-      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group"><span style="display:flex;align-items:center;gap:4px;"><span class="ng-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label">ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label">พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">นาย</span></div>';
+      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group col-portrait"><span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label hide-on-mobile">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label hide-on-mobile">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">นาย</span></div>';
       con.appendChild(leaveRow);
       dischargeCategories.forEach(function (cat) {
         var row = document.createElement('div');
-        row.className = 'rpt-row';
+        row.className = 'rpt-row col-portrait-row';
         row.style.cssText = 'padding-left:20px;align-items:flex-start;';
         var lbl = document.createElement('label');
         lbl.textContent = cat.label;
