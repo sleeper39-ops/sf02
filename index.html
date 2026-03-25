@@ -2253,7 +2253,8 @@
           <h2 style="margin:0;">📊 แสดงผลรายงาน PPTX</h2>
         </div>
         <div class="pptx-preview-actions">
-          <button class="btn-export-all" onclick="exportAllSlides()">⬇ ส่งออกรูปทั้งหมด</button>
+          <button class="btn-export-all" id="btnExportImgs" onclick="exportAllSlidesImgs()">⬇ ส่งออกรูปทั้งหมด</button>
+          <button class="btn-export-all" onclick="exportAllSlides()">📦 ส่งออกรูปทั้งหมด (Zip)</button>
           <button class="btn-close-preview" onclick="closePptxPreview()">✕ ปิด</button>
         </div>
       </div>
@@ -3834,7 +3835,55 @@
       });
     }
 
+    async function exportAllSlidesImgs() {
+      const validSlides = masterSlides.filter(s => slideHasData(s.id));
 
+      if (validSlides.length === 0) {
+        alert('ไม่มีข้อมูลสไลด์สำหรับส่งออก');
+        return;
+      }
+
+      const btn = document.getElementById('btnExportImgs');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+
+      for (let i = 0; i < validSlides.length; i++) {
+        const slide = validSlides[i];
+        const sn = slide.id;
+        btn.innerHTML = `⏳ กำลังโหลดรูปที่ ${i + 1}/${validSlides.length}`;
+
+        // Redraw to ensure correct data
+        let canvas = document.getElementById('slideCanvas_' + sn);
+        if (!canvas) {
+          canvas = document.createElement('canvas');
+          canvas.width = 1280; canvas.height = 720;
+          const ctx = canvas.getContext('2d');
+          drawSlide(ctx, 1280, 720, sn);
+        } else {
+          drawSlideToCanvas(sn);
+        }
+
+        const dataUrl = canvas.toDataURL('image/png', 1.0);
+        const sName = slide.title.replace(/[\/\\?%*:|"<>]/g, '-');
+        const fileName = `Slide_${String(i + 1).padStart(2, '0')}_${sName}.png`;
+
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Short delay to prevent browser from blocking rapid sequential downloads
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
+
+      btn.innerHTML = '✅ สำเร็จ!';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 3000);
+    }
 
     // ─── CANVAS DRAWING: matches UI theme exactly ───
 
@@ -4220,7 +4269,7 @@
       if (hasText) {
         var startY = st.photo ? (pTop + pH + H * 0.02) : (mapTop + osintH + H * 0.02);
         var availH = H - startY - 10;
-        var maxTxtW = pW - 12;
+        var maxTxtW = pW;
 
         // Dynamic Font Sizing (Auto-fit)
         var txtFontSz = Math.round(W * 0.0135);
@@ -4261,10 +4310,15 @@
         ctx.strokeStyle = 'rgba(201,168,76,0.2)';
         ctx.strokeRect(rightX + pPad - 4, txtY - 4, pW + 8, boxH);
 
+        // Constrain text to never overflow box bounds
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(rightX + pPad - 6, txtY - 4, pW + 12, boxH);
+        ctx.clip();
+
         ctx.fillStyle = 'rgba(255,255,255,0.98)';
         txtLines.forEach(function (line, i) {
           var ly = txtY + i * lineH;
-          if (ly + lineH > H - 6) return;
           if (st.justify && i < txtLines.length - 1 && typeof ctx.letterSpacing !== 'undefined') {
             var tw = ctx.measureText(line).width;
             if (tw < maxTxtW && tw > maxTxtW * 0.5) { // Only justify if it takes up more than half the line
@@ -4277,6 +4331,8 @@
           }
           ctx.fillText(line, rightX + pPad, ly);
         });
+        
+        ctx.restore();
         ctx.textBaseline = 'alphabetic';
       }
     }
@@ -4310,38 +4366,40 @@
     function wrapCanvasText(ctx, text, maxW, lineH) {
       if (!text) return [];
       var lines = [];
-      // Split on explicit newlines first
       var paragraphs = text.split('\n');
+      
+      var segmenter = null;
+      if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        segmenter = new Intl.Segmenter('th', { granularity: 'word' });
+      }
+
       paragraphs.forEach(function (para) {
         if (!para) { lines.push(''); return; }
-        // Try word-based wrapping (for space-separated words like English)
-        var words = para.split(' ');
-        var hasSpaces = words.length > 1;
-        if (hasSpaces) {
-          var line = '';
-          for (var w = 0; w < words.length; w++) {
-            var word = words[w];
-            var testLine = line ? line + ' ' + word : word;
-            if (ctx.measureText(testLine).width > maxW && line) {
-              lines.push(line);
-              line = word;
-            } else {
-              line = testLine;
-            }
+        
+        var segments = [];
+        if (segmenter) {
+          var iterator = segmenter.segment(para);
+          for (var seg of iterator) {
+            segments.push(seg.segment);
           }
-          if (line) lines.push(line);
         } else {
-          // Character-based wrapping for Thai (no spaces)
-          var chars = para.split('');
-          var charLine = '';
-          for (var i = 0; i < chars.length; i++) {
-            var test = charLine + chars[i];
-            if (ctx.measureText(test).width > maxW && charLine.length > 0) {
-              lines.push(charLine); charLine = chars[i];
-            } else { charLine = test; }
-          }
-          if (charLine) lines.push(charLine);
+          // Fallback to character splitting
+          segments = para.split('');
         }
+
+        var line = '';
+        for (var i = 0; i < segments.length; i++) {
+          var word = segments[i];
+          var testLine = line + word;
+          
+          if (ctx.measureText(testLine).width > maxW && line.length > 0) {
+            lines.push(line);
+            line = word.trim() === '' ? '' : word; // don't start new line with a space
+          } else {
+            line = testLine;
+          }
+        }
+        if (line) lines.push(line);
       });
       return lines;
     }
