@@ -1791,8 +1791,6 @@
       .row-portrait-align { align-items: flex-start !important; }
       .col-portrait .align-label { width: 64px; text-align: right; display: inline-block; }
       .hide-on-mobile { display: none !important; }
-      .col-portrait-row { flex-direction: column !important; align-items: stretch !important; gap: 4px !important; }
-      .col-portrait-row label { padding-top: 0 !important; }
     }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2626,13 +2624,14 @@
       var con = document.getElementById('rpt_discharge_rows');
       con.innerHTML = '';
       var leaveRow = document.createElement('div');
-      leaveRow.className = 'rpt-row';
+      leaveRow.className = 'rpt-row row-portrait-align';
       leaveRow.style.paddingLeft = '20px';
-      leaveRow.innerHTML = '<label>5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group col-portrait"><span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label hide-on-mobile">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label hide-on-mobile">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label">นาย</span></div>';
+      leaveRow.style.alignItems = 'center';
+      leaveRow.innerHTML = '<label style="padding-top:4px;">5.2.1 ลาพักตามวงรอบ</label><div class="rpt-num-group col-portrait"><span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">น.</span><input type="number" id="leave_n" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label hide-on-mobile">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">ส.</span><input type="number" id="leave_s" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"></span> <span class="ng-label hide-on-mobile">, </span> <span style="display:flex;align-items:center;gap:4px;"><span class="ng-label align-label">พล.ฯ</span><input type="number" id="leave_p" min="0" max="99" value="0" oninput="calcStrength()" style="width:50px;"><span class="ng-label">นาย</span></span></div>';
       con.appendChild(leaveRow);
       dischargeCategories.forEach(function (cat) {
         var row = document.createElement('div');
-        row.className = 'rpt-row col-portrait-row';
+        row.className = 'rpt-row';
         row.style.cssText = 'padding-left:20px;align-items:flex-start;';
         var lbl = document.createElement('label');
         lbl.textContent = cat.label;
@@ -3249,9 +3248,10 @@
         <div class="rp-section">
           <div class="rp-label">📷 รูปภาพประกอบ (1 รูป)</div>
           <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:110px;" onclick="triggerFileInput('rpPhoto_${sn}')">
+            ${st.photo ? `<img src="${st.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:2px;">` : ''}
             <input type="file" accept="image/*" id="rpPhotoInput_${sn}" onchange="handleRpPhoto(event,${sn})" onclick="event.stopPropagation()">
-            <span class="dz-icon" style="color:rgba(255,255,255,0.4);">🖼</span>
-            <span class="dz-label" style="font-size:10px;color:rgba(255,255,255,0.35);">อัพโหลดรูปภาพ</span>
+            <span class="dz-icon" style="color:rgba(255,255,255,0.4);${st.photo ? 'display:none;' : ''}">🖼</span>
+            <span class="dz-label" style="font-size:10px;color:rgba(255,255,255,0.35);${st.photo ? 'display:none;' : ''}">อัพโหลดรูปภาพ</span>
             <button class="dz-remove" onclick="removeRpPhoto(event,${sn})">✕</button>
           </div>
         </div>
@@ -3259,17 +3259,27 @@
           <div class="rp-label" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
             <span>✏ รายละเอียดข่าว</span>
             <div style="display:flex;gap:4px;">
+              <button onclick="adjustNewsFontSize(${sn}, 1)" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="เพิ่มขนาดตัวอักษร">+ อักษร</button>
+              <button onclick="adjustNewsFontSize(${sn}, -1)" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="ลดขนาดตัวอักษร">- อักษร</button>
               <button id="justifyConvertBtn_${sn}" onclick="toggleThaiJustify(${sn})" style="font-size:10px;padding:2px 7px;background:${st.justify ? 'rgba(46,125,50,0.8)' : 'rgba(201,168,76,0.15)'};border:1px solid ${st.justify ? '#4caf50' : 'var(--gold)'};color:${st.justify ? 'white' : 'var(--gold-light)'};border-radius:2px;cursor:pointer;" title="จัดตัวอักษรแบบกระจาย">📄 กระจายแบบไทย</button>
               <button id="digitConvertBtn_${sn}" onclick="convertThaiDigits(${sn})" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="กดสลับ ไทย↔อาราบิก">🔢 แปลงเลขไทย↔อาราบิก</button>
             </div>
           </div>
-          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:13px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;${st.justify ? 'text-align:justify;text-justify:inter-character;' : ''}" placeholder="กรอกเนื้อหาข่าวโดยละเอียด..." oninput="slide12_13[${sn}].text=this.value">${st.text}</textarea>
+          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:${13 + (st.fontOffset || 0) * 2}px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;${st.justify ? 'text-align:justify;text-justify:inter-character;' : ''}" placeholder="กรอกเนื้อหาข่าวโดยละเอียด..." oninput="slide12_13[${sn}].text=this.value">${st.text}</textarea>
           <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;">* ข้อความจะถูกจัดรูปแบบให้อัตโนมัติในหน้าแสดงผล</div>
         </div>
       </div>
     </div>`;
 
       return wrap;
+    }
+
+    function adjustNewsFontSize(sn, delta) {
+      if (!slide12_13[sn].fontOffset) slide12_13[sn].fontOffset = 0;
+      slide12_13[sn].fontOffset += delta;
+      var el = document.getElementById('rpText_' + sn);
+      if (el) el.style.fontSize = (13 + slide12_13[sn].fontOffset * 2) + 'px';
+      refreshPptxKpd();
     }
 
     function populateOsintSelect(sn) {
@@ -4215,6 +4225,15 @@
         // Shrink font if too many lines
         while (txtLines.length * lineH > availH && txtFontSz > Math.round(W * 0.008)) {
           txtFontSz -= 0.5;
+          lineH = Math.round(txtFontSz * 1.55);
+          ctx.font = txtFontSz + 'px Sarabun,Arial';
+          txtLines = wrapCanvasText(ctx, st.text, maxTxtW, lineH);
+        }
+
+        // Apply manual override from user if present
+        if (st.fontOffset) {
+          txtFontSz += (st.fontOffset * 2);
+          if (txtFontSz < 8) txtFontSz = 8;
           lineH = Math.round(txtFontSz * 1.55);
           ctx.font = txtFontSz + 'px Sarabun,Arial';
           txtLines = wrapCanvasText(ctx, st.text, maxTxtW, lineH);
