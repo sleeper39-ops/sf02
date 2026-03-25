@@ -1792,7 +1792,9 @@
       .col-portrait .align-label { width: 64px; text-align: right; display: inline-block; }
       .hide-on-mobile { display: none !important; }
       .grid-narrow-label { grid-template-columns: 110px 1fr !important; }
+      .mobile-spacer { width: 64px; display: block; }
     }
+    .mobile-spacer { display: none; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -1971,8 +1973,9 @@
           <div class="rpt-section-title">5. ยอดกำลังพล</div>
           <div class="rpt-row row-portrait-align" style="align-items:center;">
             <label style="padding-top:4px;">5.1 ยอดเดิม</label>
-            <div class="rpt-num-group col-portrait" style="flex-wrap:wrap;align-items:center;">
+            <div class="rpt-num-group col-portrait" style="flex-wrap:nowrap;align-items:center;">
               <span style="display:flex;align-items:center;gap:4px;">
+                <span class="mobile-spacer"></span>
                 <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
                 <span class="ng-label" style="font-size:11px;">นาย</span>
               </span>
