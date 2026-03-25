@@ -1984,7 +1984,8 @@
           <div class="rpt-row"><label>6.1 ยอดเดิม</label>
             <div class="rpt-ctrl" style="display:flex;align-items:center;gap:8px;">
               <strong id="rpt_veh_base_display">0</strong><span style="font-size:13px;">คัน</span>
-              <span id="veh_saved_label" style="font-size:10px;color:var(--olive-light);display:none;margin-left:8px;"></span>
+              <span id="veh_saved_label"
+                style="font-size:10px;color:var(--olive-light);display:none;margin-left:8px;"></span>
             </div>
           </div>
           <div class="rpt-row" style="align-items:start;"><label style="padding-top:6px;">6.2 จำหน่าย</label>
@@ -2090,10 +2091,11 @@
         <div class="tab-content" id="tab3">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;">
             <div style="font-size:12px;color:var(--ink-soft);flex:1;">
-               จำนวนรถทั้งหมด: <strong id="adminVehCount">0</strong> คัน
+              จำนวนรถทั้งหมด: <strong id="adminVehCount">0</strong> คัน
             </div>
             <div style="display:flex;gap:8px;">
-              <button class="btn btn-add-item" onclick="syncVehBase()" style="background:var(--olive);border:1px solid var(--gold);font-size:12px;padding:6px 12px;color:rgba(255,255,255,0.9);">ซิงค์กับรายงาน</button>
+              <button class="btn btn-add-item" onclick="syncVehBase()"
+                style="background:var(--olive);border:1px solid var(--gold);font-size:12px;padding:6px 12px;color:rgba(255,255,255,0.9);">ซิงค์กับรายงาน</button>
               <button class="btn btn-add-item" onclick="openAddVehicleModal()">+ เพิ่มยานพาหนะ</button>
             </div>
           </div>
@@ -3084,6 +3086,7 @@
       var wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
       var tableHtml = '<div class="pptx-table-wrap"><div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;"><span>' + slide.title + '</span><div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);"><button onclick="changePptxDateSn(' + modelId + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button><span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span><button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button></div></div><table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + sdata.cols.map(c => '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>').join('') + '<th>' + (modelId === 10 ? 'คงเหลือ กพ. ปฏิบัติงาน' : 'รวมแถว') + '</th></tr></thead><tbody>';
       sdata.rows.forEach((row, ri) => {
+        if (row.hidden) return;
         tableHtml += '<tr><td class="row-label">' + row.label + '</td><td style="text-align:center;padding:2px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button><span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button></div></td>' + sdata.cols.map((_, ci) => '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>').join('') + '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
       });
       tableHtml += '<tr class="total-row"><td class="row-label">รวม</td><td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' + sdata.cols.map((_, ci) => '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>').join('') + '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
@@ -3109,6 +3112,7 @@
       if (!sdata) return;
       let totalKpd = 0; const colTotals = sdata.cols.map(() => 0); let totalRemain = 0;
       sdata.rows.forEach((row, ri) => {
+        if (row.hidden) return;
         totalKpd += row.kpd; let rowSum = 0;
         sdata.cols.forEach((_, ci) => { const v = parseInt(sdata.values['r' + ri + '_c' + ci]) || 0; rowSum += v; colTotals[ci] += v; });
         const remain = Math.max(0, row.kpd - rowSum); totalRemain += remain;
@@ -3122,10 +3126,8 @@
     async function saveSlide910Data(sn) {
       const sdata = sn === 10 ? slide9Data : slide10Data;
       // Save both the table values and the current KPD values from rows
-      const dataToSave = {
-        values: sdata.values,
-        kpdList: sdata.rows.map(r => r.kpd)
-      };
+      const rowData = sdata.rows.map(r => ({ label: r.label, kpd: r.kpd, hidden: r.hidden }));
+      const dataToSave = { values: sdata.values, kpdList: rowData.map(r => r.kpd), rows: rowData };
       await storeSet('slide' + sn + '_data_v2', dataToSave);
       const ts = '✓ บันทึก ' + tsNow();
       document.querySelectorAll('.saved_ts_val_' + sn).forEach(el => el.textContent = ts);
@@ -3151,14 +3153,15 @@
 
         const sdata = sn === 10 ? slide9Data : slide10Data;
         if (data.values) Object.assign(sdata.values, data.values);
-        if (data.kpdList && Array.isArray(data.kpdList)) {
+        if (data.rows && Array.isArray(data.rows)) {
+            sdata.rows = data.rows.map(r => ({ label: r.label, kpd: r.kpd || 0, hidden: !!r.hidden }));
+        } else if (data.kpdList && Array.isArray(data.kpdList)) {
           data.kpdList.forEach((k, i) => {
             if (sdata.rows[i]) {
-                sdata.rows[i].kpd = k;
-                // Force to 4 for this specific role if it's currently 8 or 9 (migration/fix)
-                if (sdata.rows[i].label.includes('กพ.ข่ายฯ') && (k === 8 || k === 9)) {
-                    sdata.rows[i].kpd = 4;
-                }
+              sdata.rows[i].kpd = k;
+              if (sdata.rows[i].label.includes('กพ.ข่ายฯ') && (k === 8 || k === 9)) {
+                sdata.rows[i].kpd = 4;
+              }
             }
           });
         }
@@ -3218,10 +3221,10 @@
         </div>
         <div class="rp-section">
           <div class="rp-label">📷 รูปภาพประกอบ (1 รูป)</div>
-          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:110px;" onclick="triggerFileInput('rpPhoto_${sn}')">
+          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:110px;" onclick="triggerFileInput('rpPhoto_${sn}')" onpaste="handleRpPaste(event,${sn})">
             <input type="file" accept="image/*" id="rpPhotoInput_${sn}" onchange="handleRpPhoto(event,${sn})" onclick="event.stopPropagation()">
             <span class="dz-icon" style="color:rgba(255,255,255,0.4);">🖼</span>
-            <span class="dz-label" style="font-size:10px;color:rgba(255,255,255,0.35);">อัพโหลดรูปภาพ</span>
+            <span class="dz-label" style="font-size:10px;color:rgba(255,255,255,0.35);">อัพโหลดรูปภาพ (วางรูปได้)</span>
             <button class="dz-remove" onclick="removeRpPhoto(event,${sn})">✕</button>
           </div>
         </div>
@@ -3230,7 +3233,7 @@
             <span>✏ รายละเอียดข่าว</span>
             <button id="digitConvertBtn_${sn}" onclick="convertThaiDigits(${sn})" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="กดสลับ ไทย↔อาราบิก">🔢 แปลงเลขไทย↔อาราบิก</button>
           </div>
-          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:13px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;" placeholder="กรอกเนื้อหาข่าวโดยละเอียด..." oninput="slide12_13[${sn}].text=this.value">${st.text}</textarea>
+          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:13px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;" placeholder="กรอกเนื้อหาข่าวโดยละเอียด... (วางรูปได้ที่นี่)" oninput="slide12_13[${sn}].text=this.value" onpaste="handleRpPaste(event,${sn})">${st.text}</textarea>
           <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;">* ข้อความจะถูกจัดรูปแบบให้อัตโนมัติในหน้าแสดงผล</div>
         </div>
       </div>
@@ -3373,6 +3376,60 @@
           }
 
           sect.appendChild(row);
+
+          // ROW MANAGER FOR KPD SLIDES
+          if (cat.type === 'kpd_op' || cat.type === 'kpd_tot') {
+            const sdata = slide.id === 10 ? slide9Data : slide10Data;
+            const rcon = document.createElement('div');
+            rcon.style.cssText = 'margin:10px 0 10px 36px; padding:10px; background:rgba(0,0,0,0.03); border-radius:4px; border:1px dashed rgba(0,0,0,0.1);';
+            rcon.innerHTML = '<div style="font-size:11px; font-weight:bold; margin-bottom:8px; color:rgba(0,0,0,0.6);">การจัดการแถวข้อมูล (หัวข้อกำลังพล)</div>';
+            
+            sdata.rows.forEach((r, ri) => {
+                const rRow = document.createElement('div');
+                rRow.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:4px;';
+                
+                const rInp = document.createElement('input');
+                rInp.type = 'text';
+                rInp.value = r.label;
+                rInp.placeholder = 'ชื่อหัวข้อกำลังพล';
+                rInp.style.cssText = 'flex:1; font-size:11px; padding:4px 8px; border:1px solid rgba(0,0,0,0.15); border-radius:3px; background:white; color:black; font-family:\'Sarabun\',sans-serif;';
+                rInp.oninput = () => { r.label = rInp.value; saveSlide910Data(slide.id); buildAllSlides(); };
+                
+                const btnVis = document.createElement('button');
+                btnVis.className = 'btn-sm';
+                btnVis.style.cssText = 'font-size:10px; padding:3px 8px; border-radius:3px; cursor:pointer; background:' + (r.hidden ? '#f0f0f0' : 'rgba(201,168,76,0.15)') + '; border:1px solid rgba(0,0,0,0.15); color:black;';
+                btnVis.textContent = r.hidden ? '👁 แสดง' : '👁‍🗨 ซ่อน';
+                btnVis.title = r.hidden ? 'แสดงแถวนี้' : 'ซ่อนแถวนี้';
+                btnVis.onclick = () => { r.hidden = !r.hidden; saveSlide910Data(slide.id); buildAllSlides(); renderSlideManager(); };
+
+                const btnDelR = document.createElement('button');
+                btnDelR.className = 'btn-sm btn-delete';
+                btnDelR.style.cssText = 'font-size:10px; padding:3px 6px; border-radius:3px;';
+                btnDelR.textContent = '✕';
+                btnDelR.title = 'ลบแถวนี้';
+                btnDelR.onclick = () => { 
+                    if(!confirm('ลบหัวข้อ "' + r.label + '"?')) return;
+                    sdata.rows.splice(ri, 1); 
+                    saveSlide910Data(slide.id); 
+                    buildAllSlides(); 
+                    renderSlideManager(); 
+                };
+
+                rRow.appendChild(rInp);
+                rRow.appendChild(btnVis);
+                rRow.appendChild(btnDelR);
+                rcon.appendChild(rRow);
+            });
+
+            const btnAddR = document.createElement('button');
+            btnAddR.className = 'btn-sm';
+            btnAddR.style.cssText = 'font-size:11px; margin-top:8px; padding:5px 12px; cursor:pointer; border-radius:3px; background:var(--olive); color:white; border:none; font-weight:600;';
+            btnAddR.textContent = '+ เพิ่มประเภทกำลังพล';
+            btnAddR.onclick = () => { sdata.rows.push({ label: 'ประเภทใหม่', kpd: 0, hidden: false }); saveSlide910Data(slide.id); buildAllSlides(); renderSlideManager(); };
+            rcon.appendChild(btnAddR);
+
+            sect.appendChild(rcon);
+          }
         });
 
         con.appendChild(sect);
@@ -3590,8 +3647,26 @@
     // Right panel photo
     function handleRpPhoto(event, sn) {
       const file = event.target.files[0]; if (!file) return;
+      processRpImage(file, sn);
+    }
+    function handleRpPaste(event, sn) {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const blob = items[i].getAsFile();
+          processRpImage(blob, sn);
+          event.preventDefault();
+          break;
+        }
+      }
+    }
+    function processRpImage(file, sn) {
       const reader = new FileReader();
-      reader.onload = function (e) { slide12_13[sn].photo = e.target.result; updateRpPhotoZone(sn, e.target.result); };
+      reader.onload = function (e) {
+        slide12_13[sn].photo = e.target.result;
+        updateRpPhotoZone(sn, e.target.result);
+        buildAllSlides(); // Sync for export preview
+      };
       reader.readAsDataURL(file);
     }
     function updateRpPhotoZone(sn, dataUrl) {
@@ -3863,7 +3938,8 @@
       var colWidths = [labelColW, kpdColW, ...cols.map(function () { return otherW; }), remainColW];
       var colW = tW / numCols; // fallback
       var subH = H * 0.08; // reduce header height
-      var rowH = (H - tStart - H * 0.12 - subH) / (sdata.rows.length + 1); // reduce row height by increasing bottom margin
+      var visibleRows = sdata.rows.filter(function(r) { return !r.hidden; });
+      var rowH = (H - tStart - H * 0.12 - subH) / (visibleRows.length + 1); // reduce row height by increasing bottom margin
 
       // Table header: matches pptx-table th (#2e3328, gold-light, border gold)
       ctx.fillStyle = '#2e3328';
@@ -3902,7 +3978,7 @@
       ctx.strokeRect(padX, tStart, tW, subH);
 
       // Data rows: matches pptx-table td (rgba(255,255,255,0.06), border #4a5240)
-      sdata.rows.forEach(function (row, ri) {
+      visibleRows.forEach(function (row, ri) {
         var rY = tStart + subH + ri * rowH;
         ctx.fillStyle = ri % 2 === 0 ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)';
         ctx.fillRect(padX, rY, tW, rowH);
@@ -3947,7 +4023,7 @@
       });
 
       // Total row: rgba(74,82,64,0.5), gold-light text (matches .total-row td)
-      var totY = tStart + subH + sdata.rows.length * rowH;
+      var totY = tStart + subH + visibleRows.length * rowH;
       ctx.fillStyle = 'rgba(74,82,64,0.5)';
       ctx.fillRect(padX, totY, tW, rowH);
       ctx.strokeStyle = 'rgba(201,168,76,0.4)'; ctx.lineWidth = 1; ctx.strokeRect(padX, totY, tW, rowH);
@@ -3958,13 +4034,18 @@
       var ty = totY + rowH / 2;
       ctx.textAlign = 'center';
       ctx.fillText('รวม', padX + labelColW / 2, ty);
-      var totalKpd = sdata.rows.reduce(function (a, r) { return a + r.kpd; }, 0);
+      var totalKpd = sdata.rows.filter(function(r){return !r.hidden;}).reduce(function (a, r) { return a + r.kpd; }, 0);
       ctx.fillText(totalKpd, padX + labelColW + kpdColW / 2, ty);
       var colTotals = cols.map(function () { return 0; });
-      sdata.rows.forEach(function (_, ri) { cols.forEach(function (_2, ci) { colTotals[ci] += (parseInt(sdata.values['r' + ri + '_c' + ci]) || 0); }); });
+      sdata.rows.forEach(function (r, ri) { 
+        if (r.hidden) return;
+        cols.forEach(function (_2, ci) { colTotals[ci] += (parseInt(sdata.values['r' + ri + '_c' + ci]) || 0); }); 
+      });
       cols.forEach(function (_, ci) { ctx.fillText(colTotals[ci] > 0 ? String(colTotals[ci]) : '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, ty); });
-      var totalRemain = sdata.rows.reduce(function (a, row, ri) {
-        var rs = cols.reduce(function (s, _2, ci) { return s + (parseInt(sdata.values['r' + ri + '_c' + ci]) || 0); }, 0);
+      var totalRemain = sdata.rows.filter(function(r){return !r.hidden;}).reduce(function (a, row, ri) {
+        // Find original index for values
+        var originalRi = sdata.rows.indexOf(row);
+        var rs = cols.reduce(function (s, _2, ci) { return s + (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0); }, 0);
         return a + Math.max(0, row.kpd - rs);
       }, 0);
       ctx.fillStyle = '#2e7d32'; ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
