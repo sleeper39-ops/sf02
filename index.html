@@ -982,17 +982,22 @@
       flex-direction: column;
       gap: 4px;
       padding-top: 2px;
+      flex: 1;
+      min-width: 0;
     }
 
     .rpt-multi-person .mp-ctrl {
       display: flex;
       gap: 6px;
       align-items: center;
+      min-width: 0;
+      width: 100%;
     }
 
     .rpt-multi-person select {
       flex: 1;
-      max-width: 260px;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .btn-add-person {
@@ -1781,6 +1786,10 @@
     @media (max-width: 768px) {
       .mobile-rev { flex-direction: row-reverse; }
     }
+    @media screen and (max-width: 1024px) and (orientation: portrait) {
+      .col-portrait { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+      .row-portrait-align { align-items: flex-start !important; }
+    }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -1957,9 +1966,9 @@
                 placeholder="ระบุรายละเอียด..."></textarea></div>
           </div>
           <div class="rpt-section-title">5. ยอดกำลังพล</div>
-          <div class="rpt-row" style="align-items:center;">
-            <label>5.1 ยอดเดิม</label>
-            <div class="rpt-num-group" style="flex-wrap:wrap;align-items:center;">
+          <div class="rpt-row row-portrait-align" style="align-items:center;">
+            <label style="padding-top:4px;">5.1 ยอดเดิม</label>
+            <div class="rpt-num-group col-portrait" style="flex-wrap:wrap;align-items:center;">
               <span style="display:flex;align-items:center;gap:4px;">
                 <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
                 <span class="ng-label" style="font-size:11px;">นาย</span>
