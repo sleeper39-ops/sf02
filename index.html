@@ -2530,14 +2530,17 @@
       const n = document.getElementById('en_' + type + '_' + idx).value.trim(); const p = document.getElementById('ep_' + type + '_' + idx).value.trim(); if (!n) { alert('กรุณากรอกชื่อ'); return; }
       const data = type === 'officer' ? officers : clerks; data[idx] = { name: n, phone: p };
       if (type === 'officer') { renderOfficerTable(); populateSelect('officer_select', officers, 'นายทหารเวร'); } else { renderClerkTable(); populateSelect('clerk_select', clerks, 'เสมียนเวร'); }
+      savePersonnel();
     }
     function deletePerson(type, idx) {
       const data = type === 'officer' ? officers : clerks; if (!confirm('ลบ "' + data[idx].name + '"?')) return; data.splice(idx, 1);
       if (type === 'officer') { renderOfficerTable(); populateSelect('officer_select', officers, 'นายทหารเวร'); } else { renderClerkTable(); populateSelect('clerk_select', clerks, 'เสมียนเวร'); }
+      savePersonnel();
     }
     function movePerson(type, idx, dir) {
       const data = type === 'officer' ? officers : clerks; const ni = idx + dir; if (ni < 0 || ni >= data.length) return;[data[idx], data[ni]] = [data[ni], data[idx]];
       if (type === 'officer') { renderOfficerTable(); populateSelect('officer_select', officers, 'นายทหารเวร'); } else { renderClerkTable(); populateSelect('clerk_select', clerks, 'เสมียนเวร'); }
+      savePersonnel();
     }
     function openAddModal(type) {
       document.getElementById('addModalType').value = type; document.getElementById('addModalTitle').textContent = type === 'officer' ? 'เพิ่มนายทหารเวร' : 'เพิ่มเสมียนเวร';
@@ -2547,6 +2550,7 @@
       const type = document.getElementById('addModalType').value; const n = document.getElementById('addName').value.trim(); const p = document.getElementById('addPhone').value.trim(); if (!n) { alert('กรุณากรอกชื่อ'); return; }
       if (type === 'officer') { officers.push({ name: n, phone: p }); renderOfficerTable(); populateSelect('officer_select', officers, 'นายทหารเวร'); } else { clerks.push({ name: n, phone: p }); renderClerkTable(); populateSelect('clerk_select', clerks, 'เสมียนเวร'); }
       closeModal('addModal');
+      savePersonnel();
     }
 
     // ===========================
@@ -2616,16 +2620,18 @@
         row.appendChild(actions); div.appendChild(row);
       });
     }
-    function moveSchItem(grp, period, idx, dir) { const arr = schedules[grp][period]; const ni = idx + dir; if (ni < 0 || ni >= arr.length) return;[arr[idx], arr[ni]] = [arr[ni], arr[idx]]; renderSchItemsInDOM(grp, period); }
+    function moveSchItem(grp, period, idx, dir) { const arr = schedules[grp][period]; const ni = idx + dir; if (ni < 0 || ni >= arr.length) return;[arr[idx], arr[ni]] = [arr[ni], arr[idx]]; renderSchItemsInDOM(grp, period); saveSchedules(); }
     function saveSchItem(grp, period, idx) {
       const t = document.getElementById('scht_' + grp + '_' + period + '_' + idx).value.trim(); const d = document.getElementById('schd_' + grp + '_' + period + '_' + idx).value.trim(); if (!t || !d) { alert('กรุณากรอกเวลาและรายละเอียด'); return; }
       const prev = schedules[grp][period][idx]; schedules[grp][period][idx] = { time: t, text: d, ...(prev.prayerOnly ? { prayerOnly: true } : {}) };
       const row = document.getElementById('schrow_' + grp + '_' + period + '_' + idx); if (row) { row.style.background = '#d4ead8'; setTimeout(() => { row.style.background = ''; }, 900); }
+      saveSchedules();
     }
-    function deleteSchItem(grp, period, idx) { if (!confirm('ลบรายการนี้?')) return; schedules[grp][period].splice(idx, 1); renderSchItemsInDOM(grp, period); }
+    function deleteSchItem(grp, period, idx) { if (!confirm('ลบรายการนี้?')) return; schedules[grp][period].splice(idx, 1); renderSchItemsInDOM(grp, period); saveSchedules(); }
     function addSchItem(grp, period) {
       const t = document.getElementById('nat_' + grp + '_' + period).value.trim(); const d = document.getElementById('nad_' + grp + '_' + period).value.trim(); if (!t || !d) { alert('กรุณากรอกเวลาและรายละเอียด'); return; }
       schedules[grp][period].push({ time: t, text: d }); document.getElementById('nat_' + grp + '_' + period).value = ''; document.getElementById('nad_' + grp + '_' + period).value = ''; renderSchItemsInDOM(grp, period);
+      saveSchedules();
     }
 
     // ===========================
@@ -2740,8 +2746,89 @@
       }
     }
 
-    async function saveVehBase() { await storeSet('veh_base', vehBase); const lbl = document.getElementById('veh_saved_label'); lbl.textContent = '✓ บันทึก ' + tsNow(); lbl.style.display = 'inline'; }
-    async function loadVehBase() { const v = await storeGet('veh_base'); if (v !== null) { vehBase = parseInt(v) || 11; if (vehBase === 10) vehBase = 11; document.getElementById('rpt_veh_base_display').textContent = vehBase; calcVehicle(); } else { syncVehBase(); } }
+    async function saveVehBase() {
+      await storeSet('veh_base_full', { count: vehBase, list: vehicleData });
+      const lbl = document.getElementById('veh_saved_label');
+      if(lbl){ lbl.textContent = '✓ บันทึก ' + tsNow(); lbl.style.display = 'inline'; }
+    }
+    async function loadVehBase() {
+      const raw = await storeGet('veh_base_full');
+      if (raw) {
+        try {
+          const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (data) {
+            if (data.count !== undefined) vehBase = parseInt(data.count) || 11;
+            if (data.list && Array.isArray(data.list)) vehicleData = data.list;
+            
+            const display = document.getElementById('rpt_veh_base_display');
+            if (display) display.textContent = vehBase;
+            calcVehicle();
+            renderVehicleAdminTable();
+          }
+        } catch (e) { console.error('Load vehicular error:', e); }
+      } else {
+        // Fallback to legacy or sync
+        const vOld = await storeGet('veh_base');
+        if (vOld !== null) { vehBase = parseInt(vOld) || 11; }
+        syncVehBase();
+      }
+    }
+
+    async function savePersonnel() {
+      await storeSet('personnel_data_v2', { officers, clerks });
+    }
+    async function loadPersonnel() {
+      const raw = await storeGet('personnel_data_v2');
+      if (raw) {
+        try {
+          const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (data) {
+            if (data.officers) officers = data.officers;
+            if (data.clerks) clerks = data.clerks;
+            populateRptSelects();
+            renderOfficerTable();
+            renderClerkTable();
+            // Re-populate main dropdowns
+            populateSelect('officer_select', officers, 'นายทหารเวร');
+            populateSelect('clerk_select', clerks, 'เสมียนเวร');
+          }
+        } catch (e) { console.error('Load personnel error:', e); }
+      }
+    }
+
+    async function saveSchedules() {
+      await storeSet('schedules_data_v2', schedules);
+    }
+    async function loadSchedules() {
+      const raw = await storeGet('schedules_data_v2');
+      if (raw) {
+        try {
+          const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (data) {
+            schedules = data;
+            renderScheduleEditor();
+          }
+        } catch (e) { console.error('Load schedules error:', e); }
+      }
+    }
+
+    async function saveOsintItems() {
+      await storeSet('osint_items_v2', osintItems);
+    }
+    async function loadOsintItems() {
+      const raw = await storeGet('osint_items_v2');
+      if (raw) {
+        try {
+          const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (data && Array.isArray(data)) {
+            osintItems = data;
+            renderOsintAdmin();
+            populateAllOsintSelects();
+          }
+        } catch (e) { console.error('Load OSINT items error:', e); }
+      }
+    }
+
     function calcVehicle() { const out = parseInt(document.getElementById('rpt_veh_out').value) || 0; document.getElementById('rpt_veh_remain').textContent = Math.max(0, vehBase - out); }
     function toggleDetail(id, show) { document.getElementById(id).classList.toggle('hidden', !show); }
     function populateRptSelects() {
@@ -3590,8 +3677,8 @@
       renderSlideManager();
     }
 
-    function addOsintItem() { const inp = document.getElementById('osintNewItem'); const val = inp.value.trim(); if (!val) return; osintItems.push(val); inp.value = ''; renderOsintAdmin(); populateAllOsintSelects(); }
-    function deleteOsintItem(i) { if (!confirm('ลบ "' + osintItems[i] + '"?')) return; osintItems.splice(i, 1); renderOsintAdmin(); populateAllOsintSelects(); }
+    function addOsintItem() { const inp = document.getElementById('osintNewItem'); const val = inp.value.trim(); if (!val) return; osintItems.push(val); inp.value = ''; renderOsintAdmin(); populateAllOsintSelects(); saveOsintItems(); }
+    function deleteOsintItem(i) { if (!confirm('ลบ "' + osintItems[i] + '"?')) return; osintItems.splice(i, 1); renderOsintAdmin(); populateAllOsintSelects(); saveOsintItems(); }
 
     // MAP
     function handleMapUpload(event, sn) {
@@ -4609,8 +4696,11 @@
     // INIT
     // ===========================
     populateRptSelects();
+    loadPersonnel();
     loadStrength();
     loadVehBase();
+    loadSchedules();
+    loadOsintItems();
     checkConnection();
     buildDischargeRows();
     // Combined Load Sequence for PPTX report
