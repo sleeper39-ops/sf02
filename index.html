@@ -2013,7 +2013,7 @@
           <div class="rpt-section-title">6. สถานภาพยานพาหนะ</div>
           <div class="rpt-row"><label>6.1 ยอดเดิม</label>
             <div class="rpt-ctrl" style="display:flex;align-items:center;gap:8px;">
-              <strong id="rpt_veh_base_display">0</strong><span style="font-size:13px;">คัน</span>
+              <strong id="rpt_veh_base_display">11</strong><span style="font-size:13px;">คัน</span>
               <span id="veh_saved_label"
                 style="font-size:10px;color:var(--olive-light);display:none;margin-left:8px;"></span>
             </div>
@@ -2029,7 +2029,7 @@
             </div>
           </div>
           <div class="rpt-row"><label>6.3 คงเหลือ</label>
-            <div class="rpt-ctrl"><span class="rpt-computed" id="rpt_veh_remain">10</span><span
+            <div class="rpt-ctrl"><span class="rpt-computed" id="rpt_veh_remain">11</span><span
                 style="font-size:13px;margin-left:4px;">คัน</span></div>
           </div>
           <div class="rpt-section-title">7. การสั่งการที่สำคัญของ ผบช.</div>
@@ -2302,7 +2302,7 @@
     const pptxPhotos = {};
     const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ลาป่วย', 'ขออนุญาต', 'ขาด', 'หนี', 'ราชการ'], values: {} };
     const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ลาป่วย', 'ขออนุญาต', 'ขาด', 'หนี', 'ราชการ'], values: {} };
-    const vehicleData = [
+    let vehicleData = [
       { num: 1, name: 'รดส.ขนาดเล็ก (รถตู้)', brand: 'TOYOTA Commuter ปี 2016 สีเทา', source: 'รถจัดหา', plate: 'นข 8522 ขก.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
       { num: 2, name: 'รถยนต์นั่งส่วนบุคคล (เก๋ง)', brand: 'NISSAN TEANA ปี 2012 สีบรอนซ์', source: 'รถจัดหา', plate: '1 กล 3213 กทม.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
       { num: 3, name: 'รถยนต์นั่งส่วนบุคคล (เก๋ง)', brand: 'CHEVROLET CRUZE ปี 2012 สีเทา', source: 'รถจัดหา', plate: 'ขท 843 อด.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
@@ -2315,7 +2315,6 @@
       { num: 10, name: 'รยบ.ปกติขนาดเล็ก (กระบะ)', brand: 'TOYOTA REVO', source: 'รถเช่า', plate: '1 ฒช 3107', unit: 'รพศ.2 พัน.1', usage: '', maintenance: '' },
       { num: 11, name: 'รยบ.ปกติขนาดเล็ก (กระบะ)', brand: 'TOYOTA REVO', source: 'รถเช่า', plate: '1 ฒช 3109', unit: 'รพศ.2 พัน.2', usage: '', maintenance: '' },
     ];
-    let vehicleTotalCount = 11;
     const mapState = { 13: { stars: [], photo: DEFAULT_MAP_URL }, 14: { stars: [], photo: DEFAULT_MAP_URL } };
     const slide12_13 = { 13: { title: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว', text: '', osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)', photo: null }, 14: { title: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว', text: '', osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)', photo: null } };
     let useArabicNum = true; // true=arabic, false=thai
