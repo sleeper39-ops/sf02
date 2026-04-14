@@ -1328,6 +1328,7 @@
       min-width: 60px;
       background: rgba(255, 255, 255, 0.1);
       color: white;
+      text-align: center;
     }
 
     .vehicle-table td input[type=text]:focus {
@@ -1783,19 +1784,51 @@
       height: 1px;
       background: rgba(201, 168, 76, 0.3);
     }
+
     @media (max-width: 768px) {
-      .mobile-rev { flex-direction: row-reverse; }
+      .mobile-rev {
+        flex-direction: row-reverse;
+      }
     }
+
     @media screen and (max-width: 1024px) and (orientation: portrait) {
-      .col-portrait { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
-      .row-portrait-align { align-items: flex-start !important; }
-      .col-portrait .align-label { width: 64px; text-align: right; display: inline-block; }
-      .hide-on-mobile { display: none !important; }
-      .grid-narrow-label { grid-template-columns: 110px 1fr !important; }
-      .grid-match-5-2-1 { grid-template-columns: 130px 1fr !important; }
-      .mobile-spacer { width: 64px; display: inline-block !important; }
+      .col-portrait {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+      }
+
+      .row-portrait-align {
+        align-items: flex-start !important;
+      }
+
+      .col-portrait .align-label {
+        width: 64px;
+        text-align: right;
+        display: inline-block;
+      }
+
+      .hide-on-mobile {
+        display: none !important;
+      }
+
+      .grid-narrow-label {
+        grid-template-columns: 110px 1fr !important;
+      }
+
+      .grid-match-5-2-1 {
+        grid-template-columns: 130px 1fr !important;
+      }
+
+      .mobile-spacer {
+        width: 64px;
+        display: inline-block !important;
+      }
     }
-    .mobile-spacer { display: none; }
+
+    .mobile-spacer {
+      display: none;
+    }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -1878,12 +1911,12 @@
           </div>
           <div class="rpt-section-title">1. ผู้ปฏิบัติหน้าที่</div>
           <div class="rpt-row"><label>1.1 นายทหารเวร</label>
-            <div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;max-width:380px;">
+            <div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;max-width:380px;" onchange="onRptOfficerChange()">
                 <option value="">— เลือก —</option>
               </select></div>
           </div>
           <div class="rpt-row"><label>1.2 เสมียนเวร</label>
-            <div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;max-width:380px;">
+            <div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;max-width:380px;" onchange="onRptClerkChange()">
                 <option value="">— เลือก —</option>
               </select></div>
           </div>
@@ -1977,25 +2010,30 @@
             <div class="rpt-num-group col-portrait" style="flex-wrap:nowrap;align-items:center;">
               <span style="display:flex;align-items:center;gap:4px;">
                 <span class="mobile-spacer"></span>
-                <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <input type="number" id="rpt_total" min="0" max="999" value="0" oninput="calcStrength()"
+                  style="width:46px;">
                 <span class="ng-label" style="font-size:11px;">นาย</span>
               </span>
-              
+
               <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label align-label" style="font-size:11px;">น.</span>
-                <input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <input type="number" id="rpt_n" min="0" max="999" value="0" oninput="calcStrength()"
+                  style="width:46px;">
               </span>
               <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label align-label" style="font-size:11px;">ส.</span>
-                <input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <input type="number" id="rpt_s" min="0" max="999" value="0" oninput="calcStrength()"
+                  style="width:46px;">
               </span>
               <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label align-label" style="font-size:11px;">พลฯ</span>
-                <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()" style="width:46px;">
+                <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()"
+                  style="width:46px;">
               </span>
               <span style="display:flex;align-items:center;gap:4px;">
                 <span class="ng-label align-label" style="font-size:11px;">กพ.ข่ายฯ</span>
-                <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()" style="width:46px;">
+                <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()"
+                  style="width:46px;">
                 <button onclick="saveStrength()"
                   style="margin-left:4px;width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">💾</button>
                 <span id="strength_saved_label"
@@ -2263,8 +2301,10 @@
   </div>
 
   <!-- MOBILE EXPORT MODAL -->
-  <div id="mobileExportModal" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100%;height:100%;background:rgba(20,22,16,0.95);overflow-y:auto;padding:20px;text-align:center;backdrop-filter:blur(5px);">
-    <div style="background:#2e3328;padding:20px;border-radius:12px;max-width:800px;margin:0 auto;color:white;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.3);">
+  <div id="mobileExportModal"
+    style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100%;height:100%;background:rgba(20,22,16,0.95);overflow-y:auto;padding:20px;text-align:center;backdrop-filter:blur(5px);">
+    <div
+      style="background:#2e3328;padding:20px;border-radius:12px;max-width:800px;margin:0 auto;color:white;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.3);">
       <h2 style="margin-top:0;color:#e8c97a;font-size:22px;">📲 บันทึกรูปภาพ (สำหรับมือถือ/ไอแพด)</h2>
       <p style="font-size:16px;margin-bottom:20px;color:#c9cfae;line-height:1.5;">
         เนื่องจากมือถือบางรุ่นและแอปเบราว์เซอร์ทำการบล็อกการดาวน์โหลดอัตโนมัติหลายรูปพร้อมกัน<br>
@@ -2273,7 +2313,9 @@
       <div id="mobileExportContainer" style="display:flex;flex-direction:column;gap:20px;align-items:center;">
       </div>
       <div style="margin-top:30px;">
-        <button onclick="document.getElementById('mobileExportModal').style.display='none'" style="background:linear-gradient(135deg, #4caf50, #2e7d32);color:white;border:none;padding:12px 30px;border-radius:5px;font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);">✅ เสร็จสิ้น / ปิดหน้าต่างนี้</button>
+        <button onclick="document.getElementById('mobileExportModal').style.display='none'"
+          style="background:linear-gradient(135deg, #4caf50, #2e7d32);color:white;border:none;padding:12px 30px;border-radius:5px;font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);">✅
+          เสร็จสิ้น / ปิดหน้าต่างนี้</button>
       </div>
     </div>
   </div>
@@ -2300,8 +2342,8 @@
     // PPTX STATE
     // ===========================
     const pptxPhotos = {};
-    const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ลาป่วย', 'ขออนุญาต', 'ขาด', 'หนี', 'ราชการ'], values: {} };
-    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ลาป่วย', 'ขออนุญาต', 'ขาด', 'หนี', 'ราชการ'], values: {} };
+    const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
+    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
     let vehicleData = [
       { num: 1, name: 'รดส.ขนาดเล็ก (รถตู้)', brand: 'TOYOTA Commuter ปี 2016 สีเทา', source: 'รถจัดหา', plate: 'นข 8522 ขก.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
       { num: 2, name: 'รถยนต์นั่งส่วนบุคคล (เก๋ง)', brand: 'NISSAN TEANA ปี 2012 สีบรอนซ์', source: 'รถจัดหา', plate: '1 กล 3213 กทม.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
@@ -2421,8 +2463,20 @@
     // ===========================
     let selectedOfficer = null, selectedClerk = null;
     function populateSelect(id, data, label) { const sel = document.getElementById(id); const prev = sel.value; sel.innerHTML = `<option value="">— เลือก${label} —</option>`; data.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = `${p.name}  |  ${p.phone}`; sel.appendChild(o); }); if (prev !== '' && parseInt(prev) < data.length) sel.value = prev; else sel.value = ''; }
-    function onOfficerChange() { const v = document.getElementById('officer_select').value; selectedOfficer = v !== '' ? officers[parseInt(v)] : null; }
-    function onClerkChange() { const v = document.getElementById('clerk_select').value; selectedClerk = v !== '' ? clerks[parseInt(v)] : null; }
+    function onOfficerChange() {
+      const v = document.getElementById('officer_select').value;
+      selectedOfficer = v !== '' ? officers[parseInt(v)] : null;
+      // Sync to report
+      const rptO = document.getElementById('rpt_officer');
+      if (rptO) rptO.value = v;
+    }
+    function onClerkChange() {
+      const v = document.getElementById('clerk_select').value;
+      selectedClerk = v !== '' ? clerks[parseInt(v)] : null;
+      // Sync to report
+      const rptC = document.getElementById('rpt_clerk');
+      if (rptC) rptC.value = v;
+    }
     populateSelect('officer_select', officers, 'นายทหารเวร');
     populateSelect('clerk_select', clerks, 'เสมียนเวร');
 
@@ -2694,6 +2748,7 @@
           o.textContent = p.name;
           sel.appendChild(o);
         });
+        renderPersonList(cat.id);
       });
     }
 
@@ -2735,6 +2790,8 @@
       if (el) el.textContent = vehBase;
       saveVehBase();
       calcVehicle();
+      // Sync personnel to report
+      syncPersonnelToReport();
       buildAllSlides();
       // Feedback to user
       const lbl = document.getElementById('veh_saved_label');
@@ -2748,7 +2805,7 @@
     async function saveVehBase() {
       await storeSet('veh_base_full', { count: vehBase, list: vehicleData });
       const lbl = document.getElementById('veh_saved_label');
-      if(lbl){ lbl.textContent = '✓ บันทึก ' + tsNow(); lbl.style.display = 'inline'; }
+      if (lbl) { lbl.textContent = '✓ บันทึก ' + tsNow(); lbl.style.display = 'inline'; }
     }
     async function loadVehBase() {
       const raw = await storeGet('veh_base_full');
@@ -2758,7 +2815,7 @@
           if (data) {
             if (data.count !== undefined) vehBase = parseInt(data.count) || 11;
             if (data.list && Array.isArray(data.list)) vehicleData = data.list;
-            
+
             const display = document.getElementById('rpt_veh_base_display');
             if (display) display.textContent = vehBase;
             calcVehicle();
@@ -2775,6 +2832,11 @@
 
     async function savePersonnel() {
       await storeSet('personnel_data_v2', { officers, clerks });
+      syncPersonnelToReport();
+    }
+    function syncPersonnelToReport() {
+      populateRptSelects();
+      buildDischargeRows();
     }
     async function loadPersonnel() {
       const raw = await storeGet('personnel_data_v2');
@@ -2784,7 +2846,7 @@
           if (data) {
             if (data.officers) officers = data.officers;
             if (data.clerks) clerks = data.clerks;
-            populateRptSelects();
+            syncPersonnelToReport();
             renderOfficerTable();
             renderClerkTable();
             // Re-populate main dropdowns
@@ -2830,13 +2892,39 @@
 
     function calcVehicle() { const out = parseInt(document.getElementById('rpt_veh_out').value) || 0; document.getElementById('rpt_veh_remain').textContent = Math.max(0, vehBase - out); }
     function toggleDetail(id, show) { document.getElementById(id).classList.toggle('hidden', !show); }
+    function onRptOfficerChange() {
+      const v = document.getElementById('rpt_officer').value;
+      const mainO = document.getElementById('officer_select');
+      if (mainO) {
+        mainO.value = v;
+        onOfficerChange();
+      }
+    }
+    function onRptClerkChange() {
+      const v = document.getElementById('rpt_clerk').value;
+      const mainC = document.getElementById('clerk_select');
+      if (mainC) {
+        mainC.value = v;
+        onClerkChange();
+      }
+    }
+
     function populateRptSelects() {
       const rptO = document.getElementById('rpt_officer'); const rptC = document.getElementById('rpt_clerk');
       const prevO = rptO.value, prevC = rptC.value;
       rptO.innerHTML = '<option value="">— เลือกนายทหารเวร —</option>'; rptC.innerHTML = '<option value="">— เลือกเสมียนเวร —</option>';
       officers.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.name + ' | ' + p.phone; rptO.appendChild(o); });
       clerks.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.name + ' | ' + p.phone; rptC.appendChild(o); });
-      if (prevO) rptO.value = prevO; if (prevC) rptC.value = prevC;
+      
+      // Initial sync from main page selection
+      const mainO = document.getElementById('officer_select');
+      const mainC = document.getElementById('clerk_select');
+      if (mainO && mainO.value !== '') rptO.value = mainO.value;
+      else if (prevO) rptO.value = prevO;
+
+      if (mainC && mainC.value !== '') rptC.value = mainC.value;
+      else if (prevC) rptC.value = prevC;
+
       document.getElementById('rptDateDisplay').textContent = thDate(now);
     }
     function getVal(id) { return document.getElementById(id).value; }
@@ -3218,10 +3306,13 @@
       var sdata = modelId === 10 ? slide9Data : slide10Data;
       var sDate = modelId === 10 ? pptxDate10 : pptxDate11;
       var wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
-      var tableHtml = '<div class="pptx-table-wrap"><div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;"><span>' + slide.title + '</span><div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);"><button onclick="changePptxDateSn(' + modelId + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button><span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span><button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button></div></div><table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + sdata.cols.map(c => '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>').join('') + '<th>' + (modelId === 10 ? 'คงเหลือ กพ. ปฏิบัติงาน' : 'รวมแถว') + '</th></tr></thead><tbody>';
+      var tableHtml = '<div class="pptx-table-wrap"><div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;"><span>' + slide.title + '</span><div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);"><button onclick="changePptxDateSn(' + modelId + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button><span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span><button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button></div></div><table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + sdata.cols.map(c => '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>').join('') + '<th style="white-space:nowrap;line-height:1.2;font-size:' + (modelId === 10 ? '10px' : '12px') + ';">' + (modelId === 10 ? 'คงเหลือ กพ.<br>ปฏิบัติงาน' : 'รวมแถว') + '</th></tr></thead><tbody>';
       sdata.rows.forEach((row, ri) => {
         if (row.hidden) return;
-        tableHtml += '<tr><td class="row-label">' + row.label + '</td><td style="text-align:center;padding:2px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button><span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button></div></td>' + sdata.cols.map((_, ci) => '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>').join('') + '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
+        tableHtml += '<tr><td class="row-label">' + row.label + '</td><td style="text-align:center;padding:2px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button><span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button></div></td>' + sdata.cols.map((c, ci) => {
+          if (c === 'รวมจำหน่าย') return '<td style="text-align:center;font-weight:600;font-size:13px;color:#e8c97a;" class="row_discharge_val_' + modelId + '_' + ri + '">-</td>';
+          return '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>';
+        }).join('') + '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
       });
       tableHtml += '<tr class="total-row"><td class="row-label">รวม</td><td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' + sdata.cols.map((_, ci) => '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>').join('') + '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
       tableHtml += '</tbody></table></div><div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button><span class="saved-ts saved_ts_val_' + modelId + '"></span></div>';
@@ -3247,8 +3338,20 @@
       let totalKpd = 0; const colTotals = sdata.cols.map(() => 0); let totalRemain = 0;
       sdata.rows.forEach((row, ri) => {
         if (row.hidden) return;
-        totalKpd += row.kpd; let rowSum = 0;
-        sdata.cols.forEach((_, ci) => { const v = parseInt(sdata.values['r' + ri + '_c' + ci]) || 0; rowSum += v; colTotals[ci] += v; });
+        totalKpd += row.kpd; let rowSum = 0; let rowDischarge = 0;
+        sdata.cols.forEach((c, ci) => {
+          if (c === 'รวมจำหน่าย') return;
+          const v = parseInt(sdata.values['r' + ri + '_c' + ci]) || 0;
+          rowSum += v;
+          rowDischarge += v;
+          colTotals[ci] += v;
+        });
+        // Update row discharge
+        const dischargeCi = sdata.cols.indexOf('รวมจำหน่าย');
+        if (dischargeCi !== -1) {
+          colTotals[dischargeCi] += rowDischarge;
+          document.querySelectorAll('.row_discharge_val_' + modelId + '_' + ri).forEach(el => el.textContent = rowDischarge);
+        }
         const remain = Math.max(0, row.kpd - rowSum); totalRemain += remain;
         document.querySelectorAll('.remain_val_' + modelId + '_' + ri).forEach(el => el.textContent = remain);
         document.querySelectorAll('.kpd_val_' + modelId + '_' + ri).forEach(el => el.textContent = row.kpd);
@@ -3288,7 +3391,7 @@
         const sdata = sn === 10 ? slide9Data : slide10Data;
         if (data.values) Object.assign(sdata.values, data.values);
         if (data.rows && Array.isArray(data.rows)) {
-            sdata.rows = data.rows.map(r => ({ label: r.label, kpd: r.kpd || 0, hidden: !!r.hidden }));
+          sdata.rows = data.rows.map(r => ({ label: r.label, kpd: r.kpd || 0, hidden: !!r.hidden }));
         } else if (data.kpdList && Array.isArray(data.kpdList)) {
           data.kpdList.forEach((k, i) => {
             if (sdata.rows[i]) {
@@ -3306,7 +3409,17 @@
       const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
       let html = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + seq + '</span></div><div class="vehicle-table-wrap"><div class="pptx-table-title" style="text-align:center;font-size:14px;font-weight:700;margin-bottom:8px;">' + slide.title + '</div><table class="vehicle-table"><thead><tr><th width="24">ลำดับ</th><th>ชื่อ</th><th>ยี่ห้อ/แบบรุ่น</th><th>การได้มา</th><th>หมายเลขทะเบียน</th><th>หน่วยครอบครอง</th><th style="min-width:80px;">การใช้งาน</th><th style="min-width:80px;">การปรนนิบัติบำรุง</th></tr></thead><tbody>';
       vehicleData.forEach((v, i) => {
-        html += '<tr><td style="text-align:center;font-size:10px;">' + v.num + '</td><td style="font-size:10px;">' + v.name + '</td><td style="font-size:10px;">' + v.brand + '</td><td style="font-size:10px;">' + v.source + '</td><td style="font-size:10px;">' + v.plate + '</td><td style="font-size:10px;">' + v.unit + '</td><td><input type="text" class="veh_usage_' + i + '" value="' + v.usage + '" placeholder="-" oninput="updateVehUsage(' + i + ',this.value)"></td><td><input type="text" class="veh_maint_' + i + '" value="' + v.maintenance + '" placeholder="-" oninput="updateVehMaint(' + i + ',this.value)"></td></tr>';
+        const align = (val) => (val === '-' || !val) ? 'text-align:center;' : '';
+        html += '<tr>' +
+          '<td style="text-align:center;font-size:10px;">' + v.num + '</td>' +
+          '<td style="font-size:10px;' + align(v.name) + '">' + v.name + '</td>' +
+          '<td style="font-size:10px;' + align(v.brand) + '">' + v.brand + '</td>' +
+          '<td style="font-size:10px;' + align(v.source) + '">' + v.source + '</td>' +
+          '<td style="font-size:10px;' + align(v.plate) + '">' + v.plate + '</td>' +
+          '<td style="font-size:10px;' + align(v.unit) + '">' + v.unit + '</td>' +
+          '<td><input type="text" class="veh_usage_' + i + '" value="' + v.usage + '" placeholder="-" oninput="updateVehUsage(' + i + ',this.value)"></td>' +
+          '<td><input type="text" class="veh_maint_' + i + '" value="' + v.maintenance + '" placeholder="-" oninput="updateVehMaint(' + i + ',this.value)"></td>' +
+          '</tr>';
       });
       html += '</tbody></table></div><div style="font-size:10px;color:rgba(255,255,255,0.35);padding:4px 8px 8px;">* ช่องที่ไม่กรอกจะแสดงเป็น " - " ในผลลัพธ์</div>';
       wrap.innerHTML = html;
@@ -3531,42 +3644,42 @@
             const rcon = document.createElement('div');
             rcon.style.cssText = 'margin:10px 0 10px 36px; padding:10px; background:rgba(0,0,0,0.03); border-radius:4px; border:1px dashed rgba(0,0,0,0.1);';
             rcon.innerHTML = '<div style="font-size:11px; font-weight:bold; margin-bottom:8px; color:rgba(0,0,0,0.6);">การจัดการแถวข้อมูล (หัวข้อกำลังพล)</div>';
-            
+
             sdata.rows.forEach((r, ri) => {
-                const rRow = document.createElement('div');
-                rRow.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:4px;';
-                
-                const rInp = document.createElement('input');
-                rInp.type = 'text';
-                rInp.value = r.label;
-                rInp.placeholder = 'ชื่อหัวข้อกำลังพล';
-                rInp.style.cssText = 'flex:1; font-size:11px; padding:4px 8px; border:1px solid rgba(0,0,0,0.15); border-radius:3px; background:white; color:black; font-family:\'Sarabun\',sans-serif;';
-                rInp.oninput = () => { r.label = rInp.value; saveSlide910Data(slide.id); buildAllSlides(); };
-                
-                const btnVis = document.createElement('button');
-                btnVis.className = 'btn-sm';
-                btnVis.style.cssText = 'font-size:10px; padding:3px 8px; border-radius:3px; cursor:pointer; background:' + (r.hidden ? '#f0f0f0' : 'rgba(201,168,76,0.15)') + '; border:1px solid rgba(0,0,0,0.15); color:black;';
-                btnVis.textContent = r.hidden ? '👁 แสดง' : '👁‍🗨 ซ่อน';
-                btnVis.title = r.hidden ? 'แสดงแถวนี้' : 'ซ่อนแถวนี้';
-                btnVis.onclick = () => { r.hidden = !r.hidden; saveSlide910Data(slide.id); buildAllSlides(); renderSlideManager(); };
+              const rRow = document.createElement('div');
+              rRow.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:4px;';
 
-                const btnDelR = document.createElement('button');
-                btnDelR.className = 'btn-sm btn-delete';
-                btnDelR.style.cssText = 'font-size:10px; padding:3px 6px; border-radius:3px;';
-                btnDelR.textContent = '✕';
-                btnDelR.title = 'ลบแถวนี้';
-                btnDelR.onclick = () => { 
-                    if(!confirm('ลบหัวข้อ "' + r.label + '"?')) return;
-                    sdata.rows.splice(ri, 1); 
-                    saveSlide910Data(slide.id); 
-                    buildAllSlides(); 
-                    renderSlideManager(); 
-                };
+              const rInp = document.createElement('input');
+              rInp.type = 'text';
+              rInp.value = r.label;
+              rInp.placeholder = 'ชื่อหัวข้อกำลังพล';
+              rInp.style.cssText = 'flex:1; font-size:11px; padding:4px 8px; border:1px solid rgba(0,0,0,0.15); border-radius:3px; background:white; color:black; font-family:\'Sarabun\',sans-serif;';
+              rInp.oninput = () => { r.label = rInp.value; saveSlide910Data(slide.id); buildAllSlides(); };
 
-                rRow.appendChild(rInp);
-                rRow.appendChild(btnVis);
-                rRow.appendChild(btnDelR);
-                rcon.appendChild(rRow);
+              const btnVis = document.createElement('button');
+              btnVis.className = 'btn-sm';
+              btnVis.style.cssText = 'font-size:10px; padding:3px 8px; border-radius:3px; cursor:pointer; background:' + (r.hidden ? '#f0f0f0' : 'rgba(201,168,76,0.15)') + '; border:1px solid rgba(0,0,0,0.15); color:black;';
+              btnVis.textContent = r.hidden ? '👁 แสดง' : '👁‍🗨 ซ่อน';
+              btnVis.title = r.hidden ? 'แสดงแถวนี้' : 'ซ่อนแถวนี้';
+              btnVis.onclick = () => { r.hidden = !r.hidden; saveSlide910Data(slide.id); buildAllSlides(); renderSlideManager(); };
+
+              const btnDelR = document.createElement('button');
+              btnDelR.className = 'btn-sm btn-delete';
+              btnDelR.style.cssText = 'font-size:10px; padding:3px 6px; border-radius:3px;';
+              btnDelR.textContent = '✕';
+              btnDelR.title = 'ลบแถวนี้';
+              btnDelR.onclick = () => {
+                if (!confirm('ลบหัวข้อ "' + r.label + '"?')) return;
+                sdata.rows.splice(ri, 1);
+                saveSlide910Data(slide.id);
+                buildAllSlides();
+                renderSlideManager();
+              };
+
+              rRow.appendChild(rInp);
+              rRow.appendChild(btnVis);
+              rRow.appendChild(btnDelR);
+              rcon.appendChild(rRow);
             });
 
             const btnAddR = document.createElement('button');
@@ -3796,9 +3909,9 @@
     function handleRpPhoto(event, sn) {
       const file = event.target.files[0]; if (!file) return;
       const reader = new FileReader();
-      reader.onload = function (e) { 
-        slide12_13[sn].photo = e.target.result; 
-        updateRpPhotoZone(sn, e.target.result); 
+      reader.onload = function (e) {
+        slide12_13[sn].photo = e.target.result;
+        updateRpPhotoZone(sn, e.target.result);
         buildAllSlides(); // Sync for export preview
       };
       reader.readAsDataURL(file);
@@ -3905,18 +4018,16 @@
         const sn = slide.id;
         btn.innerHTML = `⏳ กำลังประมวลผลรูปที่ ${i + 1}/${validSlides.length}`;
 
-        // Redraw to ensure correct data
-        let canvas = document.getElementById('slideCanvas_' + sn);
-        if (!canvas) {
-          canvas = document.createElement('canvas');
-          canvas.width = 1280; canvas.height = 720;
-          const ctx = canvas.getContext('2d');
-          drawSlide(ctx, 1280, 720, sn);
-        } else {
-          drawSlideToCanvas(sn);
-        }
+        // Use a dedicated high-res canvas for export to ensure 1280x720 regardless of screen size
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = 1280;
+        exportCanvas.height = 720;
+        const ctx = exportCanvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        drawSlide(ctx, 1280, 720, sn);
 
-        const dataUrl = canvas.toDataURL('image/png', 1.0);
+        const dataUrl = exportCanvas.toDataURL('image/png', 1.0);
         const base64Data = dataUrl.split(',')[1];
 
         const sName = slide.title.replace(/[\/\\?%*:|"<>]/g, '-');
@@ -3958,28 +4069,26 @@
         const sn = slide.id;
         btn.innerHTML = `⏳ กำลังโหลดรูปที่ ${i + 1}/${validSlides.length}`;
 
-        // Redraw to ensure correct data
-        let canvas = document.getElementById('slideCanvas_' + sn);
-        if (!canvas) {
-          canvas = document.createElement('canvas');
-          canvas.width = 1280; canvas.height = 720;
-          const ctx = canvas.getContext('2d');
-          drawSlide(ctx, 1280, 720, sn);
-        } else {
-          drawSlideToCanvas(sn);
-        }
+        // Use a dedicated high-res canvas for export to ensure 1280x720 regardless of screen size
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = 1280;
+        exportCanvas.height = 720;
+        const ctx = exportCanvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        drawSlide(ctx, 1280, 720, sn);
 
-        const dataUrl = canvas.toDataURL('image/png', 1.0);
-        
+        const dataUrl = exportCanvas.toDataURL('image/png', 1.0);
+
         const img = new Image();
         img.src = dataUrl;
         img.style.width = '100%';
         img.style.borderRadius = '8px';
         img.style.border = '2px solid rgba(201,168,76,0.3)';
         img.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
-        
+
         container.appendChild(img);
-        
+
         // Small delay to allow consecutive canvas renders without freezing UI completely
         await new Promise(resolve => setTimeout(resolve, 100));
       }
@@ -4117,14 +4226,14 @@
       var cols = sdata.cols;
       var numCols = cols.length + 3; // label,kpd,...cols,remain (no # col)
       // label col wider, others equal
-      var labelColW = tW * 0.22;
+      var labelColW = tW * 0.20;
       var kpdColW = tW * 0.08;
-      var remainColW = tW * 0.10;
+      var remainColW = tW * 0.12;
       var otherW = (tW - labelColW - kpdColW - remainColW) / cols.length;
       var colWidths = [labelColW, kpdColW, ...cols.map(function () { return otherW; }), remainColW];
       var colW = tW / numCols; // fallback
       var subH = H * 0.08; // reduce header height
-      var visibleRows = sdata.rows.filter(function(r) { return !r.hidden; });
+      var visibleRows = sdata.rows.filter(function (r) { return !r.hidden; });
       var rowH = (H - tStart - H * 0.12 - subH) / (visibleRows.length + 1); // reduce row height by increasing bottom margin
 
       // Table header: matches pptx-table th (#2e3328, gold-light, border gold)
@@ -4141,9 +4250,9 @@
         var maxW = cw - 6;
         xCursor += cw;
         ctx.textAlign = 'center';
-        // Split into 2 lines if text is too long
+        // Split into 2 lines if text is too long (but not for "รวมแถว")
         var meas = ctx.measureText(h);
-        if (meas.width > maxW && h.indexOf(' ') >= 0) {
+        if (meas.width > maxW && h.indexOf(' ') >= 0 && h !== 'รวมแถว') {
           var mid = Math.floor(h.length / 2);
           var sp = h.indexOf(' ', mid);
           if (sp < 0) sp = h.lastIndexOf(' ', mid);
@@ -4198,7 +4307,13 @@
         ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
         ctx.textAlign = 'center'; ctx.fillText(row.kpd, padX + labelColW + kpdColW / 2, cy);
         var rowSum = 0;
-        cols.forEach(function (_, ci) {
+        cols.forEach(function (c, ci) {
+          if (c === 'รวมจำหน่าย') {
+            ctx.fillStyle = '#e8c97a';
+            ctx.fillText(rowSum || '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, cy);
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            return;
+          }
           var v = parseInt(sdata.values['r' + ri + '_c' + ci]) || 0; rowSum += v;
           ctx.fillText(v || '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, cy);
         });
@@ -4220,18 +4335,30 @@
       var ty = totY + rowH / 2;
       ctx.textAlign = 'center';
       ctx.fillText('รวม', padX + labelColW / 2, ty);
-      var totalKpd = sdata.rows.filter(function(r){return !r.hidden;}).reduce(function (a, r) { return a + r.kpd; }, 0);
+      var totalKpd = sdata.rows.filter(function (r) { return !r.hidden; }).reduce(function (a, r) { return a + r.kpd; }, 0);
       ctx.fillText(totalKpd, padX + labelColW + kpdColW / 2, ty);
       var colTotals = cols.map(function () { return 0; });
-      sdata.rows.forEach(function (r, ri) { 
+      sdata.rows.forEach(function (r, ri) {
         if (r.hidden) return;
-        cols.forEach(function (_2, ci) { colTotals[ci] += (parseInt(sdata.values['r' + ri + '_c' + ci]) || 0); }); 
+        var originalRi = sdata.rows.indexOf(r);
+        var rowSum = 0;
+        cols.forEach(function (c, ci) {
+          if (c === 'รวมจำหน่าย') return;
+          var v = (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0);
+          colTotals[ci] += v;
+          rowSum += v;
+        });
+        var dischargeCi = cols.indexOf('รวมจำหน่าย');
+        if (dischargeCi !== -1) colTotals[dischargeCi] += rowSum;
       });
       cols.forEach(function (_, ci) { ctx.fillText(colTotals[ci] > 0 ? String(colTotals[ci]) : '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, ty); });
-      var totalRemain = sdata.rows.filter(function(r){return !r.hidden;}).reduce(function (a, row, ri) {
+      var totalRemain = sdata.rows.filter(function (r) { return !r.hidden; }).reduce(function (a, row, ri) {
         // Find original index for values
         var originalRi = sdata.rows.indexOf(row);
-        var rs = cols.reduce(function (s, _2, ci) { return s + (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0); }, 0);
+        var rs = cols.reduce(function (s, c, ci) {
+          if (c === 'รวมจำหน่าย') return s;
+          return s + (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0);
+        }, 0);
         return a + Math.max(0, row.kpd - rs);
       }, 0);
       ctx.fillStyle = '#2e7d32'; ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
@@ -4275,9 +4402,15 @@
         ctx.textBaseline = 'middle';
         cwF.forEach(function (f, i) {
           var cw = tW * f;
-          ctx.textAlign = i === 0 ? 'center' : 'left';
-          var tx = i === 0 ? xOff + cw / 2 : xOff + 3;
-          ctx.fillText(cells[i] || '-', tx, rY + dataRowH / 2, cw - 5);
+          var val = cells[i] || '-';
+          // Center if it's the index 0 (ลำดับ) or if the value is '-'
+          if (i === 0 || val === '-') {
+            ctx.textAlign = 'center';
+            ctx.fillText(val, xOff + cw / 2, rY + dataRowH / 2, cw - 5);
+          } else {
+            ctx.textAlign = 'left';
+            ctx.fillText(val, xOff + 3, rY + dataRowH / 2, cw - 5);
+          }
           ctx.strokeStyle = 'rgba(74,82,64,0.4)'; ctx.lineWidth = 0.4;
           ctx.beginPath(); ctx.moveTo(xOff + cw, rY); ctx.lineTo(xOff + cw, rY + dataRowH); ctx.stroke();
           xOff += cw;
@@ -4437,7 +4570,7 @@
           }
           ctx.fillText(line, rightX + pPad, ly);
         });
-        
+
         ctx.restore();
         ctx.textBaseline = 'alphabetic';
       }
@@ -4473,7 +4606,7 @@
       if (!text) return [];
       var lines = [];
       var paragraphs = text.split('\n');
-      
+
       var segmenter = null;
       if (typeof Intl !== 'undefined' && Intl.Segmenter) {
         segmenter = new Intl.Segmenter('th', { granularity: 'word' });
@@ -4481,7 +4614,7 @@
 
       paragraphs.forEach(function (para) {
         if (!para) { lines.push(''); return; }
-        
+
         var segments = [];
         if (segmenter) {
           var iterator = segmenter.segment(para);
@@ -4497,7 +4630,7 @@
         for (var i = 0; i < segments.length; i++) {
           var word = segments[i];
           var testLine = line + word;
-          
+
           if (ctx.measureText(testLine).width > maxW && line.length > 0) {
             lines.push(line);
             line = word.trim() === '' ? '' : word; // don't start new line with a space
