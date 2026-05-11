@@ -3339,27 +3339,33 @@
       let totalKpd = 0; const colTotals = sdata.cols.map(() => 0); let totalRemain = 0;
       sdata.rows.forEach((row, ri) => {
         if (row.hidden) return;
-        totalKpd += row.kpd; let rowSum = 0; let rowDischarge = 0;
+        totalKpd += row.kpd; 
+        let rowDischarge = 0;
         sdata.cols.forEach((c, ci) => {
           if (c === 'รวมจำหน่าย') return;
           const v = parseInt(sdata.values['r' + ri + '_c' + ci]) || 0;
-          rowSum += v;
           rowDischarge += v;
           colTotals[ci] += v;
         });
-        // Update row discharge
+        
+        // Update row discharge total column
         const dischargeCi = sdata.cols.indexOf('รวมจำหน่าย');
         if (dischargeCi !== -1) {
           colTotals[dischargeCi] += rowDischarge;
-          document.querySelectorAll('.row_discharge_val_' + modelId + '_' + ri).forEach(el => el.textContent = rowDischarge);
+          document.querySelectorAll('.row_discharge_val_' + modelId + '_' + ri).forEach(el => el.textContent = rowDischarge || '-');
         }
-        const remain = Math.max(0, row.kpd - rowSum); totalRemain += remain;
-        document.querySelectorAll('.remain_val_' + modelId + '_' + ri).forEach(el => el.textContent = remain);
-        document.querySelectorAll('.kpd_val_' + modelId + '_' + ri).forEach(el => el.textContent = row.kpd);
+        
+        const remain = Math.max(0, row.kpd - rowDischarge); 
+        totalRemain += remain;
+        document.querySelectorAll('.remain_val_' + modelId + '_' + ri).forEach(el => el.textContent = remain || '-');
+        document.querySelectorAll('.kpd_val_' + modelId + '_' + ri).forEach(el => el.textContent = row.kpd || '-');
       });
-      document.querySelectorAll('.total_kpd_val_' + modelId).forEach(el => el.textContent = totalKpd);
-      document.querySelectorAll('.total_remain_val_' + modelId).forEach(el => el.textContent = totalRemain);
-      sdata.cols.forEach((_, ci) => { document.querySelectorAll('.total_col_val_' + modelId + '_' + ci).forEach(el => el.textContent = colTotals[ci] || '-'); });
+      
+      document.querySelectorAll('.total_kpd_val_' + modelId).forEach(el => el.textContent = totalKpd || '-');
+      document.querySelectorAll('.total_remain_val_' + modelId).forEach(el => el.textContent = totalRemain || '-');
+      sdata.cols.forEach((_, ci) => { 
+        document.querySelectorAll('.total_col_val_' + modelId + '_' + ci).forEach(el => el.textContent = colTotals[ci] || '-'); 
+      });
     }
     async function saveSlide910Data(sn) {
       const sdata = sn === 10 ? slide9Data : slide10Data;
@@ -4308,22 +4314,31 @@
           ctx.fillText(row.label, padX + labelColW / 2, cy, lblMaxW);
         }
         ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
-        ctx.textAlign = 'center'; ctx.fillText(row.kpd, padX + labelColW + kpdColW / 2, cy);
-        var rowSum = 0;
+        ctx.textAlign = 'center'; ctx.fillText(row.kpd || '-', padX + labelColW + kpdColW / 2, cy);
+        
+        // Calculate total discharge for this row first
+        var rowDischarge = 0;
+        cols.forEach(function (c, ci) {
+          if (c === 'รวมจำหน่าย') return;
+          rowDischarge += (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0);
+        });
+
         cols.forEach(function (c, ci) {
           if (c === 'รวมจำหน่าย') {
             ctx.fillStyle = '#e8c97a';
-            ctx.fillText(rowSum || '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, cy);
+            ctx.fillText(rowDischarge || '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, cy);
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             return;
           }
-          var v = parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0; rowSum += v;
+          var v = parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0;
           ctx.fillText(v || '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, cy);
         });
+        
         // Remain: green (success)
+        var remain = Math.max(0, row.kpd - rowDischarge);
         ctx.fillStyle = '#2e7d32';
         ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
-        ctx.fillText(Math.max(0, row.kpd - rowSum), padX + labelColW + kpdColW + cols.length * otherW + remainColW / 2, cy);
+        ctx.fillText(remain || '-', padX + labelColW + kpdColW + cols.length * otherW + remainColW / 2, cy);
       });
 
       // Total row: rgba(74,82,64,0.5), gold-light text (matches .total-row td)
@@ -4338,34 +4353,38 @@
       var ty = totY + rowH / 2;
       ctx.textAlign = 'center';
       ctx.fillText('รวม', padX + labelColW / 2, ty);
-      var totalKpd = sdata.rows.filter(function (r) { return !r.hidden; }).reduce(function (a, r) { return a + r.kpd; }, 0);
-      ctx.fillText(totalKpd, padX + labelColW + kpdColW / 2, ty);
+      
+      var totalKpd = 0;
       var colTotals = cols.map(function () { return 0; });
-      sdata.rows.forEach(function (r, ri) {
+      var totalRemain = 0;
+      
+      sdata.rows.forEach(function (r) {
         if (r.hidden) return;
         var originalRi = sdata.rows.indexOf(r);
-        var rowSum = 0;
+        totalKpd += (r.kpd || 0);
+        
+        var rowDischarge = 0;
         cols.forEach(function (c, ci) {
           if (c === 'รวมจำหน่าย') return;
           var v = (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0);
           colTotals[ci] += v;
-          rowSum += v;
+          rowDischarge += v;
         });
+        
         var dischargeCi = cols.indexOf('รวมจำหน่าย');
-        if (dischargeCi !== -1) colTotals[dischargeCi] += rowSum;
+        if (dischargeCi !== -1) colTotals[dischargeCi] += rowDischarge;
+        
+        totalRemain += Math.max(0, (r.kpd || 0) - rowDischarge);
       });
-      cols.forEach(function (_, ci) { ctx.fillText(colTotals[ci] > 0 ? String(colTotals[ci]) : '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, ty); });
-      var totalRemain = sdata.rows.filter(function (r) { return !r.hidden; }).reduce(function (a, row, ri) {
-        // Find original index for values
-        var originalRi = sdata.rows.indexOf(row);
-        var rs = cols.reduce(function (s, c, ci) {
-          if (c === 'รวมจำหน่าย') return s;
-          return s + (parseInt(sdata.values['r' + originalRi + '_c' + ci]) || 0);
-        }, 0);
-        return a + Math.max(0, row.kpd - rs);
-      }, 0);
-      ctx.fillStyle = '#2e7d32'; ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
-      ctx.fillText(totalRemain, padX + labelColW + kpdColW + cols.length * otherW + remainColW / 2, ty);
+
+      ctx.fillText(totalKpd || '-', padX + labelColW + kpdColW / 2, ty);
+      cols.forEach(function (_, ci) { 
+        ctx.fillText(colTotals[ci] > 0 ? String(colTotals[ci]) : '-', padX + labelColW + kpdColW + (ci + 0.5) * otherW, ty); 
+      });
+      
+      ctx.fillStyle = '#2e7d32'; 
+      ctx.font = 'bold ' + Math.round(W * 0.018) + 'px Sarabun,Arial';
+      ctx.fillText(totalRemain || '-', padX + labelColW + kpdColW + cols.length * otherW + remainColW / 2, ty);
       ctx.textBaseline = 'alphabetic';
     }
 
