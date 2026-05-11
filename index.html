@@ -4466,8 +4466,8 @@
         cwF.forEach(function (f, i) {
           var cw = tW * f;
           var val = cells[i] || '-';
-          // Center if it's the index 0 (ลำดับ) or if the value is '-'
-          if (i === 0 || val === '-') {
+          // Center if it's the index 0 (ลำดับ), index 6 (การใช้งาน), index 7 (การปรนนิบัติบำรุง) or if the value is '-'
+          if (i === 0 || i === 6 || i === 7 || val === '-') {
             ctx.textAlign = 'center';
             ctx.fillText(val, xOff + cw / 2, rY + dataRowH / 2, cw - 5);
           } else {
