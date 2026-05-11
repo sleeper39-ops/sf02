@@ -2693,9 +2693,9 @@
     // ===========================
     // PAGE TABS
     // ===========================
-    function switchPageTab(idx) {
+    async function switchPageTab(idx) {
       [0, 1, 2, 3].forEach(i => { document.getElementById('pgTab' + i).classList.toggle('active', i === idx); document.getElementById('pgSection' + i).classList.toggle('active', i === idx); });
-      if (idx === 2) refreshPptxKpd();
+      if (idx === 2) await buildAllSlides();
     }
 
     // ===========================
@@ -2787,7 +2787,7 @@
       document.getElementById('rpt_remain').textContent = Math.max(0, total - discharge);
     }
     let vehBase = 11;
-    function syncVehBase() {
+    async function syncVehBase() {
       vehBase = vehicleData.length;
       const el = document.getElementById('rpt_veh_base_display');
       if (el) el.textContent = vehBase;
@@ -2795,7 +2795,7 @@
       calcVehicle();
       // Sync personnel to report
       syncPersonnelToReport();
-      buildAllSlides();
+      await buildAllSlides();
       // Feedback to user
       const lbl = document.getElementById('veh_saved_label');
       if (lbl) {
@@ -3174,6 +3174,9 @@
           const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
           if (data && data.masterSlides) {
             masterSlides = data.masterSlides;
+            // Ensure core KPD slides are present
+            if (!masterSlides.find(s => s.type === 'kpd_op')) masterSlides.push({ id: 10, type: 'kpd_op', title: 'สถานภาพบัญชียอด (ปฏิบัติงาน) กพ. บก.ควบคุม 2' });
+            if (!masterSlides.find(s => s.type === 'kpd_tot')) masterSlides.push({ id: 11, type: 'kpd_tot', title: 'สถานภาพบัญชียอด (รวมแถว) กพ. บก.ควบคุม 2' });
             nextSlideId = data.nextSlideId || (Math.max(...masterSlides.map(s => s.id)) + 1);
           }
         } catch (e) { }
@@ -3195,7 +3198,7 @@
       }
     }
 
-    function buildAllSlides() {
+    async function buildAllSlides() {
       var con = document.getElementById('master_slides_container');
       if (!con) return;
       con.innerHTML = '';
@@ -3212,25 +3215,28 @@
 
         if (slideDOM) con.appendChild(slideDOM);
       });
-      // Post render map updates
-      setTimeout(function () {
-        masterSlides.forEach(function (slide) {
-          if (slide.type === 'news') {
-            populateOsintSelect(slide.id);
-            var mapZone = document.getElementById('mapZone_' + slide.id);
-            if (mapZone && mapState[slide.id] && mapState[slide.id].photo) {
-              var bg = mapZone.querySelector('img.map-bg-img');
-              if (!bg) { bg = document.createElement('img'); bg.className = 'map-bg-img'; mapZone.insertBefore(bg, mapZone.firstChild); }
-              bg.src = mapState[slide.id].photo;
-              var overlay = document.getElementById('mapOverlay_' + slide.id);
-              if (overlay) { overlay.classList.add('has-image'); }
-            }
-            setupMapInteraction(slide.id);
-            loadMapStars(slide.id);
+
+      // Post render updates - NO setTimeout
+      masterSlides.forEach(function (slide) {
+        if (slide.type === 'news') {
+          populateOsintSelect(slide.id);
+          var mapZone = document.getElementById('mapZone_' + slide.id);
+          if (mapZone && mapState[slide.id] && mapState[slide.id].photo) {
+            var bg = mapZone.querySelector('img.map-bg-img');
+            if (!bg) { bg = document.createElement('img'); bg.className = 'map-bg-img'; mapZone.insertBefore(bg, mapZone.firstChild); }
+            bg.src = mapState[slide.id].photo;
+            var overlay = document.getElementById('mapOverlay_' + slide.id);
+            if (overlay) { overlay.classList.add('has-image'); }
           }
-        });
-        applyBgToContainers();
-      }, 100);
+          setupMapInteraction(slide.id);
+          loadMapStars(slide.id);
+        }
+      });
+      // Explicitly trigger calculations for KPD slides now that they are in the DOM
+      calcSlide910(10);
+      calcSlide910(11);
+      
+      applyBgToContainers();
     }
 
     function buildPhotoSlideDOM(slide, seq) {
@@ -3275,7 +3281,7 @@
         dz.appendChild(inp); dz.appendChild(icon); dz.appendChild(lbl); dz.appendChild(rmBtn);
         grid.appendChild(dz);
         if (typeof pptxPhotos !== 'undefined' && pptxPhotos[s] && pptxPhotos[s][p]) {
-          setTimeout(function () { updatePhotoZone(s, p, pptxPhotos[s][p]); }, 50);
+          updatePhotoZone(s, p, pptxPhotos[s][p]);
         }
       });
       wrap.appendChild(grid);
@@ -3308,19 +3314,51 @@
     function buildKpdSlideDOM(slide, seq, modelId) {
       var sdata = modelId === 10 ? slide9Data : slide10Data;
       var sDate = modelId === 10 ? pptxDate10 : pptxDate11;
-      var wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
-      var tableHtml = '<div class="pptx-table-wrap"><div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;"><span>' + slide.title + '</span><div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);"><button onclick="changePptxDateSn(' + modelId + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button><span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span><button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button></div></div><table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + sdata.cols.map(c => '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>').join('') + '<th style="white-space:nowrap;line-height:1.2;font-size:' + (modelId === 10 ? '10px' : '12px') + ';">' + (modelId === 10 ? 'คงเหลือ กพ.<br>ปฏิบัติงาน' : 'รวมแถว') + '</th></tr></thead><tbody>';
-      sdata.rows.forEach((row, ri) => {
+      var wrap = document.createElement('div');
+      wrap.className = 'pptx-slide-container';
+      
+      var lastColLabel = (modelId === 10 ? 'คงเหลือ กพ.<br>ปฏิบัติงาน' : 'รวมแถว');
+      var lastColStyle = 'white-space:nowrap;line-height:1.2;font-size:' + (modelId === 10 ? '10px' : '12px') + ';';
+
+      var tableHtml = '<div class="pptx-table-wrap">' +
+        '<div class="pptx-table-title" style="display:flex;align-items:center;justify-content:center;gap:10px;">' +
+        '<span>' + slide.title + '</span>' +
+        '<div style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gold);">' +
+        '<button onclick="changePptxDateSn(' + modelId + ',-1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▼</button>' +
+        '<span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span>' +
+        '<button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button>' +
+        '</div></div>' +
+        '<table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + 
+        sdata.cols.map(function(c) { return '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>'; }).join('') + 
+        '<th style="' + lastColStyle + '">' + lastColLabel + '</th></tr></thead><tbody>';
+
+      sdata.rows.forEach(function(row, ri) {
         if (row.hidden) return;
-        tableHtml += '<tr><td class="row-label">' + row.label + '</td><td style="text-align:center;padding:2px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button><span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span><button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button></div></td>' + sdata.cols.map((c, ci) => {
-          if (c === 'รวมจำหน่าย') return '<td style="text-align:center;font-weight:600;font-size:13px;color:#e8c97a;" class="row_discharge_val_' + modelId + '_' + ri + '">-</td>';
-          return '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>';
-        }).join('') + '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
+        tableHtml += '<tr><td class="row-label">' + row.label + '</td>' +
+          '<td style="text-align:center;padding:2px;">' +
+          '<div style="display:flex;align-items:center;justify-content:center;gap:2px;">' +
+          '<button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button>' +
+          '<span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span>' +
+          '<button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button>' +
+          '</div></td>' + 
+          sdata.cols.map(function(c, ci) {
+            if (c === 'รวมจำหน่าย') return '<td style="text-align:center;font-weight:600;font-size:13px;color:#e8c97a;" class="row_discharge_val_' + modelId + '_' + ri + '">-</td>';
+            return '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>';
+          }).join('') + 
+          '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
       });
-      tableHtml += '<tr class="total-row"><td class="row-label">รวม</td><td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' + sdata.cols.map((_, ci) => '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>').join('') + '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
-      tableHtml += '</tbody></table></div><div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button><span class="saved-ts saved_ts_val_' + modelId + '"></span></div>';
+
+      tableHtml += '<tr class="total-row"><td class="row-label">รวม</td>' +
+        '<td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' + 
+        sdata.cols.map(function(_, ci) { return '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>'; }).join('') + 
+        '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
+      
+      tableHtml += '</tbody></table></div>' +
+        '<div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button>' +
+        '<span class="saved-ts saved_ts_val_' + modelId + '"></span></div>';
+      
       wrap.innerHTML = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + seq + '</span></div>' + tableHtml;
-      setTimeout(() => calcSlide910(modelId), 50);
+      
       return wrap;
     }
 
@@ -3414,7 +3452,7 @@
 
         const sdata = sn === 10 ? slide9Data : slide10Data;
         if (data.values) Object.assign(sdata.values, data.values);
-        if (data.rows && Array.isArray(data.rows)) {
+        if (data.rows && Array.isArray(data.rows) && data.rows.length > 0) {
           sdata.rows = data.rows.map(r => ({ label: r.label, kpd: r.kpd || 0, hidden: !!r.hidden }));
         } else if (data.kpdList && Array.isArray(data.kpdList)) {
           data.kpdList.forEach((k, i) => {
@@ -3524,7 +3562,7 @@
       slide12_13[sn].fontOffset += delta;
       var el = document.getElementById('rpText_' + sn);
       if (el) el.style.fontSize = (13 + slide12_13[sn].fontOffset * 2) + 'px';
-      refreshPptxKpd();
+      buildAllSlides();
     }
 
     function populateOsintSelect(sn) {
@@ -4259,7 +4297,6 @@
       var subH = H * 0.08; // reduce header height
       var visibleRows = sdata.rows.filter(function (r) { return !r.hidden; });
       var rowH = (H - tStart - H * 0.12 - subH) / (visibleRows.length + 1); // reduce row height by increasing bottom margin
-      var lastCol = modelId === 10 ? 'คงเหลือ กพ. ปฏิบัติงาน' : 'รวมแถว';
 
       // Table header: matches pptx-table th (#2e3328, gold-light, border gold)
       ctx.fillStyle = '#2e3328';
@@ -4732,24 +4769,24 @@
       });
     }
 
-    function addNewsSlide() {
+    async function addNewsSlide() {
       var sn = _nextNewsSn++;
       newsSlides.push({ sn: sn, title: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว' });
       slide12_13[sn] = { title: 'สรุปข่าวสารสำคัญประจำวันทิศทางด้าน สปป.ลาว', text: '', osint: 'ข่าวกรองทางยุทธศาสตร์ (OSINT)', photo: null };
       mapState[sn] = { stars: [], photo: DEFAULT_MAP_URL };
       renderNewsSlideAdmin();
-      buildSlides13to14();
+      await buildAllSlides();
       setTimeout(applyBgToContainers, 120);
     }
 
-    function deleteNewsSlide(sn) {
+    async function deleteNewsSlide(sn) {
       if (newsSlides.length <= 1) { alert('ต้องมีสไลด์ข่าวอย่างน้อย 1 สไลด์'); return; }
       if (!confirm('ลบสไลด์ข่าวนี้?')) return;
       newsSlides = newsSlides.filter(n => n.sn !== sn);
       delete slide12_13[sn];
       delete mapState[sn];
       renderNewsSlideAdmin();
-      buildSlides13to14();
+      await buildAllSlides();
       setTimeout(applyBgToContainers, 120);
     }
 
@@ -4864,9 +4901,8 @@
     // Combined Load Sequence for PPTX report
     loadMasterSlides().then(async () => {
       await loadSlide910Data();
-      buildAllSlides();
+      await buildAllSlides();
       populateAllOsintSelects();
-      [10, 11].forEach(s => calcSlide910(s));
       loadBgImage().then(() => { applyBgToContainers(); });
       setTimeout(applyBgToContainers, 350); // Final check
     }).catch(e => console.error('Slide Load Error:', e));
