@@ -2031,11 +2031,6 @@
                 <span class="ng-label align-label" style="font-size:11px;">พลฯ</span>
                 <input type="number" id="rpt_p" min="0" max="999" value="0" oninput="calcStrength()"
                   style="width:46px;">
-              </span>
-              <span style="display:flex;align-items:center;gap:4px;">
-                <span class="ng-label align-label" style="font-size:11px;">กพ.ข่ายฯ</span>
-                <input type="number" id="rpt_t" min="0" max="999" value="4" oninput="calcStrength()"
-                  style="width:46px;">
                 <button onclick="saveStrength()"
                   style="margin-left:4px;width:26px;height:26px;padding:0;background:var(--olive-light);color:white;border:none;border-radius:2px;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">💾</button>
                 <span id="strength_saved_label"
@@ -2344,8 +2339,8 @@
     // PPTX STATE
     // ===========================
     const pptxPhotos = {};
-    const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
-    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'กพ.ข่ายฯ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
+    const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
+    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
     let vehicleData = [
       { num: 1, name: 'รดส.ขนาดเล็ก (รถตู้)', brand: 'TOYOTA Commuter ปี 2016 สีเทา', source: 'รถจัดหา', plate: 'นข 8522 ขก.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
       { num: 2, name: 'รถยนต์นั่งส่วนบุคคล (เก๋ง)', brand: 'NISSAN TEANA ปี 2012 สีบรอนซ์', source: 'รถจัดหา', plate: '1 กล 3213 กทม.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
@@ -2942,7 +2937,6 @@
       const n = parseInt(document.getElementById('rpt_n').value) || 0;
       const s = parseInt(document.getElementById('rpt_s').value) || 0;
       const p = parseInt(document.getElementById('rpt_p').value) || 0;
-      const t = parseInt(document.getElementById('rpt_t').value) || 0;
       const ln = parseInt((document.getElementById('leave_n') || { value: 0 }).value) || 0;
       const ls = parseInt((document.getElementById('leave_s') || { value: 0 }).value) || 0;
       const lp = parseInt((document.getElementById('leave_p') || { value: 0 }).value) || 0;
@@ -2996,7 +2990,7 @@
     <div class="section-header">4. ตรวจจุดน้ำอุปโภค บก.</div>
     <div class="rpt-result-row"><span class="rn"></span><span><strong>${d4}</strong>${d4txt ? '<br><span style="color:var(--ink-soft);">' + d4txt + '</span>' : ''}</span></div>
     <hr class="divider">
-    <div class="section-header">5. ยอดกำลังพล จำนวน ${total} นาย (น.${n}, ส.${s}, พลฯ ${p}, กพ.ข่ายฯ ${t})</div>
+    <div class="section-header">5. ยอดกำลังพล จำนวน ${total} นาย (น.${n}, ส.${s}, พลฯ ${p})</div>
     <div class="rpt-result-row"><span class="rn">5.1</span><span>ยอดเดิม : <strong>${total} นาย</strong></span></div>
     <div class="rpt-result-row"><span class="rn">5.2</span><span>จำหน่าย : <strong>${discharge} นาย</strong>
       <div style="padding-left:4px;margin-top:4px;">${dischargeSubRows}</div>
@@ -3029,7 +3023,6 @@
       const n = getInt('rpt_n');
       const s = getInt('rpt_s');
       const p = getInt('rpt_p');
-      const t = getInt('rpt_t');
 
       const ln = getInt('leave_n');
       const ls = getInt('leave_s');
@@ -3089,7 +3082,7 @@
       text += `4. ตรวจจุดน้ำอุปโภค บก.\n`;
       text += `${d4}${d4txt ? ' (' + d4txt + ')' : ''}\n`;
       text += `----------------------------------------\n`;
-      text += `5. ยอดกำลังพล จำนวน ${total} นาย (น.${n}, ส.${s}, พลฯ ${p}, กพ.ข่ายฯ ${t})\n`;
+      text += `5. ยอดกำลังพล จำนวน ${total} นาย (น.${n}, ส.${s}, พลฯ ${p})\n`;
       text += `5.1 ยอดเดิม : ${total} นาย\n`;
       text += `5.2 จำหน่าย : ${discharge} นาย\n${dischargeText}\n`;
       text += `5.3 คงเหลือ : ${remain} นาย\n`;
@@ -3131,14 +3124,14 @@
     async function checkConnection() { const el = document.getElementById('gsStatus'); if (!el) return; const db = getFbDb(); if (!db) { el.textContent = '🔴 Firebase โหลดไม่สำเร็จ'; el.style.color = 'var(--danger)'; return; } try { await db.ref('guardduty/_ping').set(Date.now()); el.textContent = '🟢 เชื่อมต่อ Firebase แล้ว'; el.style.color = 'var(--success)'; } catch (e) { el.textContent = '🔴 Firebase เชื่อมต่อไม่สำเร็จ'; el.style.color = 'var(--danger)'; } }
     function tsNow() { const n = new Date(); return n.getHours().toString().padStart(2, '0') + ':' + n.getMinutes().toString().padStart(2, '0') + ' น.'; }
     async function saveStrength() {
-      const data = { total: document.getElementById('rpt_total').value, n: document.getElementById('rpt_n').value, s: document.getElementById('rpt_s').value, p: document.getElementById('rpt_p').value, t: document.getElementById('rpt_t').value, ts: tsNow() };
+      const data = { total: document.getElementById('rpt_total').value, n: document.getElementById('rpt_n').value, s: document.getElementById('rpt_s').value, p: document.getElementById('rpt_p').value, ts: tsNow() };
       await storeSet('strength_data', data);
       const lbl = document.getElementById('strength_saved_label'); lbl.textContent = '✓ บันทึก ' + data.ts; lbl.style.display = 'inline'; calcStrength();
     }
     async function loadStrength() {
       const raw = await storeGet('strength_data'); if (!raw) return;
       let data = null; try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { } if (!data || typeof data !== 'object') return;
-      ['total', 'n', 's', 'p', 't'].forEach(k => { document.getElementById('rpt_' + k).value = data[k] || 0; });
+      ['total', 'n', 's', 'p'].forEach(k => { document.getElementById('rpt_' + k).value = data[k] || 0; });
       const lbl = document.getElementById('strength_saved_label'); lbl.textContent = data.ts ? '✓ บันทึก ' + data.ts : '✓ โหลดค่าที่บันทึกไว้'; lbl.style.display = 'inline'; calcStrength();
     }
 
@@ -3458,9 +3451,6 @@
           data.kpdList.forEach((k, i) => {
             if (sdata.rows[i]) {
               sdata.rows[i].kpd = k;
-              if (sdata.rows[i].label.includes('กพ.ข่ายฯ') && (k === 8 || k === 9)) {
-                sdata.rows[i].kpd = 4;
-              }
             }
           });
         }
