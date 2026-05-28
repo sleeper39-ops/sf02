@@ -3228,7 +3228,7 @@
       // Explicitly trigger calculations for KPD slides now that they are in the DOM
       calcSlide910(10);
       calcSlide910(11);
-      
+
       applyBgToContainers();
     }
 
@@ -3274,7 +3274,7 @@
         dz.appendChild(inp); dz.appendChild(icon); dz.appendChild(lbl); dz.appendChild(rmBtn);
         grid.appendChild(dz);
         if (typeof pptxPhotos !== 'undefined' && pptxPhotos[s] && pptxPhotos[s][p]) {
-          updatePhotoZone(s, p, pptxPhotos[s][p]);
+          updatePhotoZone(s, p, pptxPhotos[s][p], dz);
         }
       });
       wrap.appendChild(grid);
@@ -3289,8 +3289,8 @@
       reader.onload = function (e) { if (!pptxPhotos[s]) pptxPhotos[s] = {}; pptxPhotos[s][p] = e.target.result; updatePhotoZone(s, p, e.target.result); };
       reader.readAsDataURL(file);
     }
-    function updatePhotoZone(s, p, dataUrl) {
-      const dz = document.getElementById('dz_' + s + '_' + p); if (!dz) return;
+    function updatePhotoZone(s, p, dataUrl, element) {
+      const dz = element || document.getElementById('dz_' + s + '_' + p); if (!dz) return;
       let img = dz.querySelector('img'); if (!img) { img = document.createElement('img'); dz.insertBefore(img, dz.firstChild); }
       img.src = dataUrl; img.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:3px;';
       dz.querySelectorAll('.dz-label,.dz-icon').forEach(el => el.style.display = 'none');
@@ -3309,7 +3309,7 @@
       var sDate = modelId === 10 ? pptxDate10 : pptxDate11;
       var wrap = document.createElement('div');
       wrap.className = 'pptx-slide-container';
-      
+
       var lastColLabel = (modelId === 10 ? 'คงเหลือ กพ.<br>ปฏิบัติงาน' : 'รวมแถว');
       var lastColStyle = 'white-space:nowrap;line-height:1.2;font-size:' + (modelId === 10 ? '10px' : '12px') + ';';
 
@@ -3321,11 +3321,11 @@
         '<span class="pptxDateLabel_' + modelId + '">ประจำวันที่ ' + thDate(sDate) + '</span>' +
         '<button onclick="changePptxDateSn(' + modelId + ',1)" style="font-size:10px;padding:1px 4px;background:var(--olive);border:1px solid var(--gold);color:var(--gold);cursor:pointer;border-radius:2px;">▲</button>' +
         '</div></div>' +
-        '<table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' + 
-        sdata.cols.map(function(c) { return '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>'; }).join('') + 
+        '<table class="pptx-table"><thead><tr><th>กำลังพล</th><th>ยอด กพ.</th>' +
+        sdata.cols.map(function (c) { return '<th style="font-size:10px;white-space:nowrap;">' + c + '</th>'; }).join('') +
         '<th style="' + lastColStyle + '">' + lastColLabel + '</th></tr></thead><tbody>';
 
-      sdata.rows.forEach(function(row, ri) {
+      sdata.rows.forEach(function (row, ri) {
         if (row.hidden) return;
         tableHtml += '<tr><td class="row-label">' + row.label + '</td>' +
           '<td style="text-align:center;padding:2px;">' +
@@ -3333,25 +3333,25 @@
           '<button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',-1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▼</button>' +
           '<span style="font-weight:700;min-width:20px;text-align:center;font-size:13px;" class="kpd_val_' + modelId + '_' + ri + '">' + row.kpd + '</span>' +
           '<button onclick="changeKpd(' + slide.id + ',' + modelId + ',' + ri + ',1)" style="font-size:9px;padding:1px 3px;background:rgba(201,168,76,0.25);border:1px solid rgba(201,168,76,0.5);color:#e8c97a;cursor:pointer;border-radius:1px;">▲</button>' +
-          '</div></td>' + 
-          sdata.cols.map(function(c, ci) {
+          '</div></td>' +
+          sdata.cols.map(function (c, ci) {
             if (c === 'รวมจำหน่าย') return '<td style="text-align:center;font-weight:600;font-size:13px;color:#e8c97a;" class="row_discharge_val_' + modelId + '_' + ri + '">-</td>';
             return '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>';
-          }).join('') + 
+          }).join('') +
           '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
       });
 
       tableHtml += '<tr class="total-row"><td class="row-label">รวม</td>' +
-        '<td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' + 
-        sdata.cols.map(function(_, ci) { return '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>'; }).join('') + 
+        '<td style="text-align:center;font-weight:700;" class="total_kpd_val_' + modelId + '">-</td>' +
+        sdata.cols.map(function (_, ci) { return '<td style="text-align:center;font-weight:700;" class="total_col_val_' + modelId + '_' + ci + '">-</td>'; }).join('') +
         '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
-      
+
       tableHtml += '</tbody></table></div>' +
         '<div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button>' +
         '<span class="saved-ts saved_ts_val_' + modelId + '"></span></div>';
-      
+
       wrap.innerHTML = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + seq + '</span></div>' + tableHtml;
-      
+
       return wrap;
     }
 
