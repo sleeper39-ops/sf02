@@ -1459,20 +1459,31 @@
       z-index: 20;
     }
 
-    .add-star-btn {
+    .map-star-actions {
       position: absolute;
       bottom: 6px;
-      right: 6px;
-      background: rgba(201, 168, 76, 0.9);
+      left: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 15;
+    }
+
+    .add-star-btn,
+    .clear-stars-btn {
       border: none;
       border-radius: 2px;
       padding: 4px 8px;
       font-size: 11px;
       font-weight: 700;
-      color: #1a1a1a;
       cursor: pointer;
-      z-index: 15;
       transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .add-star-btn {
+      background: rgba(201, 168, 76, 0.9);
+      color: #1a1a1a;
     }
 
     .add-star-btn:hover {
@@ -1480,19 +1491,8 @@
     }
 
     .clear-stars-btn {
-      position: absolute;
-      bottom: 6px;
-      left: 6px;
       background: rgba(192, 57, 43, 0.8);
-      border: none;
-      border-radius: 2px;
-      padding: 4px 8px;
-      font-size: 11px;
-      font-weight: 700;
       color: white;
-      cursor: pointer;
-      z-index: 15;
-      transition: all 0.2s;
     }
 
     .clear-stars-btn:hover {
@@ -1792,14 +1792,116 @@
       background: rgba(201, 168, 76, 0.3);
     }
 
+    .news-slide-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .news-slide-grid .map-col {
+      min-width: 0;
+    }
+
+    .news-slide-grid .right-panel {
+      min-width: 0;
+    }
+
+    .news-slide-grid .rp-photo-zone {
+      cursor: pointer;
+      height: 180px;
+    }
+
+    .news-slide-grid .rp-section--text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-slide-grid .rp-section--text .rp-text-area {
+      min-height: 160px;
+    }
+
     /* PC wide layout */
     @media (min-width: 769px) {
       .rpt-row {
         grid-template-columns: 240px 1fr;
       }
-      /* News slide: give map 3/5 and panel 2/5 on PC */
+    }
+
+    @media (min-width: 1025px) {
+      /* News slide: map เล็กลงเล็กน้อย, แผงขวา (รูป+ข่าว) ใหญ่ขึ้น */
       .news-slide-grid {
-        grid-template-columns: 3fr 2fr !important;
+        grid-template-columns: 5fr 6fr;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .news-slide-grid .map-col {
+        align-self: start;
+      }
+
+      .news-slide-grid .map-zone {
+        min-height: 165px;
+      }
+
+      .news-slide-grid .right-panel {
+        flex: 1;
+        gap: 8px;
+      }
+
+      .news-slide-grid .rp-photo-zone {
+        height: 230px !important;
+        aspect-ratio: auto;
+      }
+
+      .news-slide-grid .rp-section--text {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .news-slide-grid .rp-section--text .rp-text-area {
+        flex: 1;
+        min-height: 220px;
+      }
+    }
+
+    /* Mobile & iPad — fit map + panel without overflow */
+    @media (max-width: 1024px) {
+      .pptx-slide-container {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+      }
+
+      .news-slide-grid {
+        gap: 10px;
+      }
+
+      .map-zone {
+        width: 100%;
+        min-height: 0;
+        aspect-ratio: 4 / 3;
+      }
+
+      .news-slide-grid .rp-photo-zone {
+        height: auto !important;
+        aspect-ratio: 16 / 9;
+        min-height: 120px;
+      }
+
+      .map-star-actions {
+        bottom: 8px;
+        left: 8px;
+        gap: 5px;
+      }
+
+      .add-star-btn,
+      .clear-stars-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-height: 32px;
+      }
+
+      .star-marker {
+        font-size: 20px;
       }
     }
 
@@ -3519,8 +3621,8 @@
       const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
       wrap.innerHTML = `
     <div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ${seq}</span><span class="pptx-slide-title">${slide.title}</span></div>
-    <div class="news-slide-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div>
+    <div class="news-slide-grid">
+      <div class="map-col">
         <div style="font-size:10px;color:var(--gold);font-weight:600;margin-bottom:4px;">📍 แผนที่ — คลิกเพื่อเพิ่มดาว ★</div>
         <div class="map-zone" id="mapZone_${sn}">
           <div class="map-upload-overlay" id="mapOverlay_${sn}">
@@ -3529,8 +3631,10 @@
           </div>
           <svg id="starLines_${sn}" style="position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;overflow:visible;"></svg>
           <div id="starsContainer_${sn}" style="position:absolute;inset:0;z-index:10;pointer-events:none;"></div>
-          <button class="add-star-btn" onclick="addStar(${sn})">★ เพิ่มดาว</button>
-          <button class="clear-stars-btn" onclick="clearStars(${sn})">✕ ล้างดาว</button>
+          <div class="map-star-actions">
+            <button class="add-star-btn" onclick="addStar(${sn})">★ เพิ่มดาว</button>
+            <button class="clear-stars-btn" onclick="clearStars(${sn})">✕ ล้างดาว</button>
+          </div>
         </div>
       </div>
       <div class="right-panel">
@@ -3541,7 +3645,7 @@
         </div>
         <div class="rp-section">
           <div class="rp-label">📷 รูปภาพประกอบ (1 รูป)</div>
-          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:180px;" onclick="triggerFileInput('rpPhoto_${sn}')">
+          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" onclick="triggerFileInput('rpPhoto_${sn}')">
             ${st.photo ? `<img src="${st.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:2px;">` : ''}
             <input type="file" accept="image/*" id="rpPhotoInput_${sn}" onchange="handleRpPhoto(event,${sn})" onclick="event.stopPropagation()">
             <span class="dz-icon" style="color:rgba(255,255,255,0.4);${st.photo ? 'display:none;' : ''}">🖼</span>
@@ -3549,7 +3653,7 @@
             <button class="dz-remove" onclick="removeRpPhoto(event,${sn})">✕</button>
           </div>
         </div>
-        <div class="rp-section">
+        <div class="rp-section rp-section--text">
           <div class="rp-label" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
             <span>✏ รายละเอียดข่าว</span>
             <div style="display:flex;gap:4px;">
@@ -3559,7 +3663,7 @@
               <button id="digitConvertBtn_${sn}" onclick="convertThaiDigits(${sn})" style="font-size:10px;padding:2px 7px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-light);border-radius:2px;cursor:pointer;" title="กดสลับ ไทย↔อาราบิก">🔢 แปลงเลขไทย↔อาราบิก</button>
             </div>
           </div>
-          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="min-height:160px;font-size:${13 + (st.fontOffset || 0) * 2}px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;${st.justify ? 'text-align:justify;text-justify:inter-character;' : ''}" placeholder="กรอกเนื้อหาข่าวโดยละเอียด..." oninput="slide12_13[${sn}].text=this.value">${st.text}</textarea>
+          <textarea class="rp-text-area" id="rpText_${sn}" rows="8" style="font-size:${13 + (st.fontOffset || 0) * 2}px;line-height:1.6;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(201,168,76,0.2);color:white;width:100%;resize:vertical;${st.justify ? 'text-align:justify;text-justify:inter-character;' : ''}" placeholder="กรอกเนื้อหาข่าวโดยละเอียด..." oninput="slide12_13[${sn}].text=this.value">${st.text}</textarea>
           <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;">* ข้อความจะถูกจัดรูปแบบให้อัตโนมัติในหน้าแสดงผล</div>
         </div>
       </div>
