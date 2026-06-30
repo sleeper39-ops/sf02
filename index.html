@@ -1641,6 +1641,11 @@
       background: linear-gradient(90deg, var(--olive-dark), var(--olive));
       padding: 10px 16px;
       text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
       font-family: 'Noto Serif Thai', serif;
       color: var(--gold-light);
       font-size: 14px;
@@ -2302,12 +2307,12 @@
     style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100%;height:100%;background:rgba(20,22,16,0.95);overflow-y:auto;padding:20px;text-align:center;backdrop-filter:blur(5px);">
     <div
       style="background:#2e3328;padding:20px;border-radius:12px;max-width:800px;margin:0 auto;color:white;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.3);">
-      <h2 style="margin-top:0;color:#e8c97a;font-size:22px;">📲 บันทึกรูปภาพ (สำหรับมือถือ/ไอแพด)</h2>
+      <h2 style="margin-top:0;color:#e8c97a;font-size:22px;text-align:center;width:100%;">📲 บันทึกรูปภาพ (สำหรับมือถือ/ไอแพด)</h2>
       <p style="font-size:16px;margin-bottom:20px;color:#c9cfae;line-height:1.5;">
         เนื่องจากมือถือบางรุ่นและแอปเบราว์เซอร์ทำการบล็อกการดาวน์โหลดอัตโนมัติหลายรูปพร้อมกัน<br>
         <b>กรุณาแตะที่รูปภาพแต่ละรูปค้างไว้ (Long Press) แล้วเลือก "บันทึกรูปภาพ" (Save Image)</b>
       </p>
-      <div id="mobileExportContainer" style="display:flex;flex-direction:column;gap:20px;align-items:center;">
+      <div id="mobileExportContainer" style="display:flex;flex-direction:column;gap:20px;align-items:stretch;width:100%;">
       </div>
       <div style="margin-top:30px;">
         <button onclick="document.getElementById('mobileExportModal').style.display='none'"
