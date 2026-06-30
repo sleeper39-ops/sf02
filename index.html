@@ -151,7 +151,7 @@
 
     .container {
       width: 100%;
-      max-width: 700px;
+      max-width: 960px;
       padding: 24px 16px 60px;
     }
 
@@ -937,7 +937,7 @@
     }
 
     .rpt-row select {
-      width: 160px;
+      width: 100%;
     }
 
     .rpt-row input[type=number] {
@@ -1387,6 +1387,8 @@
       border-radius: 3px;
       overflow: hidden;
       cursor: crosshair;
+      min-height: 200px;
+      aspect-ratio: 4 / 3;
     }
 
     .map-zone img.map-bg-img {
@@ -1790,9 +1792,23 @@
       background: rgba(201, 168, 76, 0.3);
     }
 
+    /* PC wide layout */
+    @media (min-width: 769px) {
+      .rpt-row {
+        grid-template-columns: 240px 1fr;
+      }
+      /* News slide: give map 3/5 and panel 2/5 on PC */
+      .news-slide-grid {
+        grid-template-columns: 3fr 2fr !important;
+      }
+    }
+
     @media (max-width: 768px) {
       .mobile-rev {
         flex-direction: row-reverse;
+      }
+      .rpt-row {
+        grid-template-columns: 160px 1fr;
       }
     }
 
@@ -1916,13 +1932,13 @@
           </div>
           <div class="rpt-section-title">1. ผู้ปฏิบัติหน้าที่</div>
           <div class="rpt-row"><label>1.1 นายทหารเวร</label>
-            <div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;max-width:380px;"
+            <div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;"
                 onchange="onRptOfficerChange()">
                 <option value="">— เลือก —</option>
               </select></div>
           </div>
           <div class="rpt-row"><label>1.2 เสมียนเวร</label>
-            <div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;max-width:380px;"
+            <div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;"
                 onchange="onRptClerkChange()">
                 <option value="">— เลือก —</option>
               </select></div>
@@ -3503,10 +3519,10 @@
       const wrap = document.createElement('div'); wrap.className = 'pptx-slide-container';
       wrap.innerHTML = `
     <div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ${seq}</span><span class="pptx-slide-title">${slide.title}</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div class="news-slide-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div>
         <div style="font-size:10px;color:var(--gold);font-weight:600;margin-bottom:4px;">📍 แผนที่ — คลิกเพื่อเพิ่มดาว ★</div>
-        <div class="map-zone" id="mapZone_${sn}" style="height:220px;">
+        <div class="map-zone" id="mapZone_${sn}">
           <div class="map-upload-overlay" id="mapOverlay_${sn}">
             <input type="file" accept="image/*" onchange="handleMapUpload(event,${sn})">
             <div class="mu-label" style="position:relative;pointer-events:none;">🗺 คลิกเพื่ออัพโหลดแผนที่</div>
@@ -3525,7 +3541,7 @@
         </div>
         <div class="rp-section">
           <div class="rp-label">📷 รูปภาพประกอบ (1 รูป)</div>
-          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:110px;" onclick="triggerFileInput('rpPhoto_${sn}')">
+          <div class="rp-photo-zone photo-drop-zone" id="rpPhoto_${sn}" style="cursor:pointer;height:180px;" onclick="triggerFileInput('rpPhoto_${sn}')">
             ${st.photo ? `<img src="${st.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:2px;">` : ''}
             <input type="file" accept="image/*" id="rpPhotoInput_${sn}" onchange="handleRpPhoto(event,${sn})" onclick="event.stopPropagation()">
             <span class="dz-icon" style="color:rgba(255,255,255,0.4);${st.photo ? 'display:none;' : ''}">🖼</span>
@@ -3564,7 +3580,14 @@
       const sel = document.getElementById('osintSelect_' + sn); if (!sel) return;
       const prev = sel.value; sel.innerHTML = '<option value="">— เลือกประเภทข่าว —</option>';
       osintItems.forEach(item => { const o = document.createElement('option'); o.value = item; o.textContent = item; sel.appendChild(o); });
-      if (prev && osintItems.includes(prev)) sel.value = prev;
+      if (prev && osintItems.includes(prev)) {
+        sel.value = prev;
+      } else if (slide12_13[sn] && slide12_13[sn].osint && osintItems.includes(slide12_13[sn].osint)) {
+        sel.value = slide12_13[sn].osint;
+      } else if (osintItems.length > 0) {
+        sel.value = osintItems[0];
+        if (slide12_13[sn]) slide12_13[sn].osint = osintItems[0];
+      }
     }
     function populateAllOsintSelects() { masterSlides.filter(s => s.type === 'news').forEach(s => populateOsintSelect(s.id)); }
 
