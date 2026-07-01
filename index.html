@@ -1830,6 +1830,7 @@
     }
 
     @media (min-width: 1025px) {
+
       /* News slide: map เล็กลงเล็กน้อย, แผงขวา (รูป+ข่าว) ใหญ่ขึ้น */
       .news-slide-grid {
         grid-template-columns: 4.7fr 6.3fr;
@@ -1966,6 +1967,7 @@
       .mobile-rev {
         flex-direction: row-reverse;
       }
+
       .rpt-row {
         grid-template-columns: 160px 1fr;
       }
@@ -2091,14 +2093,12 @@
           </div>
           <div class="rpt-section-title">1. ผู้ปฏิบัติหน้าที่</div>
           <div class="rpt-row"><label>1.1 นายทหารเวร</label>
-            <div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;"
-                onchange="onRptOfficerChange()">
+            <div class="rpt-ctrl"><select id="rpt_officer" style="width:100%;" onchange="onRptOfficerChange()">
                 <option value="">— เลือก —</option>
               </select></div>
           </div>
           <div class="rpt-row"><label>1.2 เสมียนเวร</label>
-            <div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;"
-                onchange="onRptClerkChange()">
+            <div class="rpt-ctrl"><select id="rpt_clerk" style="width:100%;" onchange="onRptClerkChange()">
                 <option value="">— เลือก —</option>
               </select></div>
           </div>
@@ -2468,12 +2468,18 @@
           <h2 style="margin:0;">📊 แสดงผลรายงาน PPTX</h2>
         </div>
         <div class="pptx-preview-actions">
-          <button class="btn-export-all" id="btnExportImgs" onclick="exportAllSlidesImgs()">⬇ ส่งออกรูปทั้งหมด</button>
+          <button class="btn-export-all" id="btnExportImgs" onclick="exportAllSlidesImgs()">⬇ ส่งออกรูปทั้งหมด
+            (สำหรับมือถือ/ไอแพด)</button>
           <button class="btn-export-all" onclick="exportAllSlides()">📦 ส่งออกรูปทั้งหมด (Zip)</button>
           <button class="btn-close-preview" onclick="closePptxPreview()">✕ ปิด</button>
         </div>
       </div>
       <div id="pptxPreviewSlides"></div>
+      <div style="margin-top:30px;text-align:center;padding-bottom:20px;">
+        <button onclick="closePptxPreview()"
+          style="background:linear-gradient(135deg, #4caf50, #2e7d32);color:white;border:none;padding:12px 30px;border-radius:5px;font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);font-family:'Sarabun',sans-serif;">✅
+          เสร็จสิ้น / ปิดหน้าต่างนี้</button>
+      </div>
     </div>
   </div>
 
@@ -2482,12 +2488,14 @@
     style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100%;height:100%;background:rgba(20,22,16,0.95);overflow-y:auto;padding:20px;text-align:center;backdrop-filter:blur(5px);">
     <div
       style="background:#2e3328;padding:20px;border-radius:12px;max-width:800px;margin:0 auto;color:white;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid rgba(201,168,76,0.3);">
-      <h2 style="margin-top:0;color:#e8c97a;font-size:22px;text-align:center;width:100%;">📲 บันทึกรูปภาพ (สำหรับมือถือ/ไอแพด)</h2>
+      <h2 style="margin-top:0;color:#e8c97a;font-size:22px;text-align:center;width:100%;">📲 บันทึกรูปภาพ
+        (สำหรับมือถือ/ไอแพด)</h2>
       <p style="font-size:16px;margin-bottom:20px;color:#c9cfae;line-height:1.5;">
         เนื่องจากมือถือบางรุ่นและแอปเบราว์เซอร์ทำการบล็อกการดาวน์โหลดอัตโนมัติหลายรูปพร้อมกัน<br>
         <b>กรุณาแตะที่รูปภาพแต่ละรูปค้างไว้ (Long Press) แล้วเลือก "บันทึกรูปภาพ" (Save Image)</b>
       </p>
-      <div id="mobileExportContainer" style="display:flex;flex-direction:column;gap:20px;align-items:stretch;width:100%;">
+      <div id="mobileExportContainer"
+        style="display:flex;flex-direction:column;gap:20px;align-items:stretch;width:100%;">
       </div>
       <div style="margin-top:30px;">
         <button onclick="document.getElementById('mobileExportModal').style.display='none'"
@@ -4325,7 +4333,12 @@
         ctx.imageSmoothingQuality = 'high';
         drawSlide(ctx, exportW, exportH, sn);
 
-        const dataUrl = exportCanvas.toDataURL('image/png', 1.0);
+        // Use image/jpeg with 0.9 quality to significantly reduce base64 size, preventing mobile browser save block/crashes
+        const dataUrl = exportCanvas.toDataURL('image/jpeg', 0.9);
+
+        // Wrapper for image and download button
+        const itemWrapper = document.createElement('div');
+        itemWrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;margin-bottom:10px;background:rgba(0,0,0,0.15);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);';
 
         const img = new Image();
         img.src = dataUrl;
@@ -4334,7 +4347,68 @@
         img.style.border = '2px solid rgba(201,168,76,0.3)';
         img.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
 
-        container.appendChild(img);
+        // Explicit styles for iOS/Android to allow long press saving
+        img.style.pointerEvents = 'auto';
+        img.style.webkitTouchCallout = 'default';
+        img.style.webkitUserSelect = 'auto';
+        img.style.userSelect = 'auto';
+        img.setAttribute('draggable', 'true');
+
+        // Filename for download
+        const sName = slide.title.replace(/[\/\\?%*:|"<>]/g, '-');
+        const fileName = `Slide_${String(i + 1).padStart(2, '0')}_${sName}.jpg`;
+
+        // Create a styled download button specifically for Android & alternative browsers
+        const downloadBtn = document.createElement('a');
+        downloadBtn.href = dataUrl;
+        downloadBtn.download = fileName;
+        downloadBtn.innerHTML = `⬇ กดบันทึกรูปที่ ${i + 1}`;
+        downloadBtn.style.cssText = 'background:linear-gradient(135deg, var(--olive), var(--olive-dark));color:var(--gold-light);border:1px solid var(--gold);padding:8px 20px;border-radius:6px;font-family:\'Sarabun\',sans-serif;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 8px rgba(0,0,0,0.3);margin-top:6px;transition: transform 0.1s;';
+
+        // Add simple touch effect
+        downloadBtn.addEventListener('touchstart', () => downloadBtn.style.transform = 'scale(0.96)');
+        downloadBtn.addEventListener('touchend', () => downloadBtn.style.transform = 'scale(1)');
+
+        // Guide iOS users on how to save the image (Files app vs Photos app)
+        downloadBtn.addEventListener('click', (e) => {
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+          if (isIOS) {
+            try {
+              // Convert dataURL to File object for Sharing
+              const arr = dataUrl.split(',');
+              const mime = arr[0].match(/:(.*?);/)[1];
+              const bstr = atob(arr[1]);
+              let n = bstr.length;
+              const u8arr = new Uint8Array(n);
+              while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+              }
+              const file = new File([u8arr], fileName, { type: mime });
+
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                e.preventDefault();
+                navigator.share({
+                  files: [file],
+                  title: fileName
+                }).catch(err => {
+                  console.log('Share canceled or failed:', err);
+                });
+                return;
+              }
+            } catch (err) {
+              console.error('Error preparing file for share:', err);
+            }
+
+            // Fallback for iOS browsers that don't support file sharing (like LINE/FB in-app browsers)
+            e.preventDefault();
+            alert(`สำหรับ iOS (iPhone/iPad):\n\nแนะนำให้ "แตะค้างที่ตัวรูปภาพด้านบน" แล้วเลือก "บันทึกภาพ" (Save Image) เพื่อเซฟลงคลังรูปภาพโดยตรงครับ`);
+          }
+          // On Android, standard click on <a> with download attribute handles it perfectly, saving to gallery/downloads.
+        });
+
+        itemWrapper.appendChild(img);
+        itemWrapper.appendChild(downloadBtn);
+        container.appendChild(itemWrapper);
 
         // Small delay to allow consecutive canvas renders without freezing UI completely
         await new Promise(resolve => setTimeout(resolve, 100));
