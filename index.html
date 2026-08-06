@@ -495,6 +495,14 @@
       background: var(--line);
     }
 
+    .sch-sub-header {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--olive-dark);
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
     .day-label {
       font-size: 13px;
       font-weight: 600;
@@ -2673,13 +2681,25 @@
       if (!selectedOfficer) { alert('กรุณาเลือกนายทหารเวร'); return; }
       if (!selectedClerk) { alert('กรุณาเลือกเสมียนเวร'); return; }
       const ti = getScheduleToday(), tm = getScheduleTomorrow();
-      document.getElementById('resultContent').innerHTML = `<div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div><div class="doc-date-line">ประจำวันที่ ${thDate(now)}</div><hr class="divider gold"><div><div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div><div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div></div><hr class="divider"><div class="section-header">การปฏิบัติ วันที่ ${thDate(now)}</div><ul class="schedule-list">${renderSchItems(ti)}</ul><div class="section-header">การปฏิบัติ วันที่ ${thDate(tomorrow)}</div><ul class="schedule-list">${renderSchItems(tm)}</ul><div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
+      const ti1 = ti.filter(i => i.time < '13.00' || i.text.includes('📸'));
+      const ti2 = ti.filter(i => i.time >= '13.00' && !i.text.includes('📸'));
+      const tm1 = tm.filter(i => i.time < '06.30' || (i.time < '08.00' && i.text.includes('📸')));
+      const tm2 = tm.filter(i => i.time >= '06.30' && !i.text.includes('📸'));
+
+      let html = `<div class="doc-title">รายชื่อเจ้าหน้าที่รักษาการณ์</div><div class="doc-date-line">ประจำวันที่ ${thDate(now)}</div><hr class="divider gold"><div><div class="personnel-row"><span class="p-num">1.</span><span class="p-role">นายทหารเวร :</span><span>${selectedOfficer.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedOfficer.phone}</span></div><div class="personnel-row"><span class="p-num">2.</span><span class="p-role">เสมียนเวร :</span><span>${selectedClerk.name}&nbsp;&nbsp;<span style="color:var(--accent)">☎</span> ${selectedClerk.phone}</span></div></div><hr class="divider"><div class="section-header">การปฏิบัติ วันที่ ${thDate(now)}</div><div class="sch-sub-header">1. เสมียนเวร</div>${ti1.length > 0 ? `<ul class="schedule-list">${renderSchItems(ti1)}</ul>` : ''}<div class="sch-sub-header" style="margin-top:8px;">2. กำลังพล</div>${ti2.length > 0 ? `<ul class="schedule-list">${renderSchItems(ti2)}</ul>` : ''}<div class="section-header">การปฏิบัติ วันที่ ${thDate(tomorrow)}</div><div class="sch-sub-header">1. เสมียนเวร/นายทหารเวร</div>${tm1.length > 0 ? `<ul class="schedule-list">${renderSchItems(tm1)}</ul>` : ''}<div class="sch-sub-header" style="margin-top:8px;">2. กำลังพล</div>${tm2.length > 0 ? `<ul class="schedule-list">${renderSchItems(tm2)}</ul>` : ''}<div class="footer-note">เพื่อทราบ / ปฏิบัติอย่างเคร่งครัด</div>`;
+
+      document.getElementById('resultContent').innerHTML = html;
       document.getElementById('resultCard').classList.remove('hidden');
       document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     function copyText() {
       if (!selectedOfficer || !selectedClerk) return;
       const ti = getScheduleToday(), tm = getScheduleTomorrow();
+      const ti1 = ti.filter(i => i.time < '13.00' || i.text.includes('📸'));
+      const ti2 = ti.filter(i => i.time >= '13.00' && !i.text.includes('📸'));
+      const tm1 = tm.filter(i => i.time < '06.30' || (i.time < '08.00' && i.text.includes('📸')));
+      const tm2 = tm.filter(i => i.time >= '06.30' && !i.text.includes('📸'));
+
       let t = `รายชื่อเจ้าหน้าที่รักษาการณ์
 ประจำวันที่ ${thDate(now)}
 
@@ -2687,16 +2707,35 @@
 2. เสมียนเวร : ${selectedClerk.name} / ${selectedClerk.phone}
 
 การปฏิบัติ วันที่ ${thDate(now)}
+1. เสมียนเวร
 `;
-      ti.forEach(i => {
+      ti1.forEach(i => {
         t += `- ${i.time} ${i.text}
 `;
-      }); t += `
+      });
+      t += `
+2. กำลังพล
+`;
+      ti2.forEach(i => {
+        t += `- ${i.time} ${i.text}
+`;
+      });
+      t += `
 การปฏิบัติ วันที่ ${thDate(tomorrow)}
-`; tm.forEach(i => {
+1. เสมียนเวร/นายทหารเวร
+`;
+      tm1.forEach(i => {
         t += `- ${i.time} ${i.text}
 `;
-      }); t += `
+      });
+      t += `
+2. กำลังพล
+`;
+      tm2.forEach(i => {
+        t += `- ${i.time} ${i.text}
+`;
+      });
+      t += `
 เพื่อทราบ/ปฏิบัติอย่างเคร่งครัด`;
       copyToClipboard(t, document.querySelector('.btn-copy'));
     }
