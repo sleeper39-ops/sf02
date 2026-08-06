@@ -2297,6 +2297,7 @@
         <div class="tabs" style="flex-wrap:wrap;">
           <button class="tab-btn active" id="tabBtn0" onclick="switchTab(0)">นายทหารเวร</button>
           <button class="tab-btn" id="tabBtn1" onclick="switchTab(1)">เสมียนเวร</button>
+          <button class="tab-btn" id="tabBtn4" onclick="switchTab(4)">พลทหาร</button>
           <button class="tab-btn" id="tabBtn2" onclick="switchTab(2)">การปฏิบัติ</button>
           <button class="tab-btn" id="tabBtn3" onclick="switchTab(3)">ยานพาหนะ</button>
           <button class="tab-btn" id="tabBtn5" onclick="switchTab(5)">ประเภทข่าวกรอง</button>
@@ -2335,6 +2336,19 @@
               </thead>
               <tbody id="clerkTbody"></tbody>
             </table>
+          </div>
+        </div>
+        <div class="tab-content" id="tab4">
+          <div class="card" style="padding:16px;background:rgba(0,0,0,0.2);border:1px solid var(--gold-border);border-radius:6px;max-width:520px;margin-top:8px;">
+            <h3 style="margin-bottom:12px;color:var(--gold);font-size:15px;">⚙ กำหนดจำนวนยอด พลทหาร</h3>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <label for="admin_privates_count" style="font-size:14px;white-space:nowrap;">จำนวนยอด (นาย):</label>
+              <input type="number" id="admin_privates_count" min="0" max="999" value="4" style="width:100px;padding:6px 10px;font-size:15px;font-weight:bold;text-align:center;border-radius:4px;border:1px solid var(--gold);background:var(--bg-card);color:var(--ink);">
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button class="btn btn-primary" onclick="savePrivatesCountAdmin()" style="padding:8px 16px;">💾 บันทึกจำนวนยอด พลฯ</button>
+              <span id="privates_saved_label" style="font-size:13px;color:var(--success);display:none;">✓ บันทึกเรียบร้อย</span>
+            </div>
           </div>
         </div>
         <div class="tab-content" id="tab2">
@@ -2534,8 +2548,9 @@
     // PPTX STATE
     // ===========================
     const pptxPhotos = {};
+    let privatesCount = 4;
     const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
-    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
+    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
     let vehicleData = [
       { num: 1, name: 'รดส.ขนาดเล็ก (รถตู้)', brand: 'TOYOTA Commuter ปี 2016 สีเทา', source: 'รถจัดหา', plate: 'นข 8522 ขก.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
       { num: 2, name: 'รถยนต์นั่งส่วนบุคคล (เก๋ง)', brand: 'NISSAN TEANA ปี 2012 สีบรอนซ์', source: 'รถจัดหา', plate: '1 กล 3213 กทม.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
@@ -2771,7 +2786,7 @@
     }
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    function switchTab(idx) { [0, 1, 2, 3, 5, 6].forEach(i => { const tb = document.getElementById('tabBtn' + i); const tc = document.getElementById('tab' + i); if (tb) tb.classList.toggle('active', i === idx); if (tc) tc.classList.toggle('active', i === idx); }); if (idx === 3) renderVehicleAdminTable(); if (idx === 5) renderOsintAdmin(); if (idx === 6) renderSlideManager(); }
+    function switchTab(idx) { [0, 1, 2, 3, 4, 5, 6].forEach(i => { const tb = document.getElementById('tabBtn' + i); const tc = document.getElementById('tab' + i); if (tb) tb.classList.toggle('active', i === idx); if (tc) tc.classList.toggle('active', i === idx); }); if (idx === 3) renderVehicleAdminTable(); if (idx === 5) renderOsintAdmin(); if (idx === 6) renderSlideManager(); }
 
     // ===========================
     // PERSONNEL TABLE
@@ -2998,15 +3013,79 @@
       });
     }
 
+    function calculateCounts() {
+      const officerRankRegex = /^(ร\.ต|ร\.ท|ร\.อ|พ\.ต|พ\.ท|พ\.อ)/;
+      const ncoRankRegex = /^(ส\.ต|ส\.ท|ส\.อ|จ\.ส\.ต|จ\.ส\.ท|จ\.ส\.อ)/;
+
+      let countN = 0;
+      let countS = 0;
+
+      officers.forEach(p => {
+        const name = (p.name || '').trim();
+        if (officerRankRegex.test(name)) countN++;
+        else if (ncoRankRegex.test(name)) countS++;
+        else countN++;
+      });
+
+      clerks.forEach(p => {
+        const name = (p.name || '').trim();
+        if (officerRankRegex.test(name)) countN++;
+        else if (ncoRankRegex.test(name)) countS++;
+        else countS++;
+      });
+
+      let countP = privatesCount;
+      return { countN, countS, countP };
+    }
+
     function calcStrength() {
-      const total = parseInt(document.getElementById('rpt_total').value) || 0;
+      const nEl = document.getElementById('rpt_n');
+      const sEl = document.getElementById('rpt_s');
+      const pEl = document.getElementById('rpt_p');
+      const n = parseInt(nEl ? nEl.value : 0) || 0;
+      const s = parseInt(sEl ? sEl.value : 0) || 0;
+      const p = parseInt(pEl ? pEl.value : 0) || 0;
+      const total = n + s + p;
+      const rptTotalEl = document.getElementById('rpt_total');
+      if (rptTotalEl) rptTotalEl.value = total;
+
       const ln = parseInt((document.getElementById('leave_n') || { value: 0 }).value) || 0;
       const ls = parseInt((document.getElementById('leave_s') || { value: 0 }).value) || 0;
       const lp = parseInt((document.getElementById('leave_p') || { value: 0 }).value) || 0;
       let discharge = ln + ls + lp;
-      dischargeCategories.forEach(c => { discharge += selectedPersons[c.id].length; });
-      document.getElementById('rpt_remain').textContent = Math.max(0, total - discharge);
+      if (typeof dischargeCategories !== 'undefined' && Array.isArray(dischargeCategories)) {
+        dischargeCategories.forEach(c => {
+          if (typeof selectedPersons !== 'undefined' && selectedPersons[c.id]) {
+            discharge += selectedPersons[c.id].length;
+          }
+        });
+      }
+      const remainEl = document.getElementById('rpt_remain');
+      if (remainEl) remainEl.textContent = Math.max(0, total - discharge);
     }
+
+    async function savePrivatesCountAdmin() {
+      const inp = document.getElementById('admin_privates_count');
+      if (inp) privatesCount = parseInt(inp.value) || 0;
+      await storeSet('privates_count_v1', privatesCount);
+      syncPersonnelToReport();
+      const lbl = document.getElementById('privates_saved_label');
+      if (lbl) {
+        lbl.style.display = 'inline';
+        setTimeout(() => { lbl.style.display = 'none'; }, 3000);
+      }
+    }
+
+    async function loadPrivatesCountAdmin() {
+      const raw = await storeGet('privates_count_v1');
+      if (raw !== null && raw !== undefined) {
+        privatesCount = parseInt(raw) || 4;
+      }
+      const inp = document.getElementById('admin_privates_count');
+      if (inp) inp.value = privatesCount;
+      syncPersonnelToReport();
+    }
+
     let vehBase = 11;
     async function syncVehBase() {
       vehBase = vehicleData.length;
@@ -3061,6 +3140,47 @@
     function syncPersonnelToReport() {
       populateRptSelects();
       buildDischargeRows();
+
+      const { countN, countS, countP } = calculateCounts();
+
+      const rptN = document.getElementById('rpt_n');
+      const rptS = document.getElementById('rpt_s');
+      const rptP = document.getElementById('rpt_p');
+      const rptTot = document.getElementById('rpt_total');
+
+      if (rptN) rptN.value = countN;
+      if (rptS) rptS.value = countS;
+      if (rptP) rptP.value = countP;
+      if (rptTot) rptTot.value = countN + countS + countP;
+
+      calcStrength();
+
+      // Sync to PPTX Slide 10 (modelId 10 / slide9Data) and Slide 11 (modelId 11 / slide10Data)
+      if (typeof slide9Data !== 'undefined' && slide9Data.rows) {
+        if (slide9Data.rows[0]) slide9Data.rows[0].kpd = countN;
+        if (slide9Data.rows[1]) slide9Data.rows[1].kpd = countS;
+        if (slide9Data.rows[2]) slide9Data.rows[2].kpd = countP;
+      }
+      if (typeof slide10Data !== 'undefined' && slide10Data.rows) {
+        if (!slide10Data.rows[2]) slide10Data.rows.push({ label: 'ทหารกองประจำการ', kpd: countP });
+        if (slide10Data.rows[0]) slide10Data.rows[0].kpd = countN;
+        if (slide10Data.rows[1]) slide10Data.rows[1].kpd = countS;
+        if (slide10Data.rows[2]) slide10Data.rows[2].kpd = countP;
+      }
+
+      if (typeof calcSlide910 === 'function') {
+        calcSlide910(10);
+        calcSlide910(11);
+      }
+
+      [10, 11].forEach(modelId => {
+        const el0 = document.querySelector(`.kpd_val_${modelId}_0`);
+        if (el0) el0.textContent = countN;
+        const el1 = document.querySelector(`.kpd_val_${modelId}_1`);
+        if (el1) el1.textContent = countS;
+        const el2 = document.querySelector(`.kpd_val_${modelId}_2`);
+        if (el2) el2.textContent = countP;
+      });
     }
     async function loadPersonnel() {
       const raw = await storeGet('personnel_data_v2');
@@ -5195,6 +5315,7 @@
     // ===========================
     populateRptSelects();
     loadPersonnel();
+    loadPrivatesCountAdmin();
     loadStrength();
     loadVehBase();
     loadSchedules();
