@@ -1290,6 +1290,28 @@
       opacity: 0.85;
     }
 
+    .btn-clear-pptx {
+      background: rgba(192, 57, 43, 0.15);
+      color: #ffb8b8;
+      border: 1px solid rgba(192, 57, 43, 0.45);
+      padding: 6px 14px;
+      border-radius: 2px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn-clear-pptx:hover {
+      background: rgba(192, 57, 43, 0.35);
+      color: #ffffff;
+      border-color: var(--danger);
+    }
+
     .saved-ts {
       font-size: 10px;
       color: var(--olive-light);
@@ -2555,8 +2577,8 @@
     // ===========================
     const pptxPhotos = {};
     let privatesCount = 4;
-    const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
-    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 6 }, { label: 'นายทหารชั้นประทวน', kpd: 36 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
+    const slide9Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 5 }, { label: 'นายทหารชั้นประทวน', kpd: 40 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
+    const slide10Data = { rows: [{ label: 'นายทหารชั้นสัญญาบัตร', kpd: 5 }, { label: 'นายทหารชั้นประทวน', kpd: 40 }, { label: 'ทหารกองประจำการ', kpd: 4 }], cols: ['ลาพักตามวงรอบ', 'ลากิจ', 'ป่วย', 'ขออนุญาต', 'ขาด', 'ราชการ', 'รวมจำหน่าย'], values: {} };
     let vehicleData = [
       { num: 1, name: 'รดส.ขนาดเล็ก (รถตู้)', brand: 'TOYOTA Commuter ปี 2016 สีเทา', source: 'รถจัดหา', plate: 'นข 8522 ขก.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
       { num: 2, name: 'รถยนต์นั่งส่วนบุคคล (เก๋ง)', brand: 'NISSAN TEANA ปี 2012 สีบรอนซ์', source: 'รถจัดหา', plate: '1 กล 3213 กทม.', unit: 'บก.ควบคุม 2', usage: '', maintenance: '' },
@@ -3020,28 +3042,23 @@
     }
 
     function calculateCounts() {
-      const officerRankRegex = /^(ร\.ต|ร\.ท|ร\.อ|พ\.ต|พ\.ท|พ\.อ)/;
-      const ncoRankRegex = /^(ส\.ต|ส\.ท|ส\.อ|จ\.ส\.ต|จ\.ส\.ท|จ\.ส\.อ)/;
+      const officerRankRegex = /^(ร\.ต|ร\.ท|ร\.อ|พ\.ต|พ\.ท|พ\.อ|ร้อยตรี|ร้อยโท|ร้อยเอก|พันตรี|พันโท|พันเอก)/;
+      const ncoRankRegex = /^(จ\.ส\.ต|จ\.ส\.ท|จ\.ส\.อ|ส\.ต|ส\.ท|ส\.อ|จ่าสิบตรี|จ่าสิบโท|จ่าสิบเอก|สิบตรี|สิบโท|สิบเอก)/;
 
       let countN = 0;
       let countS = 0;
 
-      officers.forEach(p => {
+      const allPersonnel = [...officers, ...clerks];
+      allPersonnel.forEach(p => {
         const name = (p.name || '').trim();
-        if (officerRankRegex.test(name)) countN++;
-        else if (ncoRankRegex.test(name)) countS++;
-        else countN++;
+        if (officerRankRegex.test(name)) {
+          countN++;
+        } else if (ncoRankRegex.test(name)) {
+          countS++;
+        }
       });
 
-      clerks.forEach(p => {
-        const name = (p.name || '').trim();
-        if (officerRankRegex.test(name)) countN++;
-        else if (ncoRankRegex.test(name)) countS++;
-        else countS++;
-      });
-
-      let countP = privatesCount;
-      return { countN, countS, countP };
+      return { countN, countS };
     }
 
     function calcStrength() {
@@ -3151,7 +3168,7 @@
       populateRptSelects();
       buildDischargeRows();
 
-      const { countN, countS, countP } = calculateCounts();
+      const { countN, countS } = calculateCounts();
 
       const rptN = document.getElementById('rpt_n');
       const rptS = document.getElementById('rpt_s');
@@ -3160,8 +3177,9 @@
 
       if (rptN) rptN.value = countN;
       if (rptS) rptS.value = countS;
-      if (rptP) rptP.value = countP;
-      if (rptTot) rptTot.value = countN + countS + countP;
+      // พลฯ ไม่ต้องซิงค์ ปล่อยตามค่าปัจจุบันในช่อง rpt_p
+      const currentP = parseInt(rptP ? rptP.value : 0) || 0;
+      if (rptTot) rptTot.value = countN + countS + currentP;
 
       calcStrength();
 
@@ -3169,13 +3187,10 @@
       if (typeof slide9Data !== 'undefined' && slide9Data.rows) {
         if (slide9Data.rows[0]) slide9Data.rows[0].kpd = countN;
         if (slide9Data.rows[1]) slide9Data.rows[1].kpd = countS;
-        if (slide9Data.rows[2]) slide9Data.rows[2].kpd = countP;
       }
       if (typeof slide10Data !== 'undefined' && slide10Data.rows) {
-        if (!slide10Data.rows[2]) slide10Data.rows.push({ label: 'ทหารกองประจำการ', kpd: countP });
         if (slide10Data.rows[0]) slide10Data.rows[0].kpd = countN;
         if (slide10Data.rows[1]) slide10Data.rows[1].kpd = countS;
-        if (slide10Data.rows[2]) slide10Data.rows[2].kpd = countP;
       }
 
       if (typeof calcSlide910 === 'function') {
@@ -3188,8 +3203,6 @@
         if (el0) el0.textContent = countN;
         const el1 = document.querySelector(`.kpd_val_${modelId}_1`);
         if (el1) el1.textContent = countS;
-        const el2 = document.querySelector(`.kpd_val_${modelId}_2`);
-        if (el2) el2.textContent = countP;
       });
     }
     async function loadPersonnel() {
@@ -3670,10 +3683,26 @@
       const lbl = document.getElementById('strength_saved_label'); lbl.textContent = '✓ บันทึก ' + data.ts; lbl.style.display = 'inline'; calcStrength();
     }
     async function loadStrength() {
-      const raw = await storeGet('strength_data'); if (!raw) return;
-      let data = null; try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { } if (!data || typeof data !== 'object') return;
-      ['total', 'n', 's', 'p'].forEach(k => { document.getElementById('rpt_' + k).value = data[k] || 0; });
-      const lbl = document.getElementById('strength_saved_label'); lbl.textContent = data.ts ? '✓ บันทึก ' + data.ts : '✓ โหลดค่าที่บันทึกไว้'; lbl.style.display = 'inline'; calcStrength();
+      const raw = await storeGet('strength_data');
+      const { countN, countS } = calculateCounts();
+      let currentP = parseInt((document.getElementById('rpt_p') || {}).value) || 0;
+      if (raw) {
+        let data = null; try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { }
+        if (data && typeof data === 'object') {
+          if (data.p !== undefined) currentP = parseInt(data.p) || 0;
+          const pEl = document.getElementById('rpt_p');
+          if (pEl) pEl.value = currentP;
+          const lbl = document.getElementById('strength_saved_label');
+          if (lbl) { lbl.textContent = data.ts ? '✓ บันทึก ' + data.ts : '✓ โหลดค่าที่บันทึกไว้'; lbl.style.display = 'inline'; }
+        }
+      }
+      const rptN = document.getElementById('rpt_n');
+      const rptS = document.getElementById('rpt_s');
+      const rptTot = document.getElementById('rpt_total');
+      if (rptN) rptN.value = countN;
+      if (rptS) rptS.value = countS;
+      if (rptTot) rptTot.value = countN + countS + currentP;
+      calcStrength();
     }
 
     // ===========================
@@ -3877,7 +3906,7 @@
           '</div></td>' +
           sdata.cols.map(function (c, ci) {
             if (c === 'รวมจำหน่าย') return '<td style="text-align:center;font-weight:600;font-size:13px;color:#e8c97a;" class="row_discharge_val_' + modelId + '_' + ri + '">-</td>';
-            return '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>';
+            return '<td><input type="number" min="0" max="9999" value="' + (sdata.values['r' + ri + '_c' + ci] || '') + '" placeholder="0" class="slide_input_' + modelId + '_' + ri + '_' + ci + '" oninput="updateSlideData(' + slide.id + ',' + modelId + ',' + ri + ',' + ci + ',this.value)" style="width:44px;"></td>';
           }).join('') +
           '<td style="text-align:center;font-weight:600;color:#7fc47f;" class="remain_val_' + modelId + '_' + ri + '">-</td></tr>';
       });
@@ -3888,12 +3917,33 @@
         '<td style="text-align:center;font-weight:700;color:#7fc47f;" class="total_remain_val_' + modelId + '">-</td></tr>';
 
       tableHtml += '</tbody></table></div>' +
-        '<div class="save-btn-row"><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button>' +
+        '<div class="save-btn-row" style="display:flex;align-items:center;justify-content:flex-end;gap:8px;"><button class="btn-clear-pptx" onclick="clearSlide910Discharge(' + modelId + ')">🗑 ล้างข้อมูล</button><button class="btn-save-pptx" onclick="saveSlide910Data(' + modelId + ')">💾 บันทึกข้อมูล</button>' +
         '<span class="saved-ts saved_ts_val_' + modelId + '"></span></div>';
 
       wrap.innerHTML = '<div class="pptx-slide-header"><span class="pptx-slide-num">สไลด์ ' + seq + '</span></div>' + tableHtml;
 
       return wrap;
+    }
+
+    function clearSlide910Discharge(modelId) {
+      if (!confirm('ต้องการล้างข้อมูลยอดจำหน่ายทั้งหมดของสไลด์นี้ใช่หรือไม่?')) return;
+      const sdata = modelId === 10 ? slide9Data : (modelId === 11 ? slide10Data : null);
+      if (!sdata) return;
+      sdata.values = {};
+      sdata.rows.forEach((row, ri) => {
+        sdata.cols.forEach((c, ci) => {
+          if (c === 'รวมจำหน่าย') return;
+          document.querySelectorAll('.slide_input_' + modelId + '_' + ri + '_' + ci).forEach(inp => {
+            inp.value = '';
+          });
+        });
+      });
+      calcSlide910(modelId);
+      saveSlide910Data(modelId);
+      const lbl = document.querySelector('.saved_ts_val_' + modelId);
+      if (lbl) {
+        lbl.textContent = '✓ ล้างข้อมูลจำหน่ายเรียบร้อย ' + tsNow();
+      }
     }
 
     // For date labels, need to update all instances
@@ -3988,14 +4038,17 @@
         if (data.values) Object.assign(sdata.values, data.values);
         if (data.rows && Array.isArray(data.rows) && data.rows.length > 0) {
           sdata.rows = data.rows.map(r => ({ label: r.label, kpd: r.kpd || 0, hidden: !!r.hidden }));
-        } else if (data.kpdList && Array.isArray(data.kpdList)) {
-          data.kpdList.forEach((k, i) => {
-            if (sdata.rows[i]) {
-              sdata.rows[i].kpd = k;
-            }
-          });
         }
       }
+
+      // Re-sync personnel counts to ensure slide9Data (ปฏิบัติงาน) and slide10Data (รวมแถว) have the latest synced countN and countS
+      const { countN, countS } = calculateCounts();
+      [slide9Data, slide10Data].forEach(sdata => {
+        if (sdata.rows[0]) sdata.rows[0].kpd = countN;
+        if (sdata.rows[1]) sdata.rows[1].kpd = countS;
+      });
+      calcSlide910(10);
+      calcSlide910(11);
     }
 
     function buildVehSlideDOM(slide, seq) {
