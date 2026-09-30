@@ -2242,13 +2242,19 @@
             </div>
           </div>
           <div class="rpt-row" style="align-items:start;"><label style="padding-top:6px;">6.2 จำหน่าย</label>
-            <div class="rpt-ctrl" style="flex-direction:column;align-items:flex-start;gap:6px;">
-              <div style="display:flex;align-items:center;gap:6px;"><input type="number" id="rpt_veh_out" min="0"
-                  max="10" value="0" oninput="calcVehicle()" style="width:45px;"> <span
-                  style="font-size:13px;">คัน</span></div>
-              <textarea id="rpt_veh_detail"
-                style="width:100%;min-height:48px;max-width:360px;padding:5px 8px;border:1px solid var(--line);border-radius:2px;font-family:'Sarabun',sans-serif;font-size:12px;resize:vertical;"
-                placeholder="รายละเอียด..."></textarea>
+            <div class="rpt-ctrl" style="flex-direction:column;align-items:flex-start;gap:8px;width:100%;">
+              <div class="mp-ctrl" style="max-width:100%;width:100%;display:flex;gap:6px;align-items:center;">
+                <select id="rpt_veh_select" style="flex:1;min-width:0;font-size:12.5px;">
+                  <option value="">— เลือกยานพาหนะที่จำหน่าย —</option>
+                </select>
+                <button type="button" class="btn-add-person" onclick="addVehicleDischarge()">+ เพิ่ม</button>
+              </div>
+              <div id="rpt_veh_discharge_list" style="display:flex;flex-direction:column;gap:6px;width:100%;max-width:100%;"></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);margin-top:2px;">
+                <span>รวมจำหน่าย :</span>
+                <strong id="rpt_veh_out_display" style="color:var(--accent);font-size:14px;">0</strong>
+                <span>คัน</span>
+              </div>
             </div>
           </div>
           <div class="rpt-row"><label>6.3 คงเหลือ</label>
@@ -3092,6 +3098,8 @@
       const el = document.getElementById('rpt_veh_base_display');
       if (el) el.textContent = vehBase;
       saveVehBase();
+      populateVehDischargeSelect();
+      renderVehDischargeList();
       calcVehicle();
       // Sync personnel to report
       syncPersonnelToReport();
@@ -3121,6 +3129,8 @@
 
             const display = document.getElementById('rpt_veh_base_display');
             if (display) display.textContent = vehBase;
+            populateVehDischargeSelect();
+            renderVehDischargeList();
             calcVehicle();
             renderVehicleAdminTable();
           }
@@ -3234,7 +3244,175 @@
       }
     }
 
-    function calcVehicle() { const out = parseInt(document.getElementById('rpt_veh_out').value) || 0; document.getElementById('rpt_veh_remain').textContent = Math.max(0, vehBase - out); }
+    // ===========================
+    // VEHICLE DISCHARGE (SECTION 6)
+    // ===========================
+    let selectedVehDischarge = [];
+
+    function getVehicleShortInfo(v) {
+      if (!v) return '';
+      const parts = [];
+      if (v.name && v.name.trim()) parts.push(v.name.trim());
+      if (v.brand && v.brand.trim()) parts.push(v.brand.trim());
+      if (v.plate && v.plate.trim()) parts.push(`(${v.plate.trim()})`);
+      return parts.join(' ');
+    }
+
+    function populateVehDischargeSelect() {
+      const sel = document.getElementById('rpt_veh_select');
+      if (!sel) return;
+      const prevVal = sel.value;
+      sel.innerHTML = '<option value="">— เลือกยานพาหนะที่จำหน่าย —</option>';
+      vehicleData.forEach((v, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${i + 1}. ${getVehicleShortInfo(v)}`;
+        sel.appendChild(opt);
+      });
+      if (prevVal !== '' && parseInt(prevVal) < vehicleData.length) {
+        sel.value = prevVal;
+      }
+    }
+
+    function addVehicleDischarge() {
+      const sel = document.getElementById('rpt_veh_select');
+      if (!sel || sel.value === '') {
+        alert('กรุณาเลือกยานพาหนะที่ต้องการจำหน่าย');
+        return;
+      }
+      const idx = parseInt(sel.value);
+      const v = vehicleData[idx];
+      if (!v) return;
+
+      const exists = selectedVehDischarge.some(item => item.vehIndex === idx);
+      if (exists) {
+        alert('ยานพาหนะคันนี้ถูกเพิ่มในรายการจำหน่ายแล้ว');
+        return;
+      }
+
+      selectedVehDischarge.push({
+        vehIndex: idx,
+        name: v.name,
+        brand: v.brand,
+        plate: v.plate,
+        reasonType: 'จำหน่ายราชการ', // ค่าเริ่มต้น จำหน่ายราชการ
+        customReason: ''
+      });
+
+      sel.value = '';
+      renderVehDischargeList();
+      calcVehicle();
+    }
+
+    function removeVehicleDischarge(idx) {
+      selectedVehDischarge.splice(idx, 1);
+      renderVehDischargeList();
+      calcVehicle();
+    }
+
+    function updateVehDischargeReason(idx, val) {
+      if (selectedVehDischarge[idx]) {
+        selectedVehDischarge[idx].reasonType = val;
+        renderVehDischargeList();
+      }
+    }
+
+    function updateVehDischargeCustom(idx, val) {
+      if (selectedVehDischarge[idx]) {
+        selectedVehDischarge[idx].customReason = val;
+      }
+    }
+
+    function renderVehDischargeList() {
+      const con = document.getElementById('rpt_veh_discharge_list');
+      if (!con) return;
+      con.innerHTML = '';
+
+      // Filter out invalid items if vehicle list length changed
+      selectedVehDischarge = selectedVehDischarge.filter(item => {
+        return item.vehIndex >= 0 && item.vehIndex < vehicleData.length;
+      });
+
+      selectedVehDischarge.forEach((item, i) => {
+        const currentVeh = vehicleData[item.vehIndex] || item;
+        const label = getVehicleShortInfo(currentVeh);
+
+        const row = document.createElement('div');
+        row.style.cssText = 'background:#f4efe6;border:1px solid var(--line);border-radius:3px;padding:7px 10px;display:flex;flex-direction:column;gap:5px;width:100%;box-sizing:border-box;';
+
+        const topDiv = document.createElement('div');
+        topDiv.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:6px;';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.style.cssText = 'font-size:12.5px;font-weight:600;color:var(--olive-dark);line-height:1.3;';
+        nameSpan.textContent = `• 6.2.${i + 1} ${label}`;
+
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-remove-person';
+        btnDel.textContent = '✕ ลบ';
+        btnDel.style.cssText = 'padding:1px 6px;font-size:11px;cursor:pointer;flex-shrink:0;';
+        btnDel.addEventListener('click', () => removeVehicleDischarge(i));
+
+        topDiv.appendChild(nameSpan);
+        topDiv.appendChild(btnDel);
+
+        const reasonDiv = document.createElement('div');
+        reasonDiv.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;';
+
+        const rLbl = document.createElement('label');
+        rLbl.style.cssText = 'font-size:12px;color:var(--ink-soft);min-width:65px;margin:0;padding:0;';
+        rLbl.textContent = 'การจำหน่าย:';
+
+        const rSel = document.createElement('select');
+        rSel.style.cssText = 'font-size:12px;padding:3px 6px;border-radius:2px;background:#fff;color:var(--ink);border:1px solid var(--line);min-width:130px;';
+
+        const opt1 = document.createElement('option');
+        opt1.value = 'จำหน่ายราชการ';
+        opt1.textContent = 'จำหน่ายราชการ';
+
+        const opt2 = document.createElement('option');
+        opt2.value = 'อื่นๆ';
+        opt2.textContent = 'อื่นๆ (พิมพ์ระบุ...)';
+
+        rSel.appendChild(opt1);
+        rSel.appendChild(opt2);
+        rSel.value = item.reasonType || 'จำหน่ายราชการ';
+        rSel.addEventListener('change', function () {
+          updateVehDischargeReason(i, this.value);
+        });
+
+        reasonDiv.appendChild(rLbl);
+        reasonDiv.appendChild(rSel);
+
+        if (item.reasonType === 'อื่นๆ') {
+          const customInp = document.createElement('input');
+          customInp.type = 'text';
+          customInp.value = item.customReason || '';
+          customInp.placeholder = 'พิมพ์ข้อความระบุการจำหน่าย...';
+          customInp.style.cssText = 'flex:1;min-width:180px;font-size:12px;padding:3px 8px;border-radius:2px;border:1px solid var(--line);background:#fff;color:var(--ink);font-family:inherit;';
+          customInp.addEventListener('input', function () {
+            updateVehDischargeCustom(i, this.value);
+          });
+          reasonDiv.appendChild(customInp);
+        }
+
+        row.appendChild(topDiv);
+        row.appendChild(reasonDiv);
+        con.appendChild(row);
+      });
+    }
+
+    function calcVehicle() {
+      const vehOut = selectedVehDischarge.length;
+      const vehRemain = Math.max(0, vehBase - vehOut);
+
+      const outDisp = document.getElementById('rpt_veh_out_display');
+      if (outDisp) outDisp.textContent = vehOut;
+
+      const remainDisp = document.getElementById('rpt_veh_remain');
+      if (remainDisp) remainDisp.textContent = vehRemain;
+    }
     function toggleDetail(id, show) { document.getElementById(id).classList.toggle('hidden', !show); }
     function onRptOfficerChange() {
       const v = document.getElementById('rpt_officer').value;
@@ -3289,8 +3467,17 @@
       let discharge = ln + ls + lp;
       dischargeCategories.forEach(c => { discharge += selectedPersons[c.id].length; });
       const remain = Math.max(0, total - discharge);
-      const vehOut = parseInt(document.getElementById('rpt_veh_out').value) || 0;
-      const vehDetail = document.getElementById('rpt_veh_detail').value.trim();
+      const vehOut = selectedVehDischarge.length;
+      let vehDischargeHtml = '';
+      if (vehOut > 0) {
+        const items = selectedVehDischarge.map((item, idx) => {
+          const v = vehicleData[item.vehIndex] || item;
+          const label = getVehicleShortInfo(v);
+          const reason = item.reasonType === 'อื่นๆ' ? (item.customReason.trim() || 'อื่นๆ') : (item.reasonType || 'จำหน่ายราชการ');
+          return `<div class="rpt-result-row" style="padding:1px 0;"><span class="rn">6.2.${idx + 1}</span><span>${label} : <strong>${reason}</strong></span></div>`;
+        });
+        vehDischargeHtml = `<div style="padding-left:12px;margin-top:4px;display:flex;flex-direction:column;gap:2px;">${items.join('')}</div>`;
+      }
       const d21 = document.getElementById('rpt_21').value;
       const d22 = document.getElementById('rpt_22').value;
       const d23 = document.getElementById('rpt_23').value;
@@ -3345,7 +3532,7 @@
     <hr class="divider">
     <div class="section-header">6. สถานภาพยานพาหนะ ประจำ บก.ควบคุม 2</div>
     <div class="rpt-result-row"><span class="rn">6.1</span><span>ยอดเดิม : ${vehBase} คัน</span></div>
-    <div class="rpt-result-row"><span class="rn">6.2</span><span>จำหน่าย : <strong>${vehOut} คัน</strong>${vehDetail ? '<br><span style="color:var(--ink-soft);">' + vehDetail + '</span>' : ''}</span></div>
+    <div class="rpt-result-row"><span class="rn">6.2</span><span>จำหน่าย : <strong>${vehOut} คัน</strong>${vehDischargeHtml}</span></div>
     <div class="rpt-result-row"><span class="rn">6.3</span><span>คงเหลือ : <strong>${vehBase - vehOut} คัน</strong></span></div>
     <hr class="divider">
     <div class="section-header">7. การสั่งการที่สำคัญของ ผบช.</div>
@@ -3387,8 +3574,16 @@
 
       const remain = Math.max(0, total - discharge);
       const vBase = typeof vehBase !== 'undefined' ? vehBase : (getInt('rpt_veh_base') || 11);
-      const vehOut = getInt('rpt_veh_out');
-      const vehDetail = getTxt('rpt_veh_detail');
+      const vehOut = selectedVehDischarge.length;
+      let vehDischargeText = '';
+      if (vehOut > 0) {
+        vehDischargeText = selectedVehDischarge.map((item, idx) => {
+          const v = vehicleData[item.vehIndex] || item;
+          const label = getVehicleShortInfo(v);
+          const reason = item.reasonType === 'อื่นๆ' ? (item.customReason.trim() || 'อื่นๆ') : (item.reasonType || 'จำหน่ายราชการ');
+          return `6.2.${idx + 1} ${label} : ${reason}`;
+        }).join('\n');
+      }
 
       const d21 = getVal('rpt_21');
       const d22 = getVal('rpt_22');
@@ -3435,7 +3630,7 @@
       text += `----------------------------------------\n`;
       text += `6. สถานภาพยานพาหนะ ประจำ บก.ควบคุม 2\n`;
       text += `6.1 ยอดเดิม : ${vBase} คัน\n`;
-      text += `6.2 จำหน่าย : ${vehOut} คัน${vehOut > 0 ? ' (' + vehDetail + ')' : ''}\n`;
+      text += `6.2 จำหน่าย : ${vehOut} คัน${vehDischargeText ? '\n' + vehDischargeText : ''}\n`;
       text += `6.3 คงเหลือ : ${vBase - vehOut} คัน\n`;
       text += `----------------------------------------\n`;
       text += `7. การสั่งการที่สำคัญของ ผบช.\n`;
@@ -5314,6 +5509,7 @@
     // INIT
     // ===========================
     populateRptSelects();
+    populateVehDischargeSelect();
     loadPersonnel();
     loadPrivatesCountAdmin();
     loadStrength();
