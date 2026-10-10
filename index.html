@@ -331,6 +331,18 @@
       background: #fad4d0;
     }
 
+    .btn-transfer {
+      background: #eaf2fb;
+      color: #1b6ca8;
+      border-color: #b3d4f5;
+    }
+
+    .btn-transfer:hover {
+      background: #d4e7f9;
+      color: #0d4b75;
+      border-color: #84bbee;
+    }
+
     .btn-save {
       background: #e4f0e8;
       color: var(--success);
@@ -727,6 +739,7 @@
       vertical-align: middle;
       color: var(--ink-soft);
       white-space: nowrap;
+      text-align: left;
     }
 
     .p-table tr:hover td {
@@ -743,6 +756,8 @@
       gap: 4px;
       flex-wrap: nowrap;
       align-items: center;
+      justify-content: flex-start;
+      text-align: left;
       padding: 4px 8px;
     }
 
@@ -2336,13 +2351,13 @@
           <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button class="btn btn-add-item"
               onclick="openAddModal('officer')">+ เพิ่มนายทหารเวร</button></div>
           <div style="overflow-x:auto;">
-            <table class="p-table" style="min-width:520px;">
+            <table class="p-table" style="min-width:580px;">
               <thead>
                 <tr>
                   <th width="32">#</th>
                   <th>ยศ ชื่อ นามสกุล</th>
                   <th width="110">เบอร์โทร</th>
-                  <th>จัดการ</th>
+                  <th width="230">จัดการ</th>
                 </tr>
               </thead>
               <tbody id="officerTbody"></tbody>
@@ -2353,13 +2368,13 @@
           <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button class="btn btn-add-item"
               onclick="openAddModal('clerk')">+ เพิ่มเสมียนเวร</button></div>
           <div style="overflow-x:auto;">
-            <table class="p-table" style="min-width:520px;">
+            <table class="p-table" style="min-width:580px;">
               <thead>
                 <tr>
                   <th width="32">#</th>
                   <th>ยศ ชื่อ นามสกุล</th>
                   <th width="110">เบอร์โทร</th>
-                  <th>จัดการ</th>
+                  <th width="230">จัดการ</th>
                 </tr>
               </thead>
               <tbody id="clerkTbody"></tbody>
@@ -2823,20 +2838,26 @@
       const tb = document.getElementById(tbodyId); tb.innerHTML = '';
       data.forEach(function (p, i) {
         const tr = document.createElement('tr'); tr.id = 'row_' + type + '_' + i;
-        const tdNum = document.createElement('td'); tdNum.textContent = i + 1;
-        const tdName = document.createElement('td'); tdName.textContent = p.name;
-        const tdPhone = document.createElement('td'); tdPhone.textContent = p.phone;
-        const tdAct = document.createElement('td'); tdAct.className = 'td-actions';
+        const tdNum = document.createElement('td'); tdNum.textContent = i + 1; tdNum.style.textAlign = 'center';
+        const tdName = document.createElement('td'); tdName.textContent = p.name; tdName.style.textAlign = 'left';
+        const tdPhone = document.createElement('td'); tdPhone.textContent = p.phone; tdPhone.style.textAlign = 'left';
+        const tdAct = document.createElement('td'); tdAct.className = 'td-actions'; tdAct.style.textAlign = 'left'; tdAct.style.justifyContent = 'flex-start';
         const btnUp = document.createElement('button'); btnUp.className = 'btn-sm btn-up'; btnUp.textContent = '▲'; btnUp.disabled = (i === 0);
         (function (t, idx) { btnUp.addEventListener('click', function () { movePerson(t, idx, -1); }); })(type, i);
         const btnDown = document.createElement('button'); btnDown.className = 'btn-sm btn-down'; btnDown.textContent = '▼'; btnDown.disabled = (i === data.length - 1);
         (function (t, idx) { btnDown.addEventListener('click', function () { movePerson(t, idx, 1); }); })(type, i);
+        const btnTransfer = document.createElement('button');
+        btnTransfer.className = 'btn-sm btn-transfer';
+        btnTransfer.textContent = type === 'officer' ? '⇄ เสมียนเวร' : '⇄ นายทหารเวร';
+        btnTransfer.title = type === 'officer' ? 'ย้ายไปเสมียนเวร' : 'ย้ายไปนายทหารเวร';
+        (function (t, idx) { btnTransfer.addEventListener('click', function () { transferPerson(t, idx); }); })(type, i);
         const btnEdit = document.createElement('button'); btnEdit.className = 'btn-sm btn-edit'; btnEdit.textContent = '✏ แก้ไข';
         (function (t, idx) { btnEdit.addEventListener('click', function () { editPerson(t, idx); }); })(type, i);
         const btnDel = document.createElement('button'); btnDel.className = 'btn-sm btn-delete'; btnDel.textContent = '✕ ลบ';
         (function (t, idx) { btnDel.addEventListener('click', function () { deletePerson(t, idx); }); })(type, i);
         const sep = document.createElement('span'); sep.className = 'btn-sep';
-        tdAct.appendChild(btnUp); tdAct.appendChild(btnDown); tdAct.appendChild(sep); tdAct.appendChild(btnEdit); tdAct.appendChild(btnDel);
+        tdAct.appendChild(btnUp); tdAct.appendChild(btnDown); tdAct.appendChild(sep);
+        tdAct.appendChild(btnTransfer); tdAct.appendChild(btnEdit); tdAct.appendChild(btnDel);
         tr.appendChild(tdNum); tr.appendChild(tdName); tr.appendChild(tdPhone); tr.appendChild(tdAct); tb.appendChild(tr);
       });
     }
@@ -2844,7 +2865,7 @@
     function renderClerkTable() { renderPersonnelTable('clerkTbody', clerks, 'clerk'); }
     function editPerson(type, idx) {
       const data = type === 'officer' ? officers : clerks; const tr = document.getElementById('row_' + type + '_' + idx); tr.classList.add('edit-row'); const p = data[idx];
-      tr.innerHTML = `<td>${idx + 1}</td><td><input type="text" id="en_${type}_${idx}" value="${p.name}"></td><td><input type="text" id="ep_${type}_${idx}" value="${p.phone}"></td><td class="td-actions"><button class="btn-sm btn-save" onclick="savePerson('${type}',${idx})">💾</button><button class="btn-sm btn-cancel-sm" onclick="${type === 'officer' ? 'renderOfficerTable' : 'renderClerkTable'}()">ยกเลิก</button></td>`;
+      tr.innerHTML = `<td style="text-align:center;">${idx + 1}</td><td style="text-align:left;"><input type="text" id="en_${type}_${idx}" value="${p.name}"></td><td style="text-align:left;"><input type="text" id="ep_${type}_${idx}" value="${p.phone}"></td><td class="td-actions" style="text-align:left;justify-content:flex-start;"><button class="btn-sm btn-save" onclick="savePerson('${type}',${idx})">💾</button><button class="btn-sm btn-cancel-sm" onclick="${type === 'officer' ? 'renderOfficerTable' : 'renderClerkTable'}()">ยกเลิก</button></td>`;
     }
     function savePerson(type, idx) {
       const n = document.getElementById('en_' + type + '_' + idx).value.trim(); const p = document.getElementById('ep_' + type + '_' + idx).value.trim(); if (!n) { alert('กรุณากรอกชื่อ'); return; }
@@ -2860,6 +2881,25 @@
     function movePerson(type, idx, dir) {
       const data = type === 'officer' ? officers : clerks; const ni = idx + dir; if (ni < 0 || ni >= data.length) return;[data[idx], data[ni]] = [data[ni], data[idx]];
       if (type === 'officer') { renderOfficerTable(); populateSelect('officer_select', officers, 'นายทหารเวร'); } else { renderClerkTable(); populateSelect('clerk_select', clerks, 'เสมียนเวร'); }
+      savePersonnel();
+    }
+    function transferPerson(type, idx) {
+      const isOfficer = type === 'officer';
+      const srcData = isOfficer ? officers : clerks;
+      const targetLabel = isOfficer ? 'เสมียนเวร' : 'นายทหารเวร';
+      const p = srcData[idx];
+      if (!p) return;
+      if (!confirm('ย้าย "' + p.name + '" ไปยังรายชื่อ' + targetLabel + ' ใช่หรือไม่?')) return;
+      const removed = srcData.splice(idx, 1)[0];
+      if (isOfficer) {
+        clerks.push(removed);
+      } else {
+        officers.push(removed);
+      }
+      renderOfficerTable();
+      renderClerkTable();
+      populateSelect('officer_select', officers, 'นายทหารเวร');
+      populateSelect('clerk_select', clerks, 'เสมียนเวร');
       savePersonnel();
     }
     function openAddModal(type) {
