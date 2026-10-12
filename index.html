@@ -556,8 +556,15 @@
     .schedule-list li .time {
       font-weight: 700;
       color: var(--accent);
-      min-width: 52px;
+      min-width: 95px;
       flex-shrink: 0;
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .schedule-list li .sch-text {
+      flex: 1;
+      text-align: left;
     }
 
     .footer-note {
@@ -2734,7 +2741,7 @@
     // ===========================
     // GENERATE DOC (Page 0)
     // ===========================
-    function renderSchItems(items) { return items.map(i => `<li><span class="time">${i.time}</span><span>${i.text}</span></li>`).join(''); }
+    function renderSchItems(items) { return items.map(i => `<li><span class="time">${i.time}</span><span class="sch-text">${i.text}</span></li>`).join(''); }
     function generateDoc() {
       if (!selectedOfficer) { alert('กรุณาเลือกนายทหารเวร'); return; }
       if (!selectedClerk) { alert('กรุณาเลือกเสมียนเวร'); return; }
