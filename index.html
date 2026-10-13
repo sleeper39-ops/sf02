@@ -2645,9 +2645,43 @@
     const holidays2570 = new Set(['2027-01-01', '2027-02-22', '2027-04-06', '2027-04-13', '2027-04-14', '2027-04-15', '2027-05-03', '2027-05-04', '2027-05-19', '2027-05-20', '2027-06-03', '2027-07-19', '2027-07-28', '2027-10-13', '2027-10-23', '2027-10-25', '2027-12-05', '2027-12-06', '2027-12-10', '2027-12-31']);
     function toISO(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
     function isHoliday(d) { const iso = toISO(d); return holidays2568.has(iso) || holidays2569.has(iso) || holidays2570.has(iso); }
-    function getDayGroup() { const todayHol = isHoliday(now), tomorrowHol = isHoliday(tomorrow); if (todayHol) { if (!tomorrowHol && tDow !== 5 && tDow !== 6) return 'holiday_weekday'; return 'holiday_holiday'; } if (dow >= 1 && dow <= 4) return 'mon_thu'; if (dow === 5) return 'fri'; if (dow === 6) return 'sat'; return 'sun'; }
+    function isDayOff(d) { const day = d.getDay(); return day === 0 || day === 6 || isHoliday(d); }
+    function getDayGroup() { const todayHol = isHoliday(now), tomorrowHol = isHoliday(tomorrow); if (todayHol) { if (!tomorrowHol && tDow !== 0 && tDow !== 6) return 'holiday_weekday'; return 'holiday_holiday'; } if (dow >= 1 && dow <= 4) return 'mon_thu'; if (dow === 5) return 'fri'; if (dow === 6) return 'sat'; return 'sun'; }
     function getScheduleToday() { return schedules[getDayGroup()].today.filter(i => !i.prayerOnly || hasPrayer(now)); }
-    function getScheduleTomorrow() { return schedules[getDayGroup()].tomorrow; }
+    function getScheduleTomorrow() {
+      if (isDayOff(tomorrow)) {
+        if (isHoliday(tomorrow) && schedules.holiday_holiday && schedules.holiday_holiday.tomorrow && schedules.holiday_holiday.tomorrow.length > 0) {
+          return schedules.holiday_holiday.tomorrow;
+        }
+        if (tDow === 6 && schedules.fri && schedules.fri.tomorrow && schedules.fri.tomorrow.length > 0) {
+          return schedules.fri.tomorrow;
+        }
+        if (tDow === 0 && schedules.sat && schedules.sat.tomorrow && schedules.sat.tomorrow.length > 0) {
+          return schedules.sat.tomorrow;
+        }
+        if (schedules.holiday_holiday && schedules.holiday_holiday.tomorrow && schedules.holiday_holiday.tomorrow.length > 0) {
+          return schedules.holiday_holiday.tomorrow;
+        }
+        if (schedules.sat && schedules.sat.tomorrow && schedules.sat.tomorrow.length > 0) {
+          return schedules.sat.tomorrow;
+        }
+        if (schedules.fri && schedules.fri.tomorrow && schedules.fri.tomorrow.length > 0) {
+          return schedules.fri.tomorrow;
+        }
+        return [{ time: '09.00', text: 'รวมเช็คยอด/รับฟังคำชี้แจงฝ่ายอำนวยการ' }];
+      } else {
+        if (isHoliday(now) && schedules.holiday_weekday && schedules.holiday_weekday.tomorrow && schedules.holiday_weekday.tomorrow.length > 0) {
+          return schedules.holiday_weekday.tomorrow;
+        }
+        if (dow === 0 && schedules.sun && schedules.sun.tomorrow && schedules.sun.tomorrow.length > 0) {
+          return schedules.sun.tomorrow;
+        }
+        if (schedules.mon_thu && schedules.mon_thu.tomorrow && schedules.mon_thu.tomorrow.length > 0) {
+          return schedules.mon_thu.tomorrow;
+        }
+        return schedules[getDayGroup()].tomorrow;
+      }
+    }
     document.getElementById('headerDayInfo').textContent = `${thDays[dow]} · ${thDate(now)}${isHoliday(now) ? ' 🔴 วันหยุดนักขัตฤกษ์' : ''}`;
 
     // Thai digit conversion
