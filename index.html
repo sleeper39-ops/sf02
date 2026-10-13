@@ -3804,6 +3804,7 @@
 
       // Post render updates - NO setTimeout
       masterSlides.forEach(function (slide) {
+        if (slide.hidden) return;
         if (slide.type === 'news') {
           populateOsintSelect(slide.id);
           var mapZone = document.getElementById('mapZone_' + slide.id);
@@ -4216,11 +4217,11 @@
     // ============================================================
 
     const SM_CATEGORIES = [
-      { type: 'photo', label: '📷 อัพโหลดรูป', color: 'rgba(201,168,76,0.15)', border: 'rgba(201,168,76,0.4)', canAdd: true, canDelete: true, canHide: false },
+      { type: 'photo', label: '📷 อัพโหลดรูป', color: 'rgba(201,168,76,0.15)', border: 'rgba(201,168,76,0.4)', canAdd: true, canDelete: true, canHide: true },
       { type: 'kpd_op', label: '📊 สถานภาพบัญชียอด (ปฏิบัติงาน)', color: 'rgba(100,180,100,0.15)', border: 'rgba(100,180,100,0.45)', canAdd: false, canDelete: false, canHide: true },
       { type: 'kpd_tot', label: '📊 สถานภาพบัญชียอด (รวมแถว)', color: 'rgba(100,180,100,0.15)', border: 'rgba(100,180,100,0.45)', canAdd: false, canDelete: false, canHide: true },
       { type: 'veh', label: '🚗 บัญชีสถานภาพยานพาหนะ', color: 'rgba(120,160,220,0.15)', border: 'rgba(120,160,220,0.45)', canAdd: false, canDelete: false, canHide: true },
-      { type: 'news', label: '📰 สรุปข่าวสารสำคัญประจำวัน', color: 'rgba(200,120,80,0.15)', border: 'rgba(200,120,80,0.45)', canAdd: true, canDelete: true, canHide: false },
+      { type: 'news', label: '📰 สรุปข่าวสารสำคัญประจำวัน', color: 'rgba(200,120,80,0.15)', border: 'rgba(200,120,80,0.45)', canAdd: true, canDelete: true, canHide: true },
     ];
 
     function renderSlideManager() {
@@ -4228,9 +4229,16 @@
       if (!con) return;
       con.innerHTML = '';
 
-      // Compute display sequence numbers across all slides
+      // Compute display sequence numbers across visible slides
       const seqMap = {};
-      masterSlides.forEach((s, i) => { seqMap[s.id] = i + 1; });
+      let visibleSeq = 1;
+      masterSlides.forEach((s) => {
+        if (!s.hidden) {
+          seqMap[s.id] = visibleSeq++;
+        } else {
+          seqMap[s.id] = 'ซ่อน';
+        }
+      });
 
       SM_CATEGORIES.forEach(cat => {
         const slides = masterSlides.filter(s => s.type === cat.type);
@@ -4239,9 +4247,40 @@
 
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
-        header.innerHTML = `
-          <span style="font-size:12px;font-weight:700;color:black;">${cat.label}</span>
-          <span style="font-size:11px;color:rgba(0,0,0,0.5);">${slides.length} สไลด์</span>`;
+
+        const headerLeft = document.createElement('span');
+        headerLeft.style.cssText = 'font-size:12px;font-weight:700;color:black;';
+        headerLeft.textContent = cat.label;
+
+        const headerRight = document.createElement('div');
+        headerRight.style.cssText = 'display:flex;align-items:center;gap:8px;';
+
+        const visibleCount = slides.filter(s => !s.hidden).length;
+        const countSpan = document.createElement('span');
+        countSpan.style.cssText = 'font-size:11px;color:rgba(0,0,0,0.6);';
+        countSpan.textContent = `${visibleCount}/${slides.length} สไลด์`;
+        headerRight.appendChild(countSpan);
+
+        // Category-level Hide/Show toggle button for multi-slide categories
+        if (slides.length > 0 && cat.canHide) {
+          const allHidden = slides.every(s => s.hidden);
+          const btnToggleAll = document.createElement('button');
+          btnToggleAll.className = 'btn-sm';
+          btnToggleAll.style.cssText = 'font-size:11px;padding:2px 8px;border-radius:3px;cursor:pointer;background:' + (allHidden ? '#e0e0e0' : 'rgba(201,168,76,0.25)') + ';border:1px solid rgba(0,0,0,0.2);color:black;font-weight:600;';
+          btnToggleAll.textContent = allHidden ? '👁 แสดงทั้งหมด' : '👁‍🗨 ซ่อนทั้งหมด';
+          btnToggleAll.title = allHidden ? `แสดง${cat.label}ทั้งหมด` : `ซ่อน${cat.label}ทั้งหมด`;
+          btnToggleAll.onclick = () => {
+            const targetState = !allHidden;
+            slides.forEach(s => { s.hidden = targetState; });
+            buildAllSlides();
+            saveMasterSlides();
+            renderSlideManager();
+          };
+          headerRight.appendChild(btnToggleAll);
+        }
+
+        header.appendChild(headerLeft);
+        header.appendChild(headerRight);
         sect.appendChild(header);
 
         if (slides.length === 0) {
@@ -4253,35 +4292,38 @@
 
         slides.forEach(slide => {
           const globalIdx = masterSlides.indexOf(slide);
-          const seq = seqMap[slide.id];
           const isFirstGlobal = globalIdx === 0;
           const isLastGlobal = globalIdx === masterSlides.length - 1;
           const isFirstInCat = masterSlides.filter((s, i) => s.type === cat.type && i < globalIdx).length === 0;
           const isLastInCat = masterSlides.filter((s, i) => s.type === cat.type && i > globalIdx).length === 0;
 
           const row = document.createElement('div');
-          row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.07);';
+          row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.07);' + (slide.hidden ? 'opacity:0.65;' : '');
 
           // Sequence badge
           const badge = document.createElement('span');
-          badge.style.cssText = 'font-size:10px;font-weight:700;color:black;min-width:28px;text-align:center;background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:2px 4px;';
-          badge.textContent = seq;
+          const isHidden = !!slide.hidden;
+          badge.style.cssText = 'font-size:10px;font-weight:700;' +
+            (isHidden ? 'color:#888;background:#eee;border:1px dashed #ccc;' : 'color:black;background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.15);') +
+            'min-width:32px;text-align:center;border-radius:3px;padding:2px 4px;';
+          badge.textContent = seqMap[slide.id];
           row.appendChild(badge);
 
           // Title input
           const inp = document.createElement('input');
           inp.type = 'text';
           inp.value = slide.title;
-          inp.style.cssText = 'flex:1;padding:5px 8px;border:1px solid rgba(0,0,0,0.15);border-radius:3px;font-size:12px;background:white;color:black;font-family:\'Sarabun\',sans-serif;';
+          inp.style.cssText = 'flex:1;padding:5px 8px;border:1px solid rgba(0,0,0,0.15);border-radius:3px;font-size:12px;background:white;color:black;font-family:\'Sarabun\',sans-serif;' + (slide.hidden ? 'text-decoration:line-through;color:#777;' : '');
           inp.onchange = () => { slide.title = inp.value.trim() || slide.title; buildAllSlides(); saveMasterSlides(); };
           row.appendChild(inp);
 
-          // HIDE TOGGLE
+          // HIDE TOGGLE (Per slide)
           if (cat.canHide) {
             const btnHide = document.createElement('button');
             btnHide.className = 'btn-sm';
             btnHide.style.cssText = 'font-size:11px;padding:3px 8px;border-radius:3px;cursor:pointer;background:' + (slide.hidden ? '#e0e0e0' : 'rgba(201,168,76,0.15)') + ';border:1px solid rgba(0,0,0,0.15);color:black;';
             btnHide.textContent = slide.hidden ? '👁 แสดง' : '👁‍🗨 ซ่อน';
+            btnHide.title = slide.hidden ? 'คลิกเพื่อแสดงสไลด์นี้' : 'คลิกเพื่อซ่อนสไลด์นี้';
             btnHide.onclick = () => { slide.hidden = !slide.hidden; buildAllSlides(); saveMasterSlides(); renderSlideManager(); };
             row.appendChild(btnHide);
           }
@@ -4638,7 +4680,7 @@
 
     function slideHasData(sn) {
       const slide = masterSlides.find(s => s.id === sn);
-      if (!slide) return false;
+      if (!slide || slide.hidden) return false;
       // KPD and Vehicle slides always show
       if (slide.type === 'kpd_op' || slide.type === 'kpd_tot' || slide.type === 'veh') return true;
       // Photo slides: only if has at least one photo
